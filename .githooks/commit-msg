@@ -1,0 +1,23 @@
+#!/bin/sh
+
+commit_msg_file="$1"
+commit_msg="$(cat "$commit_msg_file")"
+
+pattern='^(feat|fix|style|refactor|chore|docs): .+'
+
+if ! printf '%s\n' "$commit_msg" | grep -Eq "$pattern"; then
+  echo ""
+  echo "❌ 커밋 메시지 형식이 올바르지 않습니다."
+  echo ""
+  echo "형식:"
+  echo "  type: 작업 내용"
+  echo ""
+  echo "사용 가능한 type:"
+  echo "  feat, fix, style, refactor, chore, docs"
+  echo ""
+  echo "예시:"
+  echo "  feat: 촌캉스 생성 화면 구현"
+  echo "  fix: 초대 코드 유효성 검사 수정"
+  echo ""
+  exit 1
+fi
