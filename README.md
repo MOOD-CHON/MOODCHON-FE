@@ -273,12 +273,6 @@ Issue 생성
 flutter analyze
 ```
 
-테스트가 존재하는 경우 아래 명령어를 사용합니다.
-
-```bash
-flutter test
-```
-
 앱 실행은 다음 명령어를 사용합니다.
 
 ```bash
