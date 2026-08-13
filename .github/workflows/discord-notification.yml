@@ -1,0 +1,57 @@
+name: Discord Notification
+
+on:
+  pull_request:
+    types: [opened, reopened, closed]
+  issues:
+    types: [opened, closed]
+
+jobs:
+  discord-notification:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Pull Request Notification
+        if: github.event_name == 'pull_request'
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_ACTION: ${{ github.event.action }}
+          PR_MERGED: ${{ github.event.pull_request.merged }}
+        run: |
+          if [ "$PR_ACTION" = "closed" ] && [ "$PR_MERGED" = "true" ]; then
+            MESSAGE="✅ PR이 머지되었습니다."
+          elif [ "$PR_ACTION" = "closed" ]; then
+            MESSAGE="❌ PR이 닫혔습니다."
+          else
+            MESSAGE="🔀 PR이 생성되었습니다."
+          fi
+
+          curl -H "Content-Type: application/json" \
+            -d "$(jq -n \
+              --arg content "$MESSAGE\n**$PR_TITLE**\n작성자: $PR_AUTHOR\n$PR_URL" \
+              '{content: $content}')" \
+            "$DISCORD_WEBHOOK_URL"
+
+      - name: Send Issue Notification
+        if: github.event_name == 'issues'
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+          ISSUE_ACTION: ${{ github.event.action }}
+        run: |
+          if [ "$ISSUE_ACTION" = "closed" ]; then
+            MESSAGE="✅ Issue가 닫혔습니다."
+          else
+            MESSAGE="📌 Issue가 생성되었습니다."
+          fi
+
+          curl -H "Content-Type: application/json" \
+            -d "$(jq -n \
+              --arg content "$MESSAGE\n**$ISSUE_TITLE**\n작성자: $ISSUE_AUTHOR\n$ISSUE_URL" \
+              '{content: $content}')" \
+            "$DISCORD_WEBHOOK_URL"
