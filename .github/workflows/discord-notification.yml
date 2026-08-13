@@ -29,10 +29,11 @@ jobs:
             MESSAGE="🔀 PR이 생성되었습니다."
           fi
 
+          CONTENT="$(printf '%s\n**%s**\n작성자: %s\n%s' \
+            "$MESSAGE" "$PR_TITLE" "$PR_AUTHOR" "$PR_URL")"
+
           curl -H "Content-Type: application/json" \
-            -d "$(jq -n \
-              --arg content "$MESSAGE\n**$PR_TITLE**\n작성자: $PR_AUTHOR\n$PR_URL" \
-              '{content: $content}')" \
+            -d "$(jq -n --arg content "$CONTENT" '{content: $content}')" \
             "$DISCORD_WEBHOOK_URL"
 
       - name: Send Issue Notification
@@ -50,8 +51,9 @@ jobs:
             MESSAGE="📌 Issue가 생성되었습니다."
           fi
 
+          CONTENT="$(printf '%s\n**%s**\n작성자: %s\n%s' \
+            "$MESSAGE" "$ISSUE_TITLE" "$ISSUE_AUTHOR" "$ISSUE_URL")"
+
           curl -H "Content-Type: application/json" \
-            -d "$(jq -n \
-              --arg content "$MESSAGE\n**$ISSUE_TITLE**\n작성자: $ISSUE_AUTHOR\n$ISSUE_URL" \
-              '{content: $content}')" \
+            -d "$(jq -n --arg content "$CONTENT" '{content: $content}')" \
             "$DISCORD_WEBHOOK_URL"
