@@ -25,6 +25,8 @@ jobs:
             MESSAGE="✅ PR이 머지되었습니다."
           elif [ "$PR_ACTION" = "closed" ]; then
             MESSAGE="❌ PR이 닫혔습니다."
+          elif [ "$PR_ACTION" = "reopened" ]; then
+            MESSAGE="🔀 PR이 다시 열렸습니다."
           else
             MESSAGE="🔀 PR이 생성되었습니다."
           fi
@@ -32,7 +34,8 @@ jobs:
           CONTENT="$(printf '%s\n**%s**\n작성자: %s\n%s' \
             "$MESSAGE" "$PR_TITLE" "$PR_AUTHOR" "$PR_URL")"
 
-          curl -H "Content-Type: application/json" \
+          curl --fail --silent --show-error \
+            -H "Content-Type: application/json" \
             -d "$(jq -n --arg content "$CONTENT" '{content: $content}')" \
             "$DISCORD_WEBHOOK_URL"
 
@@ -54,6 +57,7 @@ jobs:
           CONTENT="$(printf '%s\n**%s**\n작성자: %s\n%s' \
             "$MESSAGE" "$ISSUE_TITLE" "$ISSUE_AUTHOR" "$ISSUE_URL")"
 
-          curl -H "Content-Type: application/json" \
+          curl --fail --silent --show-error \
+            -H "Content-Type: application/json" \
             -d "$(jq -n --arg content "$CONTENT" '{content: $content}')" \
             "$DISCORD_WEBHOOK_URL"
