@@ -33,7 +33,7 @@ class SearchTextField extends StatelessWidget {
 
       cursorColor: AppColors.black,
       cursorHeight: 14,
-      cursorWidth: 1.5,
+      cursorWidth: 1.3,
 
       style: AppTypography.bodyExtraLarge.copyWith(color: AppColors.black),
 
