@@ -1,0 +1,1 @@
+enum MoodChonTextFieldSize { short, long }
