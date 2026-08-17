@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 abstract final class AppColors {
-  // Logo
+  // Brand
   static const Color logo = Color(0xFFE5F29A);
   static const Color main = Color(0xFF5F8D29);
 
