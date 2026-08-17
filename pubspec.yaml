@@ -61,6 +61,7 @@ flutter:
     - assets/icons/logo/
     - assets/icons/navigation/
     - assets/icons/search/
+    - assets/icons/arrow_go/
 
   fonts:
     - family: Pretendard
