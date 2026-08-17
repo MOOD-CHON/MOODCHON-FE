@@ -27,8 +27,10 @@ class MoodChonTextField extends StatefulWidget {
 }
 
 class _MoodChonTextFieldState extends State<MoodChonTextField> {
-  late final TextEditingController _controller;
+  late TextEditingController _controller;
   final FocusNode _focusNode = FocusNode();
+
+  late bool _ownsController;
 
   bool get _isFocused => _focusNode.hasFocus;
   bool get _hasText => _controller.text.isNotEmpty;
@@ -40,10 +42,29 @@ class _MoodChonTextFieldState extends State<MoodChonTextField> {
   void initState() {
     super.initState();
 
+    _ownsController = widget.controller == null;
     _controller = widget.controller ?? TextEditingController();
 
     _controller.addListener(_handleTextChanged);
     _focusNode.addListener(_handleFocusChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant MoodChonTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.controller != widget.controller) {
+      _controller.removeListener(_handleTextChanged);
+
+      if (_ownsController) {
+        _controller.dispose();
+      }
+
+      _ownsController = widget.controller == null;
+      _controller = widget.controller ?? TextEditingController();
+
+      _controller.addListener(_handleTextChanged);
+    }
   }
 
   void _handleTextChanged() {
@@ -59,7 +80,7 @@ class _MoodChonTextFieldState extends State<MoodChonTextField> {
     _controller.removeListener(_handleTextChanged);
     _focusNode.removeListener(_handleFocusChanged);
 
-    if (widget.controller == null) {
+    if (_ownsController) {
       _controller.dispose();
     }
 
@@ -90,8 +111,8 @@ class _MoodChonTextFieldState extends State<MoodChonTextField> {
         onSubmitted: widget.onSubmitted,
         maxLines: 1,
         cursorColor: AppColors.black,
-        cursorHeight: 14,
-        cursorWidth: 1.3,
+        cursorHeight: 16,
+        cursorWidth: 1.5,
         style: AppTypography.bodyExtraLarge.copyWith(color: AppColors.black),
         decoration: InputDecoration(
           isCollapsed: true,
