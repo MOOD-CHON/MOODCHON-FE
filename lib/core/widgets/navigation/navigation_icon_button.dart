@@ -9,10 +9,12 @@ class NavigationIconButton extends StatefulWidget {
     super.key,
     required this.iconPath,
     required this.onTap,
+    required this.semanticLabel,
   });
 
   final String iconPath;
   final VoidCallback onTap;
+  final String semanticLabel;
 
   @override
   State<NavigationIconButton> createState() => _NavigationIconButtonState();
@@ -32,22 +34,26 @@ class _NavigationIconButtonState extends State<NavigationIconButton> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.onTap,
-      onTapDown: (_) => _setPressed(true),
-      onTapUp: (_) => _setPressed(false),
-      onTapCancel: () => _setPressed(false),
-      child: AnimatedScale(
-        scale: _isPressed ? _pressedScale : 1.0,
-        duration: _animationDuration,
-        child: CircleButtonBackgroundLarge(
-          child: SvgPicture.asset(
-            widget.iconPath,
-            width: 45,
-            height: 45,
-            colorFilter: const ColorFilter.mode(
-              AppColors.black,
-              BlendMode.srcIn,
+    return Semantics(
+      button: true,
+      label: widget.semanticLabel,
+      child: GestureDetector(
+        onTap: widget.onTap,
+        onTapDown: (_) => _setPressed(true),
+        onTapUp: (_) => _setPressed(false),
+        onTapCancel: () => _setPressed(false),
+        child: AnimatedScale(
+          scale: _isPressed ? _pressedScale : 1.0,
+          duration: _animationDuration,
+          child: CircleButtonBackgroundLarge(
+            child: SvgPicture.asset(
+              widget.iconPath,
+              width: 45,
+              height: 45,
+              colorFilter: const ColorFilter.mode(
+                AppColors.black,
+                BlendMode.srcIn,
+              ),
             ),
           ),
         ),

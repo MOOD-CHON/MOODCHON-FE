@@ -21,19 +21,23 @@ class _ClearButtonState extends State<ClearButton> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTapDown: (_) => _setPressed(true),
-      onTapUp: (_) => _setPressed(false),
-      onTapCancel: () => _setPressed(false),
-      onTap: widget.onTap,
-      child: SizedBox(
-        width: 17,
-        height: 17,
-        child: SvgPicture.asset(
-          _isPressed
-              ? 'assets/icons/search/clear_click.svg'
-              : 'assets/icons/search/clear_default.svg',
+    return Semantics(
+      button: true,
+      label: '검색어 지우기',
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: (_) => _setPressed(true),
+        onTapUp: (_) => _setPressed(false),
+        onTapCancel: () => _setPressed(false),
+        onTap: widget.onTap,
+        child: SizedBox(
+          width: 17,
+          height: 17,
+          child: SvgPicture.asset(
+            _isPressed
+                ? 'assets/icons/search/clear_click.svg'
+                : 'assets/icons/search/clear_default.svg',
+          ),
         ),
       ),
     );

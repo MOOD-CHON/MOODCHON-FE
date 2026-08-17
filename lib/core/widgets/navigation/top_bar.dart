@@ -69,13 +69,11 @@ class _TopBarState extends State<TopBar> {
     }
 
     final Offset buttonPosition = buttonRenderBox.localToGlobal(Offset.zero);
-
     final Size buttonSize = buttonRenderBox.size;
 
     const double menuWidth = 152;
 
     final double menuLeft = buttonPosition.dx + buttonSize.width - menuWidth;
-
     final double menuTop = buttonPosition.dy;
 
     _moreMenuOverlay = OverlayEntry(
@@ -125,6 +123,16 @@ class _TopBarState extends State<TopBar> {
   void _hideMoreMenu() {
     _moreMenuOverlay?.remove();
     _moreMenuOverlay = null;
+  }
+
+  @override
+  void didUpdateWidget(covariant TopBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.type != widget.type ||
+        oldWidget.roomName != widget.roomName) {
+      _hideMoreMenu();
+    }
   }
 
   @override

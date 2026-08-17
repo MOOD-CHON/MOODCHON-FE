@@ -11,6 +11,7 @@ class NavigationNotificationButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return NavigationIconButton(
       iconPath: 'assets/icons/navigation/notification.svg',
+      semanticLabel: '알림',
       onTap: onTap,
     );
   }

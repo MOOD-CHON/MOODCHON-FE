@@ -11,6 +11,7 @@ class NavigationShareButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return NavigationIconButton(
       iconPath: 'assets/icons/navigation/share.svg',
+      semanticLabel: '공유',
       onTap: onTap,
     );
   }

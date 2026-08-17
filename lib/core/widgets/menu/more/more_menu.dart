@@ -39,9 +39,9 @@ class MoreMenu extends StatelessWidget {
           const SizedBox(height: 10),
           _MoreMenuItem(text: '구성원 정보', onTap: onMemberInfo),
           const SizedBox(height: 10),
-          _MoreMenuItem(text: '$roomName 초대', onTap: onInvite),
+          _MoreMenuItem(roomName: roomName, suffix: '초대', onTap: onInvite),
           const SizedBox(height: 10),
-          _MoreMenuItem(text: '$roomName 나가기', onTap: onLeave),
+          _MoreMenuItem(roomName: roomName, suffix: '나가기', onTap: onLeave),
         ],
       ),
     );
@@ -49,13 +49,19 @@ class MoreMenu extends StatelessWidget {
 }
 
 class _MoreMenuItem extends StatelessWidget {
-  const _MoreMenuItem({required this.text, this.onTap});
+  const _MoreMenuItem({this.text, this.roomName, this.suffix, this.onTap});
 
-  final String text;
+  final String? text;
+  final String? roomName;
+  final String? suffix;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final textStyle = AppTypography.bodyMedium.copyWith(
+      color: AppColors.textPrimary,
+    );
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
@@ -63,14 +69,27 @@ class _MoreMenuItem extends StatelessWidget {
         width: 116,
         height: 14,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              text,
-              style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textPrimary,
+            if (roomName != null && suffix != null) ...[
+              Expanded(
+                child: Text(
+                  roomName!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: textStyle,
+                ),
               ),
-            ),
+              Text(' $suffix', maxLines: 1, style: textStyle),
+            ] else
+              Expanded(
+                child: Text(
+                  text ?? '',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: textStyle,
+                ),
+              ),
+            const SizedBox(width: 8),
             SvgPicture.asset(
               'assets/icons/arrow_go/arrow_go_small_black.svg',
               width: 12,

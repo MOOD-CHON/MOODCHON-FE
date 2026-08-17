@@ -11,6 +11,7 @@ class NavigationMoreButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return NavigationIconButton(
       iconPath: 'assets/icons/navigation/more.svg',
+      semanticLabel: '더보기',
       onTap: onTap,
     );
   }

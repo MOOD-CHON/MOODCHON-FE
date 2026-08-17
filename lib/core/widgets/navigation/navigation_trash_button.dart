@@ -11,6 +11,7 @@ class NavigationTrashButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return NavigationIconButton(
       iconPath: 'assets/icons/navigation/trash_medium.svg',
+      semanticLabel: '삭제',
       onTap: onTap,
     );
   }

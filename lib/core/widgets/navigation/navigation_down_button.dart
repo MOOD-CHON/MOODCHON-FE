@@ -11,6 +11,7 @@ class NavigationDownButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return NavigationIconButton(
       iconPath: 'assets/icons/navigation/down.svg',
+      semanticLabel: '다운로드',
       onTap: onTap,
     );
   }

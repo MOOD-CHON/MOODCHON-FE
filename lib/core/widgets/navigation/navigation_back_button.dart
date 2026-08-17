@@ -11,6 +11,7 @@ class NavigationBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return NavigationIconButton(
       iconPath: 'assets/icons/navigation/arrow_back.svg',
+      semanticLabel: '뒤로 가기',
       onTap: onTap,
     );
   }
