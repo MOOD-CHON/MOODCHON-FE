@@ -36,7 +36,7 @@ class _GreenThinButtonState extends State<GreenThinButton> {
     required double actualWidth,
     required double designX,
   }) {
-    return actualWidth - (_designWidth - designX);
+    return math.max(0, actualWidth - (_designWidth - designX));
   }
 
   double _toRadians(double degree) {
@@ -47,7 +47,9 @@ class _GreenThinButtonState extends State<GreenThinButton> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final actualWidth = constraints.maxWidth;
+        final actualWidth = constraints.hasBoundedWidth
+            ? constraints.maxWidth
+            : _designWidth;
 
         return Semantics(
           button: true,
@@ -62,7 +64,7 @@ class _GreenThinButtonState extends State<GreenThinButton> {
               scale: _isPressed ? AppInteractions.pressedScale : 1,
               duration: AppInteractions.pressedDuration,
               child: SizedBox(
-                width: double.infinity,
+                width: actualWidth,
                 height: _height,
                 child: Stack(
                   clipBehavior: Clip.none,
@@ -112,13 +114,15 @@ class _GreenThinButtonState extends State<GreenThinButton> {
                     ),
                     Positioned.fill(
                       child: Center(
-                        child: Text(
-                          widget.label,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: AppTypography.bodyMap.copyWith(
-                            color: AppColors.backgroundPrimary,
+                        child: ExcludeSemantics(
+                          child: Text(
+                            widget.label,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: AppTypography.bodyMap.copyWith(
+                              color: AppColors.backgroundPrimary,
+                            ),
                           ),
                         ),
                       ),

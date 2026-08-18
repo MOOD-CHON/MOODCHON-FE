@@ -72,6 +72,16 @@ class _GreenButtonState extends State<GreenButton> {
     }
   }
 
+  double get _labelHorizontalPadding {
+    switch (widget.size) {
+      case GreenButtonSize.long:
+      case GreenButtonSize.medium:
+        return 47;
+      case GreenButtonSize.small:
+        return 49;
+    }
+  }
+
   TextStyle get _textStyle {
     final baseStyle = switch (widget.size) {
       GreenButtonSize.long => AppTypography.bodyExtraLarge,
@@ -157,7 +167,7 @@ class _GreenButtonState extends State<GreenButton> {
     required double actualWidth,
     required double designX,
   }) {
-    return actualWidth - (_designWidth - designX);
+    return math.max(0, actualWidth - (_designWidth - designX));
   }
 
   double _toRadians(double degree) {
@@ -168,7 +178,14 @@ class _GreenButtonState extends State<GreenButton> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final actualWidth = constraints.maxWidth;
+        final actualWidth = constraints.hasBoundedWidth
+            ? constraints.maxWidth
+            : _designWidth;
+
+        final labelHorizontalPadding = math.min(
+          _labelHorizontalPadding,
+          actualWidth / 2,
+        );
 
         return Semantics(
           button: true,
@@ -184,7 +201,7 @@ class _GreenButtonState extends State<GreenButton> {
               scale: _isPressed ? AppInteractions.pressedScale : 1,
               duration: AppInteractions.pressedDuration,
               child: SizedBox(
-                width: double.infinity,
+                width: actualWidth,
                 height: _height,
                 child: Stack(
                   clipBehavior: Clip.none,
@@ -242,13 +259,20 @@ class _GreenButtonState extends State<GreenButton> {
                       ),
                     ),
                     Positioned.fill(
-                      child: Center(
-                        child: Text(
-                          widget.label,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: _textStyle,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: labelHorizontalPadding,
+                        ),
+                        child: Center(
+                          child: ExcludeSemantics(
+                            child: Text(
+                              widget.label,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                              style: _textStyle,
+                            ),
+                          ),
                         ),
                       ),
                     ),
