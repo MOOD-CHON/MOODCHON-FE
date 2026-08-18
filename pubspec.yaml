@@ -66,6 +66,13 @@ flutter:
     - assets/icons/doodle/medium/active/
     - assets/icons/doodle/medium/disabled/
     - assets/icons/doodle/small/active/
+    - assets/images/character/default/
+    - assets/images/character/greeting/
+    - assets/images/character/excited/
+    - assets/images/character/confused/
+    - assets/images/character/sad/
+    - assets/images/character/letter/
+    - assets/images/character/notebook/
 
   fonts:
     - family: Pretendard
