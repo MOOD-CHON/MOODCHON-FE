@@ -26,6 +26,7 @@ class WarningText extends StatelessWidget {
             final textPainter = TextPainter(
               text: TextSpan(text: text, style: textStyle),
               textDirection: TextDirection.ltr,
+              textScaler: MediaQuery.textScalerOf(context),
               maxLines: null,
             )..layout(maxWidth: constraints.maxWidth - 17 - _iconTextGap);
 
