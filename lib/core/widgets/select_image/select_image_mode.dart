@@ -1,0 +1,1 @@
+enum SelectImageMode { selectable, explore }

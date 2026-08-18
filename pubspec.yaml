@@ -67,6 +67,7 @@ flutter:
     - assets/icons/doodle/medium/active/
     - assets/icons/doodle/medium/disabled/
     - assets/icons/doodle/small/active/
+    - assets/icons/select/
     - assets/images/character/default/
     - assets/images/character/greeting/
     - assets/images/character/excited/
