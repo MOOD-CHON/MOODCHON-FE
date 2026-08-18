@@ -1,0 +1,1 @@
+enum ChoiceChipBorderType { borderO, borderX }
