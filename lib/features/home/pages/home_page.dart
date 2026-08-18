@@ -38,7 +38,7 @@ class HomePage extends StatelessWidget {
             Positioned(
               left: 0,
               right: 0,
-              bottom: 22,
+              bottom: 0,
               child: NavigationBottomTabBar(
                 selectedTab: BottomTabType.home,
                 onTabChanged: (tab) {
