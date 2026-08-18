@@ -135,8 +135,12 @@ class SelectImage extends StatelessWidget {
                 if (mode == SelectImageMode.explore && tag != null)
                   Positioned(
                     left: _tagInset,
+                    right: _tagInset,
                     bottom: _tagInset,
-                    child: ImageTag(label: tag!),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: ImageTag(label: tag!),
+                    ),
                   ),
               ],
             ),
