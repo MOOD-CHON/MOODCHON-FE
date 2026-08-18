@@ -21,7 +21,7 @@ class ImageTag extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.black.withValues(alpha: 0.5),
+        color: AppColors.black.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Text(

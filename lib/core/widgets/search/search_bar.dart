@@ -47,7 +47,7 @@ class _MoodChonSearchBarState extends State<MoodChonSearchBar> {
   void _handleClear() {
     _controller.clear();
     widget.onChanged?.call('');
-    _focusNode.requestFocus();
+    _focusNode.unfocus();
   }
 
   @override
