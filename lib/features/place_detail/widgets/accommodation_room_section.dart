@@ -15,21 +15,18 @@ class AccommodationRoomSection extends StatefulWidget {
 }
 
 class _AccommodationRoomSectionState extends State<AccommodationRoomSection> {
-  late final PageController _pageController;
+  static const double _contentWidth = 328;
+  static const double _cardWidth = 189;
+  static const double _cardGap = 11;
+
+  final ScrollController _scrollController = ScrollController();
 
   int _currentIndex = 0;
   double _maxCardHeight = 0;
 
   @override
-  void initState() {
-    super.initState();
-
-    _pageController = PageController(viewportFraction: 200 / 328);
-  }
-
-  @override
   void dispose() {
-    _pageController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -49,16 +46,57 @@ class _AccommodationRoomSectionState extends State<AccommodationRoomSection> {
     });
   }
 
+  void _updateCurrentIndex() {
+    if (!_scrollController.hasClients) {
+      return;
+    }
+
+    final position = _scrollController.position;
+
+    if (position.pixels >= position.maxScrollExtent - 1) {
+      final lastIndex = widget.rooms.length - 1;
+
+      if (_currentIndex != lastIndex) {
+        setState(() {
+          _currentIndex = lastIndex;
+        });
+      }
+
+      return;
+    }
+
+    const cardExtent = _cardWidth + _cardGap;
+
+    final index = (_scrollController.offset / cardExtent).round().clamp(
+      0,
+      widget.rooms.length - 1,
+    );
+
+    if (_currentIndex != index) {
+      setState(() {
+        _currentIndex = index;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.rooms.isEmpty) {
       return const SizedBox.shrink();
     }
 
+    final screenWidth = MediaQuery.sizeOf(context).width;
+
+    // 393 기준 약 32.5
+    final sideMargin = (screenWidth - _contentWidth) / 2;
+
+    // 328px 콘텐츠 시작점부터 화면 오른쪽 끝까지
+    final carouselWidth = screenWidth - sideMargin;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 카드들의 자연 높이를 먼저 측정한다.
+        // 객실 카드들의 자연 높이를 먼저 측정
         Offstage(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -75,30 +113,61 @@ class _AccommodationRoomSectionState extends State<AccommodationRoomSection> {
 
         if (_maxCardHeight > 0)
           SizedBox(
-            width: 328,
-            height: _maxCardHeight,
-            child: PageView.builder(
-              controller: _pageController,
-              padEnds: false,
-              itemCount: widget.rooms.length,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 11),
-                  child: SizedBox(
-                    width: 189,
-                    height: _maxCardHeight,
-                    child: AccommodationRoomCard(
-                      room: widget.rooms[index],
-                      expandHeight: true,
-                    ),
+            width: _contentWidth,
+
+            // 카드 아래 그림자 여유만 확보
+            height: _maxCardHeight + 16,
+
+            child: OverflowBox(
+              alignment: Alignment.topLeft,
+
+              // 가로 방향만 화면 오른쪽까지 확장
+              minWidth: carouselWidth,
+              maxWidth: carouselWidth,
+
+              minHeight: _maxCardHeight + 16,
+              maxHeight: _maxCardHeight + 16,
+
+              child: SizedBox(
+                width: carouselWidth,
+                height: _maxCardHeight + 16,
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (notification) {
+                    if (notification is ScrollUpdateNotification ||
+                        notification is ScrollEndNotification) {
+                      _updateCurrentIndex();
+                    }
+
+                    return false;
+                  },
+                  child: ListView.separated(
+                    controller: _scrollController,
+                    scrollDirection: Axis.horizontal,
+                    clipBehavior: Clip.none,
+                    physics: const BouncingScrollPhysics(),
+
+                    // 위쪽 패딩 없음
+                    // 카드 아래 그림자 여유만 16
+                    padding: EdgeInsets.only(right: sideMargin, bottom: 16),
+
+                    itemCount: widget.rooms.length,
+
+                    separatorBuilder: (_, __) =>
+                        const SizedBox(width: _cardGap),
+
+                    itemBuilder: (context, index) {
+                      return SizedBox(
+                        width: _cardWidth,
+                        height: _maxCardHeight,
+                        child: AccommodationRoomCard(
+                          room: widget.rooms[index],
+                          expandHeight: true,
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
+                ),
+              ),
             ),
           ),
 
@@ -106,7 +175,7 @@ class _AccommodationRoomSectionState extends State<AccommodationRoomSection> {
           const SizedBox(height: 11),
 
           SizedBox(
-            width: 328,
+            width: _contentWidth,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(widget.rooms.length, (index) {

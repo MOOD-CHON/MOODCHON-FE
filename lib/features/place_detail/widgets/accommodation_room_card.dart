@@ -36,7 +36,6 @@ class AccommodationRoomCard extends StatelessWidget {
     return Container(
       width: 189,
       height: expandHeight ? double.infinity : null,
-      padding: const EdgeInsets.fromLTRB(8, 8, 8, 12),
       decoration: BoxDecoration(
         color: AppColors.backgroundWhite,
         borderRadius: BorderRadius.circular(16),
@@ -46,62 +45,95 @@ class AccommodationRoomCard extends StatelessWidget {
         mainAxisSize: expandHeight ? MainAxisSize.max : MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _RoomImage(imagePath: room.imagePath),
+          const SizedBox(height: 8),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: _RoomImage(imagePath: room.imagePath),
+          ),
+
           const SizedBox(height: 12),
-          Text(
-            room.name,
-            style: AppTypography.titleSmall.copyWith(
-              color: AppColors.textPrimary,
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  room.name,
+                  style: AppTypography.titleSmall.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+
+                if (_hasMetaInfo) ...[
+                  const SizedBox(height: 4),
+                  _RoomMetaInfo(
+                    roomCount: room.roomCount,
+                    standardCapacity: room.standardCapacity,
+                    maximumCapacity: room.maximumCapacity,
+                  ),
+                ],
+
+                if (_hasPrice) ...[
+                  const SizedBox(height: 14),
+                  const _RoomSectionTitle(label: '객실 가격'),
+                  const SizedBox(height: 6),
+
+                  if (_hasValue(room.offSeasonWeekdayPrice))
+                    _PriceRow(
+                      label: '비수기 주중 최소',
+                      value: room.offSeasonWeekdayPrice!,
+                    ),
+
+                  if (_hasValue(room.offSeasonWeekendPrice)) ...[
+                    const SizedBox(height: 4),
+                    _PriceRow(
+                      label: '비수기 주말 최소',
+                      value: room.offSeasonWeekendPrice!,
+                    ),
+                  ],
+
+                  if (_hasValue(room.peakSeasonWeekdayPrice)) ...[
+                    const SizedBox(height: 4),
+                    _PriceRow(
+                      label: '성수기 주중 최소',
+                      value: room.peakSeasonWeekdayPrice!,
+                    ),
+                  ],
+
+                  if (_hasValue(room.peakSeasonWeekendPrice)) ...[
+                    const SizedBox(height: 4),
+                    _PriceRow(
+                      label: '성수기 주말 최소',
+                      value: room.peakSeasonWeekendPrice!,
+                    ),
+                  ],
+                ],
+
+                if (room.facilities.isNotEmpty) ...[
+                  const SizedBox(height: 14),
+                  const _RoomSectionTitle(label: '객실 시설'),
+                  const SizedBox(height: 6),
+
+                  SizedBox(
+                    width: 159,
+                    child: Wrap(
+                      spacing: 7,
+                      runSpacing: 7,
+                      children: room.facilities
+                          .map(
+                            (facility) => FacilitiesTag.small(label: facility),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
-          if (_hasMetaInfo) ...[
-            const SizedBox(height: 4),
-            _RoomMetaInfo(
-              roomCount: room.roomCount,
-              standardCapacity: room.standardCapacity,
-              maximumCapacity: room.maximumCapacity,
-            ),
-          ],
-          if (_hasPrice) ...[
-            const SizedBox(height: 14),
-            const _RoomSectionTitle(label: '객실 가격'),
-            const SizedBox(height: 6),
-            if (_hasValue(room.offSeasonWeekdayPrice))
-              _PriceRow(label: '비수기 주중 최소', value: room.offSeasonWeekdayPrice!),
-            if (_hasValue(room.offSeasonWeekendPrice)) ...[
-              const SizedBox(height: 4),
-              _PriceRow(label: '비수기 주말 최소', value: room.offSeasonWeekendPrice!),
-            ],
-            if (_hasValue(room.peakSeasonWeekdayPrice)) ...[
-              const SizedBox(height: 4),
-              _PriceRow(
-                label: '성수기 주중 최소',
-                value: room.peakSeasonWeekdayPrice!,
-              ),
-            ],
-            if (_hasValue(room.peakSeasonWeekendPrice)) ...[
-              const SizedBox(height: 4),
-              _PriceRow(
-                label: '성수기 주말 최소',
-                value: room.peakSeasonWeekendPrice!,
-              ),
-            ],
-          ],
-          if (room.facilities.isNotEmpty) ...[
-            const SizedBox(height: 14),
-            const _RoomSectionTitle(label: '객실 시설'),
-            const SizedBox(height: 6),
-            SizedBox(
-              width: 159,
-              child: Wrap(
-                spacing: 7,
-                runSpacing: 7,
-                children: room.facilities
-                    .map((facility) => FacilitiesTag.small(label: facility))
-                    .toList(),
-              ),
-            ),
-          ],
+
+          const SizedBox(height: 12),
         ],
       ),
     );

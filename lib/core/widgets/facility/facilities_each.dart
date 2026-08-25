@@ -23,22 +23,31 @@ class FacilitiesEach extends StatelessWidget {
     switch (type) {
       case FacilityType.bike:
         return PlaceInfoMediumIconType.bike;
+
       case FacilityType.fire:
         return PlaceInfoMediumIconType.fire;
+
       case FacilityType.parking:
         return PlaceInfoMediumIconType.parking;
+
       case FacilityType.stroller:
         return PlaceInfoMediumIconType.stroller;
+
       case FacilityType.card:
         return PlaceInfoMediumIconType.card;
+
       case FacilityType.puppy:
         return PlaceInfoMediumIconType.puppy;
+
       case FacilityType.takeout:
         return PlaceInfoMediumIconType.takeout;
+
       case FacilityType.sauna:
         return PlaceInfoMediumIconType.sauna;
+
       case FacilityType.sports:
         return PlaceInfoMediumIconType.sports;
+
       case FacilityType.toilet:
         return PlaceInfoMediumIconType.toilet;
     }
@@ -53,11 +62,16 @@ class FacilitiesEach extends StatelessWidget {
           type: _iconType,
           color: _isExist ? PlaceInfoIconColor.black : PlaceInfoIconColor.gray,
         ),
+
         const SizedBox(width: 8),
+
         SizedBox(
           width: 100,
           child: Text(
             _isExist ? type.existLabel : type.nonexistenceLabel,
+            maxLines: 1,
+            softWrap: false,
+            overflow: TextOverflow.visible,
             style: AppTypography.tabMedium.copyWith(
               color: _isExist ? AppColors.textPrimary : AppColors.grayPrimary,
             ),

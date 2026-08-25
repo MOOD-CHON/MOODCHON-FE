@@ -21,16 +21,40 @@ class DetailInfoSection extends StatelessWidget {
   const DetailInfoSection({
     super.key,
     required this.title,
-    required this.labelWidth,
     required this.items,
   });
 
   final String title;
-  final double labelWidth;
   final List<DetailInfoItem> items;
 
   bool _hasValue(String? value) {
     return value != null && value.trim().isNotEmpty;
+  }
+
+  double _calculateLabelWidth(
+    BuildContext context,
+    List<DetailInfoItem> items,
+  ) {
+    var maxWidth = 0.0;
+
+    for (final item in items) {
+      final painter = TextPainter(
+        text: TextSpan(
+          text: '${item.label}:',
+          style: AppTypography.tabMedium.copyWith(
+            color: AppColors.textSecondary,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+        maxLines: 1,
+      )..layout();
+
+      if (painter.width > maxWidth) {
+        maxWidth = painter.width;
+      }
+    }
+
+    return maxWidth.ceilToDouble() + 1;
   }
 
   @override
@@ -40,6 +64,8 @@ class DetailInfoSection extends StatelessWidget {
     if (visibleItems.isEmpty) {
       return const SizedBox.shrink();
     }
+
+    final labelWidth = _calculateLabelWidth(context, visibleItems);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,6 +118,9 @@ class _DetailInfoRow extends StatelessWidget {
           width: labelWidth,
           child: Text(
             '${item.label}:',
+            maxLines: 1,
+            softWrap: false,
+            overflow: TextOverflow.visible,
             style: AppTypography.tabMedium.copyWith(
               color: AppColors.textSecondary,
             ),
