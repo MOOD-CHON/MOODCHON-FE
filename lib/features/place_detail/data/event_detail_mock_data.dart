@@ -1,0 +1,62 @@
+import '../models/event_detail_data.dart';
+import '../models/event_place_type.dart';
+
+const eventDetailMockData = EventDetailData(
+  type: EventPlaceType.event,
+  name: '마을 문화 체험 행사',
+  aiSummary: '지역의 정겨운 분위기와 다양한 체험을 함께 즐길 수 있는 행사예요.',
+  shortAddress: '전라남도 담양군',
+  fullAddress: '전라남도 담양군 예시길 10',
+  imagePaths: ['', '', '', ''],
+  moods: ['정겨운 시골살이', '빈티지 기록'],
+  description: '지역 주민과 함께 다양한 문화 프로그램과 체험을 즐길 수 있는 행사예요.',
+  programs: ['마을 이야기 전시', '지역 특산물 만들기 체험', '3. 주민 참여 공연'],
+  eventPeriod: '2026.09.12 - 2026.09.14',
+  performanceTime: '10:00 - 18:00',
+  fee: '무료',
+  ageLimit: '전 연령',
+  eventPlace: '담양 문화광장',
+  organizer: '담양군',
+  organizerContact: '061-000-0000',
+  homepage: 'https://example.com',
+);
+
+const performanceDetailMockData = EventDetailData(
+  type: EventPlaceType.performance,
+  name: '숲속 작은 음악회',
+  aiSummary: '조용한 자연 속에서 음악과 함께 여유로운 시간을 보내기 좋은 공연이에요.',
+  shortAddress: '강원특별자치도 평창군',
+  fullAddress: '강원특별자치도 평창군 예시로 20',
+  imagePaths: ['', '', ''],
+  moods: ['숲속 산책', '별빛 야외'],
+  description: '자연 속 야외 무대에서 펼쳐지는 소규모 음악 공연이에요.',
+  programs: ['1. 어쿠스틱 공연', '2. 지역 아티스트 무대', '관객 참여 공연'],
+  eventPeriod: '2026.09.20',
+  performanceTime: '19:00 - 21:00',
+  fee: '10,000원',
+  ageLimit: '만 7세 이상',
+  eventPlace: '평창 숲속 야외무대',
+  organizer: '평창문화재단',
+  organizerContact: '033-000-0000',
+  homepage: 'https://example.com',
+);
+
+const festivalDetailMockData = EventDetailData(
+  type: EventPlaceType.festival,
+  name: '가을 들녘 축제',
+  aiSummary: '넓은 들판과 지역 먹거리를 함께 즐기며 여유로운 가을을 느낄 수 있는 축제예요.',
+  shortAddress: '전라북도 완주군',
+  fullAddress: '전라북도 완주군 예시길 30',
+  imagePaths: ['', '', '', ''],
+  moods: ['여유로운 풍경', '정겨운 시골살이'],
+  description: '가을 들녘을 배경으로 지역 농산물과 다양한 체험을 즐길 수 있는 축제예요.',
+  programs: ['농산물 장터', '전통놀이 체험', '가을 음악 공연'],
+  eventPeriod: '2026.10.02 - 2026.10.05',
+  performanceTime: '10:00 - 20:00',
+  fee: '무료',
+  ageLimit: '전 연령',
+  eventPlace: '완주 들녘광장',
+  organizer: '완주군',
+  organizerContact: '063-000-0000',
+  homepage: 'https://example.com',
+);
