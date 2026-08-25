@@ -30,6 +30,27 @@ class AccommodationDetailPage extends StatelessWidget {
   static const double _saveButtonHeight = 49;
   static const double _toastGap = 12;
 
+  List<String> get _visibleMoods {
+    return data.moods
+        .map((mood) => mood.trim())
+        .where((mood) => mood.isNotEmpty)
+        .toList();
+  }
+
+  bool _hasValue(String? value) {
+    return value != null && value.trim().isNotEmpty;
+  }
+
+  bool get _hasFacilities {
+    return data.facilities.any((facility) => facility.available != null);
+  }
+
+  bool get _hasUsageInfo =>
+      _hasValue(data.checkInTime) || _hasValue(data.checkOutTime);
+
+  bool get _hasContactInfo =>
+      _hasValue(data.contact) || _hasValue(data.reservationHomepage);
+
   double _toastBottomOffset(BuildContext context) {
     final safeBottom = MediaQuery.paddingOf(context).bottom;
 
@@ -38,6 +59,8 @@ class AccommodationDetailPage extends StatelessWidget {
 
   Future<void> _copyAddress(BuildContext context) async {
     await Clipboard.setData(ClipboardData(text: data.fullAddress));
+
+    if (!context.mounted) return;
 
     ToastOverlay.show(
       context,
@@ -49,11 +72,11 @@ class AccommodationDetailPage extends StatelessWidget {
   Future<void> _openReservationHomepage() async {
     final homepage = data.reservationHomepage;
 
-    if (homepage == null || homepage.trim().isEmpty) {
+    if (!_hasValue(homepage)) {
       return;
     }
 
-    final uri = Uri.tryParse(homepage);
+    final uri = Uri.tryParse(homepage!);
 
     if (uri == null) {
       return;
@@ -118,8 +141,10 @@ class AccommodationDetailPage extends StatelessWidget {
                             const SizedBox(height: 26),
                             _buildDescription(),
 
-                            const SizedBox(height: 26),
-                            _buildMood(),
+                            if (_visibleMoods.isNotEmpty) ...[
+                              const SizedBox(height: 26),
+                              _buildMood(),
+                            ],
 
                             if (data.petAllowed ||
                                 data.bbqAvailable ||
@@ -132,14 +157,17 @@ class AccommodationDetailPage extends StatelessWidget {
                               ),
                             ],
 
-                            const SizedBox(height: 26),
-                            const _DetailDivider(),
+                            if (_hasFacilities) ...[
+                              const SizedBox(height: 26),
+                              const _DetailDivider(),
 
-                            const SizedBox(height: 26),
-                            FacilitiesAll(
-                              title: '숙소 편의 시설',
-                              items: data.facilities,
-                            ),
+                              const SizedBox(height: 26),
+
+                              FacilitiesAll(
+                                title: '숙소 편의 시설',
+                                items: data.facilities,
+                              ),
+                            ],
 
                             if (data.rooms.isNotEmpty) ...[
                               const SizedBox(height: 26),
@@ -159,42 +187,46 @@ class AccommodationDetailPage extends StatelessWidget {
                               AccommodationRoomSection(rooms: data.rooms),
                             ],
 
-                            const SizedBox(height: 26),
-                            const _DetailDivider(),
+                            if (_hasUsageInfo) ...[
+                              const SizedBox(height: 26),
+                              const _DetailDivider(),
 
-                            const SizedBox(height: 26),
+                              const SizedBox(height: 26),
 
-                            DetailInfoSection(
-                              title: '이용 안내',
-                              items: [
-                                DetailInfoItem(
-                                  label: '입실 시간',
-                                  value: data.checkInTime,
-                                ),
-                                DetailInfoItem(
-                                  label: '퇴실 시간',
-                                  value: data.checkOutTime,
-                                ),
-                              ],
-                            ),
+                              DetailInfoSection(
+                                title: '이용 안내',
+                                items: [
+                                  DetailInfoItem(
+                                    label: '입실 시간',
+                                    value: data.checkInTime,
+                                  ),
+                                  DetailInfoItem(
+                                    label: '퇴실 시간',
+                                    value: data.checkOutTime,
+                                  ),
+                                ],
+                              ),
+                            ],
 
-                            const SizedBox(height: 26),
+                            if (_hasContactInfo) ...[
+                              const SizedBox(height: 26),
 
-                            DetailInfoSection(
-                              title: '문의 및 예약',
-                              items: [
-                                DetailInfoItem(
-                                  label: '문의',
-                                  value: data.contact,
-                                ),
-                                DetailInfoItem(
-                                  label: '예약 홈페이지',
-                                  value: data.reservationHomepage,
-                                  isLink: true,
-                                  onTap: _openReservationHomepage,
-                                ),
-                              ],
-                            ),
+                              DetailInfoSection(
+                                title: '문의 및 예약',
+                                items: [
+                                  DetailInfoItem(
+                                    label: '문의',
+                                    value: data.contact,
+                                  ),
+                                  DetailInfoItem(
+                                    label: '예약 홈페이지',
+                                    value: data.reservationHomepage,
+                                    isLink: true,
+                                    onTap: _openReservationHomepage,
+                                  ),
+                                ],
+                              ),
+                            ],
                           ],
                         ),
                       ),
@@ -221,7 +253,9 @@ class AccommodationDetailPage extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
+
         const SizedBox(height: 8),
+
         Text(
           data.aiSummary,
           style: AppTypography.captionPlace.copyWith(
@@ -305,10 +339,6 @@ class AccommodationDetailPage extends StatelessWidget {
   }
 
   Widget _buildMood() {
-    if (data.moods.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -324,7 +354,7 @@ class AccommodationDetailPage extends StatelessWidget {
         Wrap(
           spacing: 7,
           runSpacing: 7,
-          children: data.moods
+          children: _visibleMoods
               .map(
                 (mood) => MoodTag(
                   label: mood,

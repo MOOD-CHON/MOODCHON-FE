@@ -28,6 +28,13 @@ class RestaurantDetailPage extends StatelessWidget {
   static const double _saveButtonHeight = 49;
   static const double _toastGap = 12;
 
+  List<String> get _visibleMoods {
+    return data.moods
+        .map((mood) => mood.trim())
+        .where((mood) => mood.isNotEmpty)
+        .toList();
+  }
+
   bool _hasValue(String? value) {
     return value != null && value.trim().isNotEmpty;
   }
@@ -67,6 +74,8 @@ class RestaurantDetailPage extends StatelessWidget {
 
   Future<void> _copyAddress(BuildContext context) async {
     await Clipboard.setData(ClipboardData(text: data.fullAddress));
+
+    if (!context.mounted) return;
 
     ToastOverlay.show(
       context,
@@ -128,7 +137,7 @@ class RestaurantDetailPage extends StatelessWidget {
                             const SizedBox(height: 26),
                             _buildLocation(context),
 
-                            if (data.moods.isNotEmpty) ...[
+                            if (_visibleMoods.isNotEmpty) ...[
                               const SizedBox(height: 26),
                               _buildMood(),
                             ],
@@ -277,7 +286,7 @@ class RestaurantDetailPage extends StatelessWidget {
         Wrap(
           spacing: 7,
           runSpacing: 7,
-          children: data.moods
+          children: _visibleMoods
               .map(
                 (mood) => MoodTag(
                   label: mood,
@@ -304,9 +313,7 @@ class RestaurantDetailPage extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
             ),
-
             const SizedBox(width: 6),
-
             const MapTag(
               label: '음식점',
               color: MapTagColor.purple,
@@ -314,9 +321,7 @@ class RestaurantDetailPage extends StatelessWidget {
             ),
           ],
         ),
-
         const SizedBox(height: 12),
-
         Text(
           data.description,
           style: AppTypography.descriptionSmall.copyWith(

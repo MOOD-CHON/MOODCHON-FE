@@ -67,10 +67,10 @@ class _AccommodationRoomSectionState extends State<AccommodationRoomSection> {
 
     const cardExtent = _cardWidth + _cardGap;
 
-    final index = (_scrollController.offset / cardExtent).round().clamp(
-      0,
-      widget.rooms.length - 1,
-    );
+    final index = (_scrollController.offset / cardExtent)
+        .round()
+        .clamp(0, widget.rooms.length - 1)
+        .toInt();
 
     if (_currentIndex != index) {
       setState(() {

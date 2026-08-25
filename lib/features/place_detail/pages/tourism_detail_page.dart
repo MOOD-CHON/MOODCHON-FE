@@ -29,6 +29,13 @@ class TourismDetailPage extends StatelessWidget {
   static const double _saveButtonHeight = 49;
   static const double _toastGap = 12;
 
+  List<String> get _visibleMoods {
+    return data.moods
+        .map((mood) => mood.trim())
+        .where((mood) => mood.isNotEmpty)
+        .toList();
+  }
+
   bool _hasValue(String? value) {
     return value != null && value.trim().isNotEmpty;
   }
@@ -75,6 +82,8 @@ class TourismDetailPage extends StatelessWidget {
 
   Future<void> _copyAddress(BuildContext context) async {
     await Clipboard.setData(ClipboardData(text: data.fullAddress));
+
+    if (!context.mounted) return;
 
     ToastOverlay.show(
       context,
@@ -152,10 +161,7 @@ class TourismDetailPage extends StatelessWidget {
                             const SizedBox(height: 26),
                             _buildLocation(context),
 
-                            // 다른 담당자는 장소 위치 아래에
-                            // 대중교통 / 차량 이동 시간 등의
-                            // 전용 섹션을 추가할 수 있음.
-                            if (data.moods.isNotEmpty) ...[
+                            if (_visibleMoods.isNotEmpty) ...[
                               const SizedBox(height: 26),
                               _buildMood(),
                             ],
@@ -323,7 +329,7 @@ class TourismDetailPage extends StatelessWidget {
         Wrap(
           spacing: 7,
           runSpacing: 7,
-          children: data.moods
+          children: _visibleMoods
               .map(
                 (mood) => MoodTag(
                   label: mood,
@@ -388,9 +394,7 @@ class TourismDetailPage extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
-
         const SizedBox(height: 12),
-
         for (var index = 0; index < values.length; index++) ...[
           Text(
             values[index],
@@ -398,7 +402,6 @@ class TourismDetailPage extends StatelessWidget {
               color: AppColors.textSecondary,
             ),
           ),
-
           if (index < values.length - 1) const SizedBox(height: 4),
         ],
       ],

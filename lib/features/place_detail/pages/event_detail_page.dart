@@ -27,6 +27,13 @@ class EventDetailPage extends StatelessWidget {
   static const double _saveButtonHeight = 49;
   static const double _toastGap = 12;
 
+  List<String> get _visibleMoods {
+    return data.moods
+        .map((mood) => mood.trim())
+        .where((mood) => mood.isNotEmpty)
+        .toList();
+  }
+
   bool _hasValue(String? value) {
     return value != null && value.trim().isNotEmpty;
   }
@@ -54,6 +61,8 @@ class EventDetailPage extends StatelessWidget {
 
   Future<void> _copyAddress(BuildContext context) async {
     await Clipboard.setData(ClipboardData(text: data.fullAddress));
+
+    if (!context.mounted) return;
 
     ToastOverlay.show(
       context,
@@ -88,8 +97,6 @@ class EventDetailPage extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 110),
             child: Stack(
               children: [
-                // 관광지와 동일한 이미지 캐러셀
-                // Num/Image도 동일하게 표시
                 PlaceImageCarousel(imagePaths: data.imagePaths),
 
                 Positioned(
@@ -133,7 +140,7 @@ class EventDetailPage extends StatelessWidget {
                             const SizedBox(height: 26),
                             _buildLocation(context),
 
-                            if (data.moods.isNotEmpty) ...[
+                            if (_visibleMoods.isNotEmpty) ...[
                               const SizedBox(height: 26),
                               _buildMood(),
                             ],
@@ -228,9 +235,7 @@ class EventDetailPage extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
-
         const SizedBox(height: 8),
-
         Text(
           data.aiSummary,
           style: AppTypography.captionPlace.copyWith(
@@ -251,9 +256,7 @@ class EventDetailPage extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
-
         const SizedBox(height: 12),
-
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -263,9 +266,7 @@ class EventDetailPage extends StatelessWidget {
                 color: AppColors.textSecondary,
               ),
             ),
-
             const SizedBox(width: 7),
-
             CopyButton(
               onTap: () {
                 _copyAddress(context);
@@ -287,13 +288,11 @@ class EventDetailPage extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
-
         const SizedBox(height: 12),
-
         Wrap(
           spacing: 7,
           runSpacing: 7,
-          children: data.moods
+          children: _visibleMoods
               .map(
                 (mood) => MoodTag(
                   label: mood,
@@ -320,9 +319,7 @@ class EventDetailPage extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
             ),
-
             const SizedBox(width: 6),
-
             MapTag(
               label: data.type.label,
               color: data.type.mapTagColor,
@@ -330,9 +327,7 @@ class EventDetailPage extends StatelessWidget {
             ),
           ],
         ),
-
         const SizedBox(height: 12),
-
         Text(
           data.description,
           style: AppTypography.descriptionSmall.copyWith(

@@ -27,6 +27,13 @@ class AccommodationRoomCard extends StatelessWidget {
       _hasValue(room.peakSeasonWeekdayPrice) ||
       _hasValue(room.peakSeasonWeekendPrice);
 
+  List<String> get _visibleFacilities {
+    return room.facilities
+        .map((facility) => facility.trim())
+        .where((facility) => facility.isNotEmpty)
+        .toList();
+  }
+
   bool _hasValue(String? value) {
     return value != null && value.trim().isNotEmpty;
   }
@@ -111,7 +118,7 @@ class AccommodationRoomCard extends StatelessWidget {
                   ],
                 ],
 
-                if (room.facilities.isNotEmpty) ...[
+                if (_visibleFacilities.isNotEmpty) ...[
                   const SizedBox(height: 14),
                   const _RoomSectionTitle(label: '객실 시설'),
                   const SizedBox(height: 6),
@@ -121,7 +128,7 @@ class AccommodationRoomCard extends StatelessWidget {
                     child: Wrap(
                       spacing: 7,
                       runSpacing: 7,
-                      children: room.facilities
+                      children: _visibleFacilities
                           .map(
                             (facility) => FacilitiesTag.small(label: facility),
                           )
