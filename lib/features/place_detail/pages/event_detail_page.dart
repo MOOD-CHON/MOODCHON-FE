@@ -16,11 +16,19 @@ import '../models/event_place_type.dart';
 import '../widgets/detail_info_section.dart';
 import '../widgets/place_image_carousel.dart';
 import '../widgets/program_section.dart';
+import '../widgets/saved_place_delete_button.dart';
 
 class EventDetailPage extends StatelessWidget {
-  const EventDetailPage({super.key, this.data = eventDetailMockData});
+  const EventDetailPage({
+    super.key,
+    this.data = eventDetailMockData,
+    this.isSavedView = false,
+    this.onDeleteFromFolder,
+  });
 
   final EventDetailData data;
+  final bool isSavedView;
+  final VoidCallback? onDeleteFromFolder;
 
   static const double _saveButtonBottom = 22;
   static const double _saveButtonHeight = 49;
@@ -61,12 +69,14 @@ class EventDetailPage extends StatelessWidget {
   Future<void> _copyAddress(BuildContext context) async {
     await Clipboard.setData(ClipboardData(text: data.fullAddress));
 
-    if (!context.mounted) return;
+    if (!context.mounted) {
+      return;
+    }
 
     ToastOverlay.show(
       context,
       message: '주소를 복사했어요',
-      bottom: _toastBottomOffset(context),
+      bottom: isSavedView ? 33 : _toastBottomOffset(context),
     );
   }
 
@@ -93,7 +103,7 @@ class EventDetailPage extends StatelessWidget {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.only(bottom: 110),
+            padding: EdgeInsets.only(bottom: isSavedView ? 36 : 110),
             child: Stack(
               children: [
                 PlaceImageCarousel(imagePaths: data.imagePaths),
@@ -218,7 +228,7 @@ class EventDetailPage extends StatelessWidget {
             ),
           ),
 
-          _buildSaveButton(context),
+          if (!isSavedView) _buildSaveButton(context),
         ],
       ),
     );
@@ -228,13 +238,26 @@ class EventDetailPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          data.name,
-          style: AppTypography.titlePlace.copyWith(
-            color: AppColors.textPrimary,
-          ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(
+                data.name,
+                style: AppTypography.titlePlace.copyWith(
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ),
+            if (isSavedView) ...[
+              const SizedBox(width: 9),
+              SavedPlaceDeleteButton(onDeleted: onDeleteFromFolder ?? () {}),
+            ],
+          ],
         ),
+
         const SizedBox(height: 8),
+
         Text(
           data.aiSummary,
           style: AppTypography.captionPlace.copyWith(
@@ -255,7 +278,9 @@ class EventDetailPage extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
+
         const SizedBox(height: 12),
+
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -326,7 +351,9 @@ class EventDetailPage extends StatelessWidget {
             ),
           ],
         ),
+
         const SizedBox(height: 12),
+
         Text(
           data.description,
           style: AppTypography.descriptionSmall.copyWith(
