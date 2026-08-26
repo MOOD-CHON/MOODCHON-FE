@@ -8,6 +8,7 @@ const exploreMockItems = <ExploreItem>[
     placeName: '고요한 숲길',
     description: '푸른 나무 사이를 천천히 걸으며 조용히 쉬어갈 수 있는 공간',
     mood: '조용한 휴식',
+    placeType: ExplorePlaceType.attraction,
     searchKeywords: ['숲', '산책', '자연', '휴식'],
   ),
   ExploreItem(
@@ -17,6 +18,7 @@ const exploreMockItems = <ExploreItem>[
     placeName: '작은 시골집',
     description: '따뜻하고 포근한 분위기에서 편안하게 머물 수 있는 시골집',
     mood: '아늑한 공간',
+    placeType: ExplorePlaceType.accommodation,
     searchKeywords: ['시골집', '숙소', '따뜻한', '포근한'],
   ),
   ExploreItem(
@@ -26,6 +28,7 @@ const exploreMockItems = <ExploreItem>[
     placeName: '옛 돌담길',
     description: '오래된 돌담과 조용한 골목을 따라 천천히 걸을 수 있는 길',
     mood: '고즈넉한 감성',
+    placeType: ExplorePlaceType.culturalFacility,
     searchKeywords: ['돌담', '골목', '한옥', '전통'],
   ),
   ExploreItem(
@@ -35,6 +38,7 @@ const exploreMockItems = <ExploreItem>[
     placeName: '초록 들판',
     description: '넓게 펼쳐진 들판과 산을 바라보며 여유를 즐길 수 있는 장소',
     mood: '여유로운 풍경',
+    placeType: ExplorePlaceType.leisureSports,
     searchKeywords: ['들판', '산', '자연', '풍경'],
   ),
   ExploreItem(
@@ -44,6 +48,7 @@ const exploreMockItems = <ExploreItem>[
     placeName: '시골 장터',
     description: '사람들의 활기와 정겨운 분위기를 함께 느낄 수 있는 시골 시장',
     mood: '활기있는 분위기',
+    placeType: ExplorePlaceType.shopping,
     searchKeywords: ['시장', '장터', '마을', '활기'],
   ),
   ExploreItem(
@@ -53,6 +58,7 @@ const exploreMockItems = <ExploreItem>[
     placeName: '오래된 다방',
     description: '시간이 멈춘 듯한 레트로 분위기를 간직한 작은 다방',
     mood: '빈티지 감성',
+    placeType: ExplorePlaceType.restaurant,
     searchKeywords: ['다방', '레트로', '옛날', '카페'],
   ),
   ExploreItem(
@@ -62,6 +68,7 @@ const exploreMockItems = <ExploreItem>[
     placeName: '별빛 마당',
     description: '조용한 밤하늘의 별을 바라보며 이야기하기 좋은 야외 공간',
     mood: '밤감성',
+    placeType: ExplorePlaceType.event,
     searchKeywords: ['별', '밤', '야외', '마당'],
   ),
   ExploreItem(
@@ -71,6 +78,7 @@ const exploreMockItems = <ExploreItem>[
     placeName: '산속 오두막',
     description: '도시의 소음에서 벗어나 자연 속에서 편안하게 쉬어가는 공간',
     mood: '조용한 휴식',
+    placeType: ExplorePlaceType.accommodation,
     searchKeywords: ['산', '오두막', '자연', '휴식'],
   ),
   ExploreItem(
@@ -80,6 +88,7 @@ const exploreMockItems = <ExploreItem>[
     placeName: '한옥 골목',
     description: '오래된 한옥과 낮은 담장이 이어지는 고즈넉한 마을 골목',
     mood: '고즈넉한 감성',
+    placeType: ExplorePlaceType.performance,
     searchKeywords: ['한옥', '마을', '골목', '전통'],
   ),
   ExploreItem(
@@ -89,6 +98,7 @@ const exploreMockItems = <ExploreItem>[
     placeName: '호숫가 산책길',
     description: '잔잔한 물결을 바라보며 천천히 산책하기 좋은 호숫가',
     mood: '여유로운 풍경',
+    placeType: ExplorePlaceType.attraction,
     searchKeywords: ['호수', '산책', '물가', '풍경'],
   ),
   ExploreItem(
@@ -98,6 +108,7 @@ const exploreMockItems = <ExploreItem>[
     placeName: '창가 작은 방',
     description: '따뜻한 햇살이 들어오는 창가에서 편안하게 쉬기 좋은 공간',
     mood: '아늑한 공간',
+    placeType: ExplorePlaceType.accommodation,
     searchKeywords: ['창가', '숙소', '햇살', '방'],
   ),
   ExploreItem(
@@ -107,6 +118,7 @@ const exploreMockItems = <ExploreItem>[
     placeName: '밤의 작은 마을',
     description: '따뜻한 불빛과 조용한 밤공기를 느낄 수 있는 시골 마을',
     mood: '밤감성',
+    placeType: ExplorePlaceType.festival,
     searchKeywords: ['밤', '마을', '불빛', '야경'],
   ),
 ];

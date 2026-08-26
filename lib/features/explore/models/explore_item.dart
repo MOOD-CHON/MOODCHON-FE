@@ -1,3 +1,15 @@
+enum ExplorePlaceType {
+  accommodation,
+  attraction,
+  culturalFacility,
+  leisureSports,
+  event,
+  performance,
+  festival,
+  restaurant,
+  shopping,
+}
+
 class ExploreItem {
   const ExploreItem({
     required this.id,
@@ -6,17 +18,17 @@ class ExploreItem {
     required this.placeName,
     required this.description,
     required this.mood,
-    this.searchKeywords = const [],
+    required this.placeType,
+    required this.searchKeywords,
   });
 
   final String id;
   final String imageUrl;
   final String tag;
-
   final String placeName;
   final String description;
   final String mood;
-
+  final ExplorePlaceType placeType;
   final List<String> searchKeywords;
 
   bool matchesQuery(String query) {
@@ -28,6 +40,7 @@ class ExploreItem {
 
     return placeName.toLowerCase().contains(normalizedQuery) ||
         description.toLowerCase().contains(normalizedQuery) ||
+        mood.toLowerCase().contains(normalizedQuery) ||
         searchKeywords.any(
           (keyword) => keyword.toLowerCase().contains(normalizedQuery),
         );
