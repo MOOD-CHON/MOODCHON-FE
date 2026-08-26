@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/theme/app_colors.dart';
-import '../../../core/widgets/bottom_tab/bottom_tab_type.dart';
-import '../../../core/widgets/navigation/bottom_tab_bar.dart';
 import '../../../core/widgets/navigation/top_bar.dart';
 import '../../../core/widgets/select_image/select_image_grid.dart';
 import '../../../core/widgets/select_image/select_image_mode.dart';
-import '../../home/pages/home_page.dart'; // 임시 홈페이지
 import '../../place_detail/data/event_detail_mock_data.dart';
 import '../../place_detail/data/tourism_detail_mock_data.dart';
 import '../../place_detail/pages/accommodation_detail_page.dart';
@@ -144,29 +141,10 @@ class _ExplorePageState extends State<ExplorePage> {
     }
   }
 
-  // 임시 홈페이지 하단바 연결
-  void _handleBottomTabChanged(BottomTabType tab) {
-    if (tab == BottomTabType.explore) {
-      return;
-    }
-
-    if (tab == BottomTabType.home) {
-      Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const HomePage(),
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final filteredItems = _filteredItems;
     final gridItems = _toGridItems(filteredItems);
-
-    final isKeyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0;
 
     return Scaffold(
       backgroundColor: AppColors.backgroundPrimary,
@@ -175,77 +153,57 @@ class _ExplorePageState extends State<ExplorePage> {
         child: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: _handlePageTap,
-          child: Stack(
+          child: Column(
             children: [
-              Column(
-                children: [
-                  TopBar(
-                    type: TopBarType.search,
-                    searchPlaceholder: '지역, 장소, 무드를 검색해보세요.',
-                    onSearchChanged: _handleSearchChanged,
-                    onSearchSubmitted: _handleSearchSubmitted,
-                    onNotification: _handleNotificationTap,
-                  ),
-
-                  Expanded(
-                    child: _isSearching && filteredItems.isEmpty
-                        ? const ExploreSearchEmpty()
-                        : CustomScrollView(
-                            keyboardDismissBehavior:
-                                ScrollViewKeyboardDismissBehavior.onDrag,
-                            slivers: [
-                              if (!_isSearching) ...[
-                                const SliverToBoxAdapter(
-                                  child: SizedBox(height: 14),
-                                ),
-
-                                SliverToBoxAdapter(
-                                  child: ExploreFilterChips(
-                                    selectedMood: _selectedMood,
-                                    onSelected: _handleMoodSelected,
-                                  ),
-                                ),
-
-                                const SliverToBoxAdapter(
-                                  child: SizedBox(height: 16),
-                                ),
-                              ] else
-                                const SliverToBoxAdapter(
-                                  child: SizedBox(height: 16),
-                                ),
-
-                              SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                  ),
-                                  child: SelectImageGrid(
-                                    items: gridItems,
-                                    mode: SelectImageMode.explore,
-                                    onExploreTap: _handleExploreItemTap,
-                                  ),
-                                ),
-                              ),
-
-                              const SliverToBoxAdapter(
-                                child: SizedBox(height: 110),
-                              ),
-                            ],
-                          ),
-                  ),
-                ],
+              TopBar(
+                type: TopBarType.search,
+                searchPlaceholder: '지역, 장소, 무드를 검색해보세요.',
+                onSearchChanged: _handleSearchChanged,
+                onSearchSubmitted: _handleSearchSubmitted,
+                onNotification: _handleNotificationTap,
               ),
-
-              if (!isKeyboardVisible)
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: NavigationBottomTabBar(
-                    selectedTab: BottomTabType.explore,
-                    onTabChanged: _handleBottomTabChanged,
-                  ),
-                ),
+              Expanded(
+                child: _isSearching && filteredItems.isEmpty
+                    ? const ExploreSearchEmpty()
+                    : CustomScrollView(
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
+                        slivers: [
+                          if (!_isSearching) ...[
+                            const SliverToBoxAdapter(
+                              child: SizedBox(height: 14),
+                            ),
+                            SliverToBoxAdapter(
+                              child: ExploreFilterChips(
+                                selectedMood: _selectedMood,
+                                onSelected: _handleMoodSelected,
+                              ),
+                            ),
+                            const SliverToBoxAdapter(
+                              child: SizedBox(height: 16),
+                            ),
+                          ] else
+                            const SliverToBoxAdapter(
+                              child: SizedBox(height: 16),
+                            ),
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: SelectImageGrid(
+                                items: gridItems,
+                                mode: SelectImageMode.explore,
+                                onExploreTap: _handleExploreItemTap,
+                              ),
+                            ),
+                          ),
+                          const SliverToBoxAdapter(
+                            child: SizedBox(height: 110),
+                          ),
+                        ],
+                      ),
+              ),
             ],
           ),
         ),

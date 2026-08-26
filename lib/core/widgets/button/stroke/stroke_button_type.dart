@@ -1,0 +1,1 @@
+enum StrokeButtonType { whiteSmall }
