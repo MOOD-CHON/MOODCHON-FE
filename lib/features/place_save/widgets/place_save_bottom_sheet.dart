@@ -106,7 +106,7 @@ class _PlaceSaveBottomSheetState extends State<PlaceSaveBottomSheet> {
               ),
             ),
 
-            const SizedBox(height: 29),
+            const SizedBox(height: 19),
 
             Text(
               '저장할 폴더를 선택해주세요',
