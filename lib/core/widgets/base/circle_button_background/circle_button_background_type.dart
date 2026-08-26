@@ -1,0 +1,1 @@
+enum CircleButtonBackgroundType { ivory, white }

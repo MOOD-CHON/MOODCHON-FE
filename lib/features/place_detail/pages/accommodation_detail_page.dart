@@ -16,14 +16,19 @@ import '../models/accommodation_detail_data.dart';
 import '../widgets/accommodation_condition_section.dart';
 import '../widgets/accommodation_room_section.dart';
 import '../widgets/detail_info_section.dart';
+import '../widgets/saved_place_delete_button.dart';
 
 class AccommodationDetailPage extends StatelessWidget {
   const AccommodationDetailPage({
     super.key,
     this.data = accommodationDetailMockData,
+    this.isSavedView = false,
+    this.onDeleteFromFolder,
   });
 
   final AccommodationDetailData data;
+  final bool isSavedView;
+  final VoidCallback? onDeleteFromFolder;
 
   static const double _saveButtonBottom = 22;
   static const double _saveButtonHeight = 49;
@@ -59,12 +64,14 @@ class AccommodationDetailPage extends StatelessWidget {
   Future<void> _copyAddress(BuildContext context) async {
     await Clipboard.setData(ClipboardData(text: data.fullAddress));
 
-    if (!context.mounted) return;
+    if (!context.mounted) {
+      return;
+    }
 
     ToastOverlay.show(
       context,
       message: '주소를 복사했어요',
-      bottom: _toastBottomOffset(context),
+      bottom: isSavedView ? 33 : _toastBottomOffset(context),
     );
   }
 
@@ -91,11 +98,10 @@ class AccommodationDetailPage extends StatelessWidget {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.only(bottom: 110),
+            padding: EdgeInsets.only(bottom: isSavedView ? 36 : 110),
             child: Stack(
               children: [
                 _AccommodationMainImage(imagePath: data.imagePath),
-
                 Positioned(
                   top: 0,
                   left: 0,
@@ -110,7 +116,6 @@ class AccommodationDetailPage extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 Container(
                   margin: const EdgeInsets.only(top: 348),
                   width: double.infinity,
@@ -236,7 +241,7 @@ class AccommodationDetailPage extends StatelessWidget {
             ),
           ),
 
-          _buildSaveButton(context),
+          if (!isSavedView) _buildSaveButton(context),
         ],
       ),
     );
@@ -246,11 +251,22 @@ class AccommodationDetailPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          data.name,
-          style: AppTypography.titlePlace.copyWith(
-            color: AppColors.textPrimary,
-          ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(
+                data.name,
+                style: AppTypography.titlePlace.copyWith(
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ),
+            if (isSavedView) ...[
+              const SizedBox(width: 9),
+              SavedPlaceDeleteButton(onDeleted: onDeleteFromFolder ?? () {}),
+            ],
+          ],
         ),
         const SizedBox(height: 8),
         Text(

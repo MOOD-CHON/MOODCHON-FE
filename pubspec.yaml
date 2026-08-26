@@ -71,6 +71,8 @@ flutter:
     - assets/icons/select/
     - assets/icons/place_info/
     - assets/icons/check/
+    - assets/icons/banner/
+    - assets/icons/trash/
     - assets/images/character/default/
     - assets/images/character/greeting/
     - assets/images/character/excited/
@@ -78,6 +80,7 @@ flutter:
     - assets/images/character/sad/
     - assets/images/character/letter/
     - assets/images/character/notebook/
+    - assets/images/empty_state/
 
   fonts:
     - family: Pretendard
