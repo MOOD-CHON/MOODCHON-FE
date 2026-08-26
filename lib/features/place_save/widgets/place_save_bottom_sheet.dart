@@ -6,6 +6,7 @@ import '../../../core/widgets/button/half/half_button.dart';
 import '../../../core/widgets/button/half/half_button_type.dart';
 import '../data/place_folder_mock_data.dart';
 import '../models/place_folder.dart';
+import 'create_place_folder_bottom_sheet.dart';
 import 'place_folder_select_item.dart';
 
 class PlaceSaveBottomSheet extends StatefulWidget {
@@ -41,6 +42,7 @@ class PlaceSaveBottomSheet extends StatefulWidget {
 }
 
 class _PlaceSaveBottomSheetState extends State<PlaceSaveBottomSheet> {
+  late List<PlaceFolder> _folders;
   late Set<String> _selectedFolderIds;
 
   bool get _hasSelection => _selectedFolderIds.isNotEmpty;
@@ -48,6 +50,8 @@ class _PlaceSaveBottomSheetState extends State<PlaceSaveBottomSheet> {
   @override
   void initState() {
     super.initState();
+
+    _folders = List<PlaceFolder>.from(widget.folders);
 
     _selectedFolderIds = Set<String>.from(widget.initiallySelectedFolderIds);
   }
@@ -74,8 +78,20 @@ class _PlaceSaveBottomSheetState extends State<PlaceSaveBottomSheet> {
     Navigator.of(context).pop(Set<String>.from(_selectedFolderIds));
   }
 
-  void _handleCreateFolder() {
-    // TODO: 새 폴더 만들기 바텀시트 구현 후 연결
+  Future<void> _handleCreateFolder() async {
+    final newFolder = await CreatePlaceFolderBottomSheet.show(
+      context,
+      currentFolderCount: _folders.length,
+    );
+
+    if (!mounted || newFolder == null) {
+      return;
+    }
+
+    setState(() {
+      _folders.add(newFolder);
+      _selectedFolderIds.add(newFolder.id);
+    });
   }
 
   @override
@@ -122,23 +138,16 @@ class _PlaceSaveBottomSheetState extends State<PlaceSaveBottomSheet> {
               padding: const EdgeInsets.symmetric(horizontal: 28),
               child: Column(
                 children: [
-                  for (
-                    var index = 0;
-                    index < widget.folders.length;
-                    index++
-                  ) ...[
+                  for (var index = 0; index < _folders.length; index++) ...[
                     PlaceFolderSelectItem(
-                      folder: widget.folders[index],
-                      selected: _selectedFolderIds.contains(
-                        widget.folders[index].id,
-                      ),
+                      folder: _folders[index],
+                      selected: _selectedFolderIds.contains(_folders[index].id),
                       onTap: () {
-                        _toggleFolder(widget.folders[index].id);
+                        _toggleFolder(_folders[index].id);
                       },
                     ),
 
-                    if (index < widget.folders.length - 1)
-                      const SizedBox(height: 20),
+                    if (index < _folders.length - 1) const SizedBox(height: 20),
                   ],
                 ],
               ),
