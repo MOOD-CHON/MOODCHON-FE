@@ -11,12 +11,16 @@ class TrashBackgroundButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: CircleButtonBackgroundMedium(
-        type: CircleButtonBackgroundType.white,
-        child: SvgPicture.asset('assets/icons/trash/trash_small.svg'),
+    return Semantics(
+      button: true,
+      label: '삭제',
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: CircleButtonBackgroundMedium(
+          type: CircleButtonBackgroundType.white,
+          child: SvgPicture.asset('assets/icons/trash/trash_small.svg'),
+        ),
       ),
     );
   }
