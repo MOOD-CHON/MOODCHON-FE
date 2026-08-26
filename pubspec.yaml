@@ -70,6 +70,7 @@ flutter:
     - assets/icons/doodle/small/active/
     - assets/icons/select/
     - assets/icons/place_info/
+    - assets/icons/check/
     - assets/images/character/default/
     - assets/images/character/greeting/
     - assets/images/character/excited/

@@ -6,11 +6,10 @@ import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_typography.dart';
 import '../../../core/widgets/banner/toast_overlay.dart';
 import '../../../core/widgets/button/copy_button.dart';
-import '../../../core/widgets/button/green/green_button.dart';
-import '../../../core/widgets/button/green/green_button_size.dart';
 import '../../../core/widgets/navigation/top_bar.dart';
 import '../../../core/widgets/tag/map_tag.dart';
 import '../../../core/widgets/tag/mood_tag.dart';
+import '../../place_save/widgets/place_save_button.dart';
 import '../data/event_detail_mock_data.dart';
 import '../models/event_detail_data.dart';
 import '../models/event_place_type.dart';
@@ -219,7 +218,7 @@ class EventDetailPage extends StatelessWidget {
             ),
           ),
 
-          _buildSaveButton(),
+          _buildSaveButton(context),
         ],
       ),
     );
@@ -338,20 +337,14 @@ class EventDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSaveButton() {
+  Widget _buildSaveButton(BuildContext context) {
     return Positioned(
       left: 16,
       right: 16,
       bottom: _saveButtonBottom,
       child: SafeArea(
         top: false,
-        child: GreenButton(
-          size: GreenButtonSize.long,
-          label: '장소 저장하기',
-          onTap: () {
-            // TODO: 장소 저장 API 연동 시 구현
-          },
-        ),
+        child: PlaceSaveButton(toastBottom: _toastBottomOffset(context)),
       ),
     );
   }

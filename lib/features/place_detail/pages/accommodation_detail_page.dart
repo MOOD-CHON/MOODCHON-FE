@@ -6,12 +6,11 @@ import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_typography.dart';
 import '../../../core/widgets/banner/toast_overlay.dart';
 import '../../../core/widgets/button/copy_button.dart';
-import '../../../core/widgets/button/green/green_button.dart';
-import '../../../core/widgets/button/green/green_button_size.dart';
 import '../../../core/widgets/facility/facilities_all.dart';
 import '../../../core/widgets/navigation/top_bar.dart';
 import '../../../core/widgets/tag/map_tag.dart';
 import '../../../core/widgets/tag/mood_tag.dart';
+import '../../place_save/widgets/place_save_button.dart';
 import '../data/accommodation_detail_mock_data.dart';
 import '../models/accommodation_detail_data.dart';
 import '../widgets/accommodation_condition_section.dart';
@@ -237,7 +236,7 @@ class AccommodationDetailPage extends StatelessWidget {
             ),
           ),
 
-          _buildSaveButton(),
+          _buildSaveButton(context),
         ],
       ),
     );
@@ -253,9 +252,7 @@ class AccommodationDetailPage extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
-
         const SizedBox(height: 8),
-
         Text(
           data.aiSummary,
           style: AppTypography.captionPlace.copyWith(
@@ -276,9 +273,7 @@ class AccommodationDetailPage extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
-
         const SizedBox(height: 12),
-
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -288,9 +283,7 @@ class AccommodationDetailPage extends StatelessWidget {
                 color: AppColors.textSecondary,
               ),
             ),
-
             const SizedBox(width: 7),
-
             CopyButton(
               onTap: () {
                 _copyAddress(context);
@@ -315,9 +308,7 @@ class AccommodationDetailPage extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
             ),
-
             const SizedBox(width: 6),
-
             const MapTag(
               label: '숙소',
               color: MapTagColor.green,
@@ -325,9 +316,7 @@ class AccommodationDetailPage extends StatelessWidget {
             ),
           ],
         ),
-
         const SizedBox(height: 12),
-
         Text(
           data.description,
           style: AppTypography.descriptionSmall.copyWith(
@@ -348,9 +337,7 @@ class AccommodationDetailPage extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
-
         const SizedBox(height: 12),
-
         Wrap(
           spacing: 7,
           runSpacing: 7,
@@ -368,20 +355,14 @@ class AccommodationDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSaveButton() {
+  Widget _buildSaveButton(BuildContext context) {
     return Positioned(
       left: 16,
       right: 16,
       bottom: _saveButtonBottom,
       child: SafeArea(
         top: false,
-        child: GreenButton(
-          size: GreenButtonSize.long,
-          label: '장소 저장하기',
-          onTap: () {
-            // TODO: 장소 저장 API 연동 시 구현
-          },
-        ),
+        child: PlaceSaveButton(toastBottom: _toastBottomOffset(context)),
       ),
     );
   }
