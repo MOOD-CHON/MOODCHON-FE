@@ -53,7 +53,11 @@ class _PlaceSaveBottomSheetState extends State<PlaceSaveBottomSheet> {
 
     _folders = List<PlaceFolder>.from(widget.folders);
 
-    _selectedFolderIds = Set<String>.from(widget.initiallySelectedFolderIds);
+    final availableIds = _folders.map((folder) => folder.id).toSet();
+
+    _selectedFolderIds = widget.initiallySelectedFolderIds
+        .where(availableIds.contains)
+        .toSet();
   }
 
   void _toggleFolder(String folderId) {
