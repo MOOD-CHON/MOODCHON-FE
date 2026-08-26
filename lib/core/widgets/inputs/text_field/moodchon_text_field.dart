@@ -116,17 +116,15 @@ class _MoodChonTextFieldState extends State<MoodChonTextField> {
         inputFormatters: widget.maxLength == null
             ? null
             : [LengthLimitingTextInputFormatter(widget.maxLength)],
+        textAlignVertical: TextAlignVertical.center,
         cursorColor: AppColors.black,
-        cursorHeight: 16,
-        cursorWidth: 1.5,
+        cursorHeight: 14,
+        cursorWidth: 1.3,
         style: AppTypography.bodyExtraLarge.copyWith(color: AppColors.black),
         decoration: InputDecoration(
           isCollapsed: true,
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 15,
-            vertical: 15,
-          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 15),
           hintText: _isFocused || _hasText ? null : widget.placeholder,
           hintStyle: AppTypography.bodyExtraLarge.copyWith(
             color: AppColors.black.withValues(alpha: 0.4),
