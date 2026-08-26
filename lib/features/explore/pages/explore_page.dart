@@ -7,6 +7,13 @@ import '../../../core/widgets/navigation/top_bar.dart';
 import '../../../core/widgets/select_image/select_image_grid.dart';
 import '../../../core/widgets/select_image/select_image_mode.dart';
 import '../../home/pages/home_page.dart'; // 임시 홈페이지
+import '../../place_detail/data/event_detail_mock_data.dart';
+import '../../place_detail/data/tourism_detail_mock_data.dart';
+import '../../place_detail/pages/accommodation_detail_page.dart';
+import '../../place_detail/pages/event_detail_page.dart';
+import '../../place_detail/pages/restaurant_detail_page.dart';
+import '../../place_detail/pages/shopping_detail_page.dart';
+import '../../place_detail/pages/tourism_detail_page.dart';
 import '../data/explore_mock_data.dart';
 import '../models/explore_item.dart';
 import '../widgets/explore_filter_chips.dart';
@@ -86,7 +93,55 @@ class _ExplorePageState extends State<ExplorePage> {
   }
 
   void _handleExploreItemTap(String id) {
-    // TODO: 장소 상세 페이지 구현 후 연결
+    final item = _findExploreItem(id);
+
+    if (item == null) {
+      return;
+    }
+
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => _buildDetailPage(item)));
+  }
+
+  ExploreItem? _findExploreItem(String id) {
+    for (final item in exploreMockItems) {
+      if (item.id == id) {
+        return item;
+      }
+    }
+
+    return null;
+  }
+
+  Widget _buildDetailPage(ExploreItem item) {
+    switch (item.placeType) {
+      case ExplorePlaceType.accommodation:
+        return const AccommodationDetailPage();
+
+      case ExplorePlaceType.attraction:
+        return const TourismDetailPage(data: attractionDetailMockData);
+
+      case ExplorePlaceType.culturalFacility:
+        return const TourismDetailPage(data: culturalFacilityDetailMockData);
+
+      case ExplorePlaceType.leisureSports:
+        return const TourismDetailPage(data: leisureSportsDetailMockData);
+
+      case ExplorePlaceType.event:
+        return const EventDetailPage(data: eventDetailMockData);
+
+      case ExplorePlaceType.performance:
+        return const EventDetailPage(data: performanceDetailMockData);
+
+      case ExplorePlaceType.festival:
+        return const EventDetailPage(data: festivalDetailMockData);
+
+      case ExplorePlaceType.restaurant:
+        return const RestaurantDetailPage();
+
+      case ExplorePlaceType.shopping:
+        return const ShoppingDetailPage();
+    }
   }
 
   // 임시 홈페이지 하단바 연결
@@ -131,6 +186,7 @@ class _ExplorePageState extends State<ExplorePage> {
                     onSearchSubmitted: _handleSearchSubmitted,
                     onNotification: _handleNotificationTap,
                   ),
+
                   Expanded(
                     child: _isSearching && filteredItems.isEmpty
                         ? const ExploreSearchEmpty()
@@ -142,12 +198,14 @@ class _ExplorePageState extends State<ExplorePage> {
                                 const SliverToBoxAdapter(
                                   child: SizedBox(height: 14),
                                 ),
+
                                 SliverToBoxAdapter(
                                   child: ExploreFilterChips(
                                     selectedMood: _selectedMood,
                                     onSelected: _handleMoodSelected,
                                   ),
                                 ),
+
                                 const SliverToBoxAdapter(
                                   child: SizedBox(height: 16),
                                 ),
@@ -155,6 +213,7 @@ class _ExplorePageState extends State<ExplorePage> {
                                 const SliverToBoxAdapter(
                                   child: SizedBox(height: 16),
                                 ),
+
                               SliverToBoxAdapter(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -167,6 +226,7 @@ class _ExplorePageState extends State<ExplorePage> {
                                   ),
                                 ),
                               ),
+
                               const SliverToBoxAdapter(
                                 child: SizedBox(height: 110),
                               ),
@@ -175,6 +235,7 @@ class _ExplorePageState extends State<ExplorePage> {
                   ),
                 ],
               ),
+
               if (!isKeyboardVisible)
                 Positioned(
                   left: 0,

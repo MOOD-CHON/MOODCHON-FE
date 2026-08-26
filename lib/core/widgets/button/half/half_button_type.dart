@@ -1,0 +1,1 @@
+enum HalfButtonType { stroke, full }

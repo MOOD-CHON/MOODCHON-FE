@@ -5,14 +5,13 @@ import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_typography.dart';
 import '../../../core/widgets/banner/toast_overlay.dart';
 import '../../../core/widgets/button/copy_button.dart';
-import '../../../core/widgets/button/green/green_button.dart';
-import '../../../core/widgets/button/green/green_button_size.dart';
 import '../../../core/widgets/facility/facilities_all.dart';
 import '../../../core/widgets/facility/facility_item.dart';
 import '../../../core/widgets/facility/facility_type.dart';
 import '../../../core/widgets/navigation/top_bar.dart';
 import '../../../core/widgets/tag/map_tag.dart';
 import '../../../core/widgets/tag/mood_tag.dart';
+import '../../place_save/widgets/place_save_button.dart';
 import '../data/restaurant_detail_mock_data.dart';
 import '../models/restaurant_detail_data.dart';
 import '../widgets/detail_info_section.dart';
@@ -147,6 +146,7 @@ class RestaurantDetailPage extends StatelessWidget {
 
                             if (_hasMenu) ...[
                               const SizedBox(height: 26),
+
                               RepresentativeMenuSection(
                                 representativeMenu: data.representativeMenu,
                                 handledMenus: data.handledMenus,
@@ -213,7 +213,7 @@ class RestaurantDetailPage extends StatelessWidget {
             ),
           ),
 
-          _buildSaveButton(),
+          _buildSaveButton(context),
         ],
       ),
     );
@@ -332,20 +332,14 @@ class RestaurantDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSaveButton() {
+  Widget _buildSaveButton(BuildContext context) {
     return Positioned(
       left: 16,
       right: 16,
       bottom: _saveButtonBottom,
       child: SafeArea(
         top: false,
-        child: GreenButton(
-          size: GreenButtonSize.long,
-          label: '장소 저장하기',
-          onTap: () {
-            // TODO: 장소 저장 API 연동 시 구현
-          },
-        ),
+        child: PlaceSaveButton(toastBottom: _toastBottomOffset(context)),
       ),
     );
   }

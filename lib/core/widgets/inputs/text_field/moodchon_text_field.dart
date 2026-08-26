@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_typography.dart';
@@ -13,6 +14,7 @@ class MoodChonTextField extends StatefulWidget {
     this.onChanged,
     this.onSubmitted,
     this.hasError = false,
+    this.maxLength,
   });
 
   final MoodChonTextFieldSize size;
@@ -21,6 +23,7 @@ class MoodChonTextField extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final bool hasError;
+  final int? maxLength;
 
   @override
   State<MoodChonTextField> createState() => _MoodChonTextFieldState();
@@ -110,17 +113,18 @@ class _MoodChonTextFieldState extends State<MoodChonTextField> {
         onChanged: widget.onChanged,
         onSubmitted: widget.onSubmitted,
         maxLines: 1,
+        inputFormatters: widget.maxLength == null
+            ? null
+            : [LengthLimitingTextInputFormatter(widget.maxLength)],
+        textAlignVertical: TextAlignVertical.center,
         cursorColor: AppColors.black,
-        cursorHeight: 16,
-        cursorWidth: 1.5,
+        cursorHeight: 14,
+        cursorWidth: 1.3,
         style: AppTypography.bodyExtraLarge.copyWith(color: AppColors.black),
         decoration: InputDecoration(
           isCollapsed: true,
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 15,
-            vertical: 15,
-          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 15),
           hintText: _isFocused || _hasText ? null : widget.placeholder,
           hintStyle: AppTypography.bodyExtraLarge.copyWith(
             color: AppColors.black.withValues(alpha: 0.4),

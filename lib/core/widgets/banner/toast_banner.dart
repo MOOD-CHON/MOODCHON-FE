@@ -24,7 +24,9 @@ class ToastBanner extends StatelessWidget {
       child: Text(
         message,
         textAlign: TextAlign.center,
-        style: AppTypography.tabMedium.copyWith(color: AppColors.textSecondary),
+        style: AppTypography.tabMedium.copyWith(
+          color: AppColors.main.withValues(alpha: 0.8),
+        ),
       ),
     );
   }
