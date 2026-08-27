@@ -12,6 +12,7 @@ import '../../place_save/widgets/create_place_folder_bottom_sheet.dart';
 import '../models/saved_folder_detail_result.dart';
 import '../widgets/mood_folder_grid.dart';
 import 'saved_folder_detail_page.dart';
+import '../../notification/utils/open_notification_page.dart';
 
 class SavedPage extends StatefulWidget {
   const SavedPage({super.key});
@@ -46,7 +47,7 @@ class _SavedPageState extends State<SavedPage> {
   }
 
   void _onNotificationTap() {
-    // TODO: 알림 페이지 연결
+    openNotificationPage(context);
   }
 
   Future<void> _onFolderTap(PlaceFolder folder) async {

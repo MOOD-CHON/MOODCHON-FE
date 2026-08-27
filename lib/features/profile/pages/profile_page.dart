@@ -16,6 +16,7 @@ import '../widgets/profile_menu_card.dart';
 import '../widgets/profile_menu_row.dart';
 import 'nickname_edit_page.dart';
 import 'pro_plan_page.dart';
+import '../../notification/utils/open_notification_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -36,7 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _isAlertEnabled = false;
 
   void _onNotificationTap() {
-    // TODO: 알림 페이지 연결
+    openNotificationPage(context);
   }
 
   Future<void> _pickProfileImage() async {

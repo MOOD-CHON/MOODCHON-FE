@@ -15,6 +15,7 @@ import '../data/explore_mock_data.dart';
 import '../models/explore_item.dart';
 import '../widgets/explore_filter_chips.dart';
 import '../widgets/explore_search_empty.dart';
+import '../../notification/utils/open_notification_page.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -86,7 +87,7 @@ class _ExplorePageState extends State<ExplorePage> {
   }
 
   void _handleNotificationTap() {
-    // TODO: 알림 페이지 구현 후 연결
+    openNotificationPage(context);
   }
 
   void _handleExploreItemTap(String id) {
