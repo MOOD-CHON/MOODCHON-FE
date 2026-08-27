@@ -5,6 +5,7 @@ import '../../../core/widgets/bottom_tab/bottom_tab_type.dart';
 import '../../../core/widgets/navigation/bottom_tab_bar.dart';
 import '../../explore/pages/explore_page.dart';
 import '../../home/pages/home_page.dart';
+import '../../profile/pages/profile_page.dart';
 import '../../saved/pages/saved_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -54,9 +55,7 @@ class _MainPageState extends State<MainPage> {
               HomePage(),
               ExplorePage(),
               SavedPage(),
-
-              // TODO: 마이페이지 구현 후 교체
-              SizedBox(),
+              ProfilePage(),
             ],
           ),
 

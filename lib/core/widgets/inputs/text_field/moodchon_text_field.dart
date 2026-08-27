@@ -112,6 +112,9 @@ class _MoodChonTextFieldState extends State<MoodChonTextField> {
         focusNode: _focusNode,
         onChanged: widget.onChanged,
         onSubmitted: widget.onSubmitted,
+        onTapOutside: (_) {
+          _focusNode.unfocus();
+        },
         maxLines: 1,
         inputFormatters: widget.maxLength == null
             ? null
