@@ -42,6 +42,7 @@ class ConfirmModal extends StatelessWidget {
     required String description,
     required String confirmText,
     String cancelText = '취소',
+    double top = 307,
   }) {
     return showGeneralDialog<bool>(
       context: context,
@@ -50,23 +51,29 @@ class ConfirmModal extends StatelessWidget {
       barrierColor: AppColors.black.withValues(alpha: 0.50),
       transitionDuration: const Duration(milliseconds: 100),
       pageBuilder: (context, _, __) {
-        return Center(
-          child: Transform.translate(
-            offset: const Offset(0, -40),
-            child: ConfirmModal(
-              type: type,
-              title: title,
-              description: description,
-              confirmText: confirmText,
-              cancelText: cancelText,
-              onCancel: () {
-                Navigator.of(context).pop(false);
-              },
-              onConfirm: () {
-                Navigator.of(context).pop(true);
-              },
+        return Stack(
+          children: [
+            Positioned(
+              top: top,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: ConfirmModal(
+                  type: type,
+                  title: title,
+                  description: description,
+                  confirmText: confirmText,
+                  cancelText: cancelText,
+                  onCancel: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  onConfirm: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+              ),
             ),
-          ),
+          ],
         );
       },
     );
