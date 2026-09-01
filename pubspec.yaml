@@ -75,6 +75,7 @@ flutter:
     - assets/icons/check/
     - assets/icons/banner/
     - assets/icons/trash/
+    - assets/icons/pin/
     - assets/images/character/default/
     - assets/images/character/greeting/
     - assets/images/character/excited/

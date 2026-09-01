@@ -12,6 +12,7 @@ import '../../../core/widgets/navigation/top_bar.dart';
 import '../data/mood_result_mock_data.dart';
 import '../models/mood_result.dart';
 import '../widgets/mood_result/mood_result_card.dart';
+import 'mood_accommodation_page.dart';
 
 class MoodResultDetailPage extends StatefulWidget {
   const MoodResultDetailPage({super.key, this.result = moodResultMockData});
@@ -127,7 +128,8 @@ class _MoodResultDetailPageState extends State<MoodResultDetailPage> {
   }
 
   void _onAccommodationTap() {
-    // TODO: 맞춤 숙소 페이지 구현 후 연결
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => const MoodAccommodationPage()));
   }
 
   @override
