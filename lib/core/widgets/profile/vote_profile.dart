@@ -18,7 +18,7 @@ class VoteProfile extends StatelessWidget {
   final List<VoteMember> members;
   final VoteProfileSize size;
 
-  /// large에서만 화살표 클릭 용도로 사용
+  /// large + 4명 이상일 때 화살표/전체 영역 탭 용도
   final VoidCallback? onTap;
 
   double get _profileSize {
@@ -39,37 +39,69 @@ class VoteProfile extends StatelessWidget {
     }
   }
 
+  bool get _showArrow {
+    return size == VoteProfileSize.large && members.length >= 4;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (members.isEmpty) {
       return const SizedBox.shrink();
     }
 
-    return Row(
+    final content = Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _buildProfiles(),
-        if (size == VoteProfileSize.large) ...[
+
+        if (_showArrow) ...[
           const SizedBox(width: 2),
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: onTap,
-            child: SvgPicture.asset(
-              'assets/icons/arrow_go/arrow_go_small_green.svg',
-            ),
-          ),
+          SvgPicture.asset('assets/icons/arrow_go/arrow_go_small_green.svg'),
         ],
       ],
+    );
+
+    if (!_showArrow) {
+      return content;
+    }
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: content,
     );
   }
 
   Widget _buildProfiles() {
     final int count = members.length;
-    final int visibleCount = count <= 3 ? count : 3;
 
-    final double width =
-        _profileSize + ((_profileSize - 6) * (visibleCount - 1));
+    // 1~3명은 실제 프로필 수만큼 표시
+    if (count <= 3) {
+      final double width = _profileSize + ((_profileSize - 6) * (count - 1));
+
+      return SizedBox(
+        width: width,
+        height: _profileSize,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            for (int index = 0; index < count; index++)
+              Positioned(
+                left: index * (_profileSize - 6),
+                child: _ProfileCircle(
+                  member: members[index],
+                  size: _profileSize,
+                ),
+              ),
+          ],
+        ),
+      );
+    }
+
+    // 4명 이상:
+    // 프로필 2개 + 카운터 1개
+    final double width = _profileSize + ((_profileSize - 6) * 2);
 
     return SizedBox(
       width: width,
@@ -77,33 +109,22 @@ class VoteProfile extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          if (count <= 3)
-            for (var index = 0; index < count; index++)
-              Positioned(
-                left: index * (_profileSize - 6),
-                child: _ProfileCircle(
-                  member: members[index],
-                  size: _profileSize,
-                ),
-              )
-          else ...[
-            Positioned(
-              left: 0,
-              child: _ProfileCircle(member: members[0], size: _profileSize),
+          Positioned(
+            left: 0,
+            child: _ProfileCircle(member: members[0], size: _profileSize),
+          ),
+          Positioned(
+            left: _profileSize - 6,
+            child: _ProfileCircle(member: members[1], size: _profileSize),
+          ),
+          Positioned(
+            left: (_profileSize - 6) * 2,
+            child: _CounterCircle(
+              label: '+${count - 2}',
+              size: _profileSize,
+              style: _counterStyle,
             ),
-            Positioned(
-              left: _profileSize - 6,
-              child: _ProfileCircle(member: members[1], size: _profileSize),
-            ),
-            Positioned(
-              left: (_profileSize - 6) * 2,
-              child: _CounterCircle(
-                label: '+${count - 2}',
-                size: _profileSize,
-                style: _counterStyle,
-              ),
-            ),
-          ],
+          ),
         ],
       ),
     );

@@ -6,13 +6,16 @@ import '../../../app/theme/app_typography.dart';
 import '../../../core/widgets/button/stroke/stroke_button.dart';
 import '../../../core/widgets/button/stroke/stroke_button_type.dart';
 import '../../../core/widgets/navigation/top_bar.dart';
+import '../../place_detail/data/accommodation_detail_mock_data.dart';
 import '../data/mood_accommodation_mock_data.dart';
 import '../models/accommodation_recommendation.dart';
 import '../models/mood_accommodation_page_data.dart';
+import '../models/travel_accommodation_detail_data.dart';
 import '../widgets/accommodation/lodging_carousel.dart';
 import '../widgets/accommodation/mood_accommodation_header.dart';
 import '../widgets/accommodation/plan_card.dart';
 import 'accommodation_search_page.dart';
+import 'travel_accommodation_detail_page.dart';
 
 class MoodAccommodationPage extends StatefulWidget {
   const MoodAccommodationPage({
@@ -36,7 +39,25 @@ class _MoodAccommodationPageState extends State<MoodAccommodationPage> {
   }
 
   void _onAccommodationDetailTap(AccommodationRecommendation accommodation) {
-    // TODO: 숙소 상세 페이지 구현 후 연결
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => TravelAccommodationDetailPage(
+          data: TravelAccommodationDetailData(
+            accommodation: accommodationDetailMockData,
+            matchRate: accommodation.matchRate,
+            recommendationRank: accommodation.rank <= 5
+                ? accommodation.rank
+                : null,
+            voters: accommodation.voters,
+            matchReasons: accommodation.matchReasons,
+            regretReasons: const [
+              '야외 활동의 분위기가 우리 무드와 조금 달라요.',
+              '주변 편의시설이 다소 적을 수 있어요.',
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void _onDirectAccommodationSearchTap() {

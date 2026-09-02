@@ -6,6 +6,9 @@ import '../../../core/widgets/navigation/top_bar.dart';
 import '../data/accommodation_search_mock_data.dart';
 import '../models/accommodation_search_result.dart';
 import '../widgets/accommodation/accommodation_search_item.dart';
+import '../../place_detail/data/accommodation_detail_mock_data.dart';
+import '../models/travel_accommodation_detail_data.dart';
+import 'travel_accommodation_detail_page.dart';
 
 class AccommodationSearchPage extends StatefulWidget {
   const AccommodationSearchPage({super.key});
@@ -51,7 +54,33 @@ class _AccommodationSearchPageState extends State<AccommodationSearchPage> {
   }
 
   void _onResultTap(AccommodationSearchResult result) {
-    // TODO: 직접 찾은 숙소 상세 페이지 구현 후 연결
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => TravelAccommodationDetailPage(
+          data: TravelAccommodationDetailData(
+            accommodation: accommodationDetailMockData,
+
+            // 검색 결과 상세 테스트용 mock
+            matchRate: 94,
+
+            // 검색 결과로 찾은 숙소는
+            // 추천 1~5위가 아니므로 null
+            recommendationRank: null,
+
+            // 아직 검색 API에서 투표 정보가 없으므로
+            // 우선 빈 리스트
+            voters: const [],
+
+            matchReasons: const [
+              '마당과 한옥의 차분한 분위기가 우리 무드와 잘 맞아요.',
+              '주변에 산책하기 좋은 마을길이 있어요.',
+            ],
+
+            regretReasons: const ['주변 편의시설이 다소 적을 수 있어요.'],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
