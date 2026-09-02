@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -28,12 +29,17 @@ class _MoodResultDetailPageState extends State<MoodResultDetailPage> {
   final GlobalKey _accommodationButtonKey = GlobalKey();
 
   OverlayEntry? _toastOverlay;
+  Timer? _toastTimer;
 
   bool _isSaving = false;
 
   @override
   void dispose() {
+    _toastTimer?.cancel();
+
     _toastOverlay?.remove();
+    _toastOverlay = null;
+
     super.dispose();
   }
 
@@ -50,6 +56,9 @@ class _MoodResultDetailPageState extends State<MoodResultDetailPage> {
               as RenderRepaintBoundary?;
 
       if (boundary == null) {
+        if (mounted) {
+          _showToast('갤러리 저장에 실패했어요.');
+        }
         return;
       }
 
@@ -58,6 +67,9 @@ class _MoodResultDetailPageState extends State<MoodResultDetailPage> {
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
       if (byteData == null) {
+        if (mounted) {
+          _showToast('갤러리 저장에 실패했어요.');
+        }
         return;
       }
 
@@ -69,6 +81,9 @@ class _MoodResultDetailPageState extends State<MoodResultDetailPage> {
         final granted = await Gal.requestAccess();
 
         if (!granted) {
+          if (mounted) {
+            _showToast('사진 보관함 접근 권한이 필요해요.');
+          }
           return;
         }
       }
@@ -80,13 +95,20 @@ class _MoodResultDetailPageState extends State<MoodResultDetailPage> {
       }
 
       _showToast('무드 결과가 갤러리에 저장되었어요.');
+    } on GalException catch (_) {
+      if (mounted) {
+        _showToast('갤러리 저장에 실패했어요.');
+      }
     } finally {
       _isSaving = false;
     }
   }
 
   void _showToast(String message) {
+    _toastTimer?.cancel();
+
     _toastOverlay?.remove();
+    _toastOverlay = null;
 
     final RenderBox? buttonRenderBox =
         _accommodationButtonKey.currentContext?.findRenderObject()
@@ -121,9 +143,10 @@ class _MoodResultDetailPageState extends State<MoodResultDetailPage> {
 
     overlay.insert(_toastOverlay!);
 
-    Future<void>.delayed(const Duration(seconds: 2), () {
+    _toastTimer = Timer(const Duration(seconds: 2), () {
       _toastOverlay?.remove();
       _toastOverlay = null;
+      _toastTimer = null;
     });
   }
 
@@ -147,6 +170,7 @@ class _MoodResultDetailPageState extends State<MoodResultDetailPage> {
                 Navigator.of(context).pop();
               },
             ),
+
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),

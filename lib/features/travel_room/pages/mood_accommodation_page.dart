@@ -245,8 +245,8 @@ class _DirectAccommodationBanner extends StatelessWidget {
 
                 Expanded(
                   child: Text(
-                    '원하는 숙소가 따로 있나요? 숙소 이름이나 주소를\n'
-                    '입력하면 우리 무드와 얼마나 잘 맞는지 확인해드려요.',
+                    '원하는 숙소가 따로 있나요? 숙소 이름을 입력\n'
+                    '하면 우리 무드와 얼마나 잘 맞는지 확인해드려요.',
                     textAlign: TextAlign.left,
                     style: AppTypography.tabLarge.copyWith(
                       color: AppColors.textSecondary,
