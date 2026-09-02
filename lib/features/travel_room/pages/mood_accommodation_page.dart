@@ -12,6 +12,7 @@ import '../models/mood_accommodation_page_data.dart';
 import '../widgets/accommodation/lodging_carousel.dart';
 import '../widgets/accommodation/mood_accommodation_header.dart';
 import '../widgets/accommodation/plan_card.dart';
+import 'accommodation_search_page.dart';
 
 class MoodAccommodationPage extends StatefulWidget {
   const MoodAccommodationPage({
@@ -39,7 +40,9 @@ class _MoodAccommodationPageState extends State<MoodAccommodationPage> {
   }
 
   void _onDirectAccommodationSearchTap() {
-    // TODO: 직접 찾은 숙소 확인 페이지 구현 후 연결
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const AccommodationSearchPage()));
   }
 
   @override
