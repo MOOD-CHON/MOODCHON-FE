@@ -194,7 +194,7 @@ class _SavedFolderDetailPageState extends State<SavedFolderDetailPage> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.backgroundPrimary,
+        backgroundColor: AppColors.backgroundSecondary,
         body: SafeArea(
           bottom: false,
           child: Column(
