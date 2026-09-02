@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_svg: ^2.3.0
   image_picker: ^1.2.0
+  gal: ^2.3.3
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +75,8 @@ flutter:
     - assets/icons/check/
     - assets/icons/banner/
     - assets/icons/trash/
+    - assets/icons/pin/
+    - assets/icons/nonselect/
     - assets/images/character/default/
     - assets/images/character/greeting/
     - assets/images/character/excited/
