@@ -60,7 +60,7 @@ class _NicknameEditPageState extends State<NicknameEditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundPrimary,
+      backgroundColor: AppColors.backgroundSecondary,
       body: SafeArea(
         bottom: false,
         child: Column(

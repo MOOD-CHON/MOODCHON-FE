@@ -31,7 +31,7 @@ class ProPlanPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundPrimary,
+      backgroundColor: AppColors.backgroundSecondary,
       body: SafeArea(
         bottom: false,
         child: Column(
