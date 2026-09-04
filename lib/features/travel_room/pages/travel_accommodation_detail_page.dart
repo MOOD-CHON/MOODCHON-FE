@@ -188,6 +188,9 @@ class _TravelAccommodationDetailPageState
 
     if (callback != null) {
       callback();
+    }
+
+    if (!mounted) {
       return;
     }
 
