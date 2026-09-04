@@ -28,10 +28,9 @@ class _LodgingCarouselState extends State<LodgingCarousel> {
 
   static const double _inactiveScale = 0.95;
 
-  // RenderFlex 소수점 오차 방지
-  static const double _viewportSafety = 4;
+  // RenderFlex 소수점 오차 방지용 최소 여유
+  static const double _viewportSafety = 2;
 
-  // 이 정도 이상 움직이면 다음/이전 카드로 넘김
   static const double _dragThreshold = 35;
 
   final ScrollController _scrollController = ScrollController();
@@ -168,16 +167,6 @@ class _LodgingCarouselState extends State<LodgingCarousel> {
       return;
     }
 
-    /*
-     * 손가락을 왼쪽으로 이동
-     * details.delta.dx < 0
-     * → scroll offset 증가
-     *
-     * 손가락을 오른쪽으로 이동
-     * details.delta.dx > 0
-     * → scroll offset 감소
-     */
-
     final double nextOffset = _scrollController.offset - details.delta.dx;
 
     final double clampedOffset = nextOffset
@@ -200,12 +189,8 @@ class _LodgingCarouselState extends State<LodgingCarousel> {
     int targetIndex = _currentIndex;
 
     if (movedDistance > _dragThreshold) {
-      // 스크롤 offset 증가
-      // → 다음 순위
       targetIndex = _currentIndex + 1;
     } else if (movedDistance < -_dragThreshold) {
-      // 스크롤 offset 감소
-      // → 이전 순위
       targetIndex = _currentIndex - 1;
     }
 
@@ -248,20 +233,13 @@ class _LodgingCarouselState extends State<LodgingCarousel> {
     final ScrollPosition position = _scrollController.position;
 
     if (index == 0) {
-      // 1위:
-      // 왼쪽 패딩 16 유지
       return position.minScrollExtent;
     }
 
     if (index == widget.items.length - 1) {
-      // 마지막:
-      // 오른쪽 패딩 16 유지
       return position.maxScrollExtent;
     }
 
-    // 2~4위:
-    // 해당 카드의 중앙을
-    // viewport 중앙에 정확하게 위치
     final double cardCenter =
         _horizontalPadding + (index * (_cardWidth + _gap)) + (_cardWidth / 2);
 
@@ -283,9 +261,9 @@ class _LodgingCarouselState extends State<LodgingCarousel> {
     }
 
     return SizedBox(
-      height: _commonCardHeight! + 20 + _viewportSafety,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+      height: _commonCardHeight! + _viewportSafety,
+      child: Align(
+        alignment: Alignment.topCenter,
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onHorizontalDragStart: _onHorizontalDragStart,
@@ -294,36 +272,27 @@ class _LodgingCarouselState extends State<LodgingCarousel> {
           child: ListView.separated(
             controller: _scrollController,
             scrollDirection: Axis.horizontal,
-
-            // 카드 그림자가 캐러셀 경계에서 잘리지 않도록
             clipBehavior: Clip.none,
-
             physics: const NeverScrollableScrollPhysics(),
-
             padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding),
-
             itemCount: widget.items.length,
-
             separatorBuilder: (_, __) {
               return const SizedBox(width: _gap);
             },
-
             itemBuilder: (context, index) {
               final bool isSelected = index == _currentIndex;
 
-              return Center(
-                child: AnimatedScale(
-                  scale: isSelected ? 1 : _inactiveScale,
-                  duration: const Duration(milliseconds: 100),
-                  curve: Curves.easeOut,
-                  alignment: Alignment.center,
-                  child: LodgingCard(
-                    data: widget.items[index],
-                    imageHeight: _imageHeights[index],
-                    onDetailTap: () {
-                      widget.onDetailTap(widget.items[index]);
-                    },
-                  ),
+              return AnimatedScale(
+                scale: isSelected ? 1 : _inactiveScale,
+                duration: const Duration(milliseconds: 100),
+                curve: Curves.easeOut,
+                alignment: Alignment.center,
+                child: LodgingCard(
+                  data: widget.items[index],
+                  imageHeight: _imageHeights[index],
+                  onDetailTap: () {
+                    widget.onDetailTap(widget.items[index]);
+                  },
                 ),
               );
             },

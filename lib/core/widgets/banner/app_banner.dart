@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'banner_type.dart';
 import 'button_banner.dart';
+import 'character_banner.dart';
+import 'character_button_banner.dart';
 import 'info_banner.dart';
 import 'toast_banner.dart';
 
@@ -9,13 +11,22 @@ class AppBanner extends StatelessWidget {
   const AppBanner({
     super.key,
     required this.type,
-    required this.message,
+    this.message = '',
+    this.title,
+    this.caption,
+    this.moodName,
     this.buttonText,
     this.onButtonTap,
   });
 
   final BannerType type;
+
   final String message;
+
+  final String? title;
+  final String? caption;
+  final String? moodName;
+
   final String? buttonText;
   final VoidCallback? onButtonTap;
 
@@ -31,6 +42,18 @@ class AppBanner extends StatelessWidget {
       case BannerType.button:
         return ButtonBanner(
           message: message,
+          buttonText: buttonText ?? '',
+          onButtonTap: onButtonTap ?? () {},
+        );
+
+      case BannerType.character:
+        return CharacterBanner(title: title ?? '', caption: caption ?? '');
+
+      case BannerType.characterButton:
+        return CharacterButtonBanner(
+          title: title ?? '',
+          moodName: moodName ?? '',
+          caption: caption ?? '',
           buttonText: buttonText ?? '',
           onButtonTap: onButtonTap ?? () {},
         );
