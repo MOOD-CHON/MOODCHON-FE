@@ -13,9 +13,10 @@ import '../../../core/widgets/navigation/top_bar.dart';
 import '../../../core/widgets/tag/map_tag.dart';
 import '../../../core/widgets/tag/mood_tag.dart';
 import '../../place_save/widgets/place_save_button.dart';
+import '../../travel_room/widgets/place_detail/mood_match_badge.dart';
 import '../data/tourism_detail_mock_data.dart';
-import '../models/tourism_detail_data.dart';
 import '../models/tourism_place_type.dart';
+import '../models/tourism_detail_data.dart';
 import '../widgets/detail_info_section.dart';
 import '../widgets/place_image_carousel.dart';
 import '../widgets/saved_place_delete_button.dart';
@@ -26,15 +27,22 @@ class TourismDetailPage extends StatelessWidget {
     this.data = attractionDetailMockData,
     this.isSavedView = false,
     this.onDeleteFromFolder,
+    this.moodMatchRate,
+    this.accommodationDistanceText,
   });
 
   final TourismDetailData data;
   final bool isSavedView;
   final VoidCallback? onDeleteFromFolder;
 
+  final int? moodMatchRate;
+  final String? accommodationDistanceText;
+
   static const double _saveButtonBottom = 22;
   static const double _saveButtonHeight = 49;
   static const double _toastGap = 12;
+
+  bool get _isTravelRoomView => moodMatchRate != null;
 
   List<String> get _visibleMoods {
     return data.moods
@@ -97,7 +105,9 @@ class TourismDetailPage extends StatelessWidget {
     ToastOverlay.show(
       context,
       message: '주소를 복사했어요',
-      bottom: isSavedView ? 33 : _toastBottomOffset(context),
+      bottom: isSavedView || _isTravelRoomView
+          ? 33
+          : _toastBottomOffset(context),
     );
   }
 
@@ -124,7 +134,9 @@ class TourismDetailPage extends StatelessWidget {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: EdgeInsets.only(bottom: isSavedView ? 36 : 110),
+            padding: EdgeInsets.only(
+              bottom: isSavedView || _isTravelRoomView ? 36 : 110,
+            ),
             child: Stack(
               children: [
                 PlaceImageCarousel(imagePaths: data.imagePaths),
@@ -164,10 +176,19 @@ class TourismDetailPage extends StatelessWidget {
                           children: [
                             _buildHeader(),
 
-                            const SizedBox(height: 26),
+                            if (_isTravelRoomView) ...[
+                              const SizedBox(height: 16),
+
+                              MoodMatchBadge(matchRate: moodMatchRate!),
+
+                              const SizedBox(height: 20),
+                            ] else
+                              const SizedBox(height: 26),
+
                             const _DetailDivider(),
 
                             const SizedBox(height: 26),
+
                             _buildLocation(context),
 
                             if (_visibleMoods.isNotEmpty) ...[
@@ -176,6 +197,7 @@ class TourismDetailPage extends StatelessWidget {
                             ],
 
                             const SizedBox(height: 26),
+
                             _buildDescription(),
 
                             if (_hasExperienceInfo) ...[
@@ -185,6 +207,7 @@ class TourismDetailPage extends StatelessWidget {
 
                             if (_tourismFacilities.isNotEmpty) ...[
                               const SizedBox(height: 26),
+
                               const _DetailDivider(),
 
                               const SizedBox(height: 26),
@@ -197,6 +220,7 @@ class TourismDetailPage extends StatelessWidget {
 
                             if (_hasUsageInfo) ...[
                               const SizedBox(height: 26),
+
                               const _DetailDivider(),
 
                               const SizedBox(height: 26),
@@ -265,7 +289,7 @@ class TourismDetailPage extends StatelessWidget {
             ),
           ),
 
-          if (!isSavedView) _buildSaveButton(context),
+          if (!isSavedView && !_isTravelRoomView) _buildSaveButton(context),
         ],
       ),
     );
@@ -306,6 +330,8 @@ class TourismDetailPage extends StatelessWidget {
   }
 
   Widget _buildLocation(BuildContext context) {
+    final distanceText = accommodationDistanceText?.trim();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -327,7 +353,9 @@ class TourismDetailPage extends StatelessWidget {
                 color: AppColors.textSecondary,
               ),
             ),
+
             const SizedBox(width: 7),
+
             CopyButton(
               onTap: () {
                 _copyAddress(context);
@@ -335,6 +363,19 @@ class TourismDetailPage extends StatelessWidget {
             ),
           ],
         ),
+
+        if (_isTravelRoomView &&
+            distanceText != null &&
+            distanceText.isNotEmpty) ...[
+          const SizedBox(height: 4),
+
+          Text(
+            distanceText,
+            style: AppTypography.tabMedium.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -349,7 +390,9 @@ class TourismDetailPage extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
+
         const SizedBox(height: 12),
+
         Wrap(
           spacing: 7,
           runSpacing: 7,

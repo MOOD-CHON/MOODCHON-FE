@@ -13,6 +13,7 @@ import '../../../core/widgets/navigation/top_bar.dart';
 import '../../../core/widgets/tag/map_tag.dart';
 import '../../../core/widgets/tag/mood_tag.dart';
 import '../../place_save/widgets/place_save_button.dart';
+import '../../travel_room/widgets/place_detail/mood_match_badge.dart';
 import '../data/shopping_detail_mock_data.dart';
 import '../models/shopping_detail_data.dart';
 import '../widgets/detail_info_section.dart';
@@ -26,15 +27,22 @@ class ShoppingDetailPage extends StatelessWidget {
     this.data = shoppingDetailMockData,
     this.isSavedView = false,
     this.onDeleteFromFolder,
+    this.moodMatchRate,
+    this.accommodationDistanceText,
   });
 
   final ShoppingDetailData data;
   final bool isSavedView;
   final VoidCallback? onDeleteFromFolder;
 
+  final int? moodMatchRate;
+  final String? accommodationDistanceText;
+
   static const double _saveButtonBottom = 22;
   static const double _saveButtonHeight = 49;
   static const double _toastGap = 12;
+
+  bool get _isTravelRoomView => moodMatchRate != null;
 
   List<String> get _visibleMoods {
     return data.moods
@@ -91,7 +99,9 @@ class ShoppingDetailPage extends StatelessWidget {
     ToastOverlay.show(
       context,
       message: '주소를 복사했어요',
-      bottom: isSavedView ? 33 : _toastBottomOffset(context),
+      bottom: isSavedView || _isTravelRoomView
+          ? 33
+          : _toastBottomOffset(context),
     );
   }
 
@@ -118,7 +128,9 @@ class ShoppingDetailPage extends StatelessWidget {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: EdgeInsets.only(bottom: isSavedView ? 36 : 110),
+            padding: EdgeInsets.only(
+              bottom: isSavedView || _isTravelRoomView ? 36 : 110,
+            ),
             child: Stack(
               children: [
                 PlaceImageCarousel(imagePaths: data.imagePaths),
@@ -158,10 +170,19 @@ class ShoppingDetailPage extends StatelessWidget {
                           children: [
                             _buildHeader(),
 
-                            const SizedBox(height: 26),
+                            if (_isTravelRoomView) ...[
+                              const SizedBox(height: 16),
+
+                              MoodMatchBadge(matchRate: moodMatchRate!),
+
+                              const SizedBox(height: 20),
+                            ] else
+                              const SizedBox(height: 26),
+
                             const _DetailDivider(),
 
                             const SizedBox(height: 26),
+
                             _buildLocation(context),
 
                             if (_visibleMoods.isNotEmpty) ...[
@@ -170,15 +191,18 @@ class ShoppingDetailPage extends StatelessWidget {
                             ],
 
                             const SizedBox(height: 26),
+
                             _buildDescription(),
 
                             if (_hasSalesItem) ...[
                               const SizedBox(height: 26),
+
                               SalesItemSection(salesItem: data.salesItem),
                             ],
 
                             if (_shoppingFacilities.isNotEmpty) ...[
                               const SizedBox(height: 26),
+
                               const _DetailDivider(),
 
                               const SizedBox(height: 26),
@@ -191,6 +215,7 @@ class ShoppingDetailPage extends StatelessWidget {
 
                             if (_hasUsageInfo) ...[
                               const SizedBox(height: 26),
+
                               const _DetailDivider(),
 
                               const SizedBox(height: 26),
@@ -243,7 +268,7 @@ class ShoppingDetailPage extends StatelessWidget {
             ),
           ),
 
-          if (!isSavedView) _buildSaveButton(context),
+          if (!isSavedView && !_isTravelRoomView) _buildSaveButton(context),
         ],
       ),
     );
@@ -284,6 +309,8 @@ class ShoppingDetailPage extends StatelessWidget {
   }
 
   Widget _buildLocation(BuildContext context) {
+    final distanceText = accommodationDistanceText?.trim();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -305,7 +332,9 @@ class ShoppingDetailPage extends StatelessWidget {
                 color: AppColors.textSecondary,
               ),
             ),
+
             const SizedBox(width: 7),
+
             CopyButton(
               onTap: () {
                 _copyAddress(context);
@@ -313,6 +342,19 @@ class ShoppingDetailPage extends StatelessWidget {
             ),
           ],
         ),
+
+        if (_isTravelRoomView &&
+            distanceText != null &&
+            distanceText.isNotEmpty) ...[
+          const SizedBox(height: 4),
+
+          Text(
+            distanceText,
+            style: AppTypography.tabMedium.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -327,7 +369,9 @@ class ShoppingDetailPage extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
+
         const SizedBox(height: 12),
+
         Wrap(
           spacing: 7,
           runSpacing: 7,
@@ -358,7 +402,9 @@ class ShoppingDetailPage extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
             ),
+
             const SizedBox(width: 6),
+
             const MapTag(
               label: '쇼핑',
               color: MapTagColor.blue,
