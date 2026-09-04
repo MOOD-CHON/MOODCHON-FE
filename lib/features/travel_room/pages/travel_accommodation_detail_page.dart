@@ -6,6 +6,8 @@ import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_typography.dart';
 import '../../../core/widgets/banner/toast_overlay.dart';
 import '../../../core/widgets/button/copy_button.dart';
+import '../../../core/widgets/button/green/green_button.dart';
+import '../../../core/widgets/button/green/green_button_size.dart';
 import '../../../core/widgets/button/half/half_button.dart';
 import '../../../core/widgets/button/half/half_button_type.dart';
 import '../../../core/widgets/facility/facilities_all.dart';
@@ -22,13 +24,20 @@ import '../widgets/accommodation/accommodation_match_section.dart';
 import '../widgets/accommodation/accommodation_recommendation_stats.dart';
 import '../widgets/accommodation/accommodation_vote_bottom_sheet.dart';
 
+enum TravelAccommodationDetailMode { recommendation, confirmed }
+
 class TravelAccommodationDetailPage extends StatefulWidget {
   const TravelAccommodationDetailPage({
     super.key,
     this.data = travelAccommodationDetailMockData,
+    this.mode = TravelAccommodationDetailMode.recommendation,
+    this.onConfirmedAccommodationCanceled,
   });
 
   final TravelAccommodationDetailData data;
+  final TravelAccommodationDetailMode mode;
+
+  final VoidCallback? onConfirmedAccommodationCanceled;
 
   @override
   State<TravelAccommodationDetailPage> createState() =>
@@ -37,13 +46,16 @@ class TravelAccommodationDetailPage extends StatefulWidget {
 
 class _TravelAccommodationDetailPageState
     extends State<TravelAccommodationDetailPage> {
-  static const double _bottomButtonBottom = 22;
-  static const double _bottomButtonHeight = 49;
+  static const double _buttonBottom = 22;
+  static const double _buttonHeight = 49;
   static const double _toastGap = 12;
 
   bool _hasVoted = false;
 
   TravelAccommodationDetailData get data => widget.data;
+
+  bool get _isConfirmed =>
+      widget.mode == TravelAccommodationDetailMode.confirmed;
 
   List<String> get _visibleMoods {
     return data.accommodation.moods
@@ -73,7 +85,7 @@ class _TravelAccommodationDetailPageState
   double _toastBottomOffset(BuildContext context) {
     final safeBottom = MediaQuery.paddingOf(context).bottom;
 
-    return safeBottom + _bottomButtonBottom + _bottomButtonHeight + _toastGap;
+    return safeBottom + _buttonBottom + _buttonHeight + _toastGap;
   }
 
   Future<void> _copyAddress(BuildContext context) async {
@@ -92,6 +104,30 @@ class _TravelAccommodationDetailPageState
     );
   }
 
+  Future<void> _openReservationHomepage() async {
+    final homepage = data.accommodation.reservationHomepage;
+
+    if (!_hasValue(homepage)) {
+      return;
+    }
+
+    final uri = Uri.tryParse(homepage!);
+
+    if (uri == null) {
+      return;
+    }
+
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
+  void _showVoters() {
+    if (data.voters.length < 4) {
+      return;
+    }
+
+    AccommodationVoteBottomSheet.show(context, members: data.voters);
+  }
+
   void _vote() {
     if (_hasVoted) {
       return;
@@ -107,7 +143,7 @@ class _TravelAccommodationDetailPageState
       bottom: _toastBottomOffset(context),
     );
 
-    // TODO: 투표 API 연동
+    // TODO: 숙소 투표 API 연결
   }
 
   Future<void> _confirmAccommodation() async {
@@ -125,32 +161,37 @@ class _TravelAccommodationDetailPageState
       return;
     }
 
-    // TODO: 숙소 확정 API
-    // TODO: 8.1 페이지 구현 후 이동
+    // TODO: 숙소 확정 API 연결
+    // TODO: 8.1 화면 구현 후 이동 연결
   }
 
-  void _showVoters() {
-    if (data.voters.length < 4) {
+  Future<void> _cancelConfirmedAccommodation() async {
+    final confirmed = await ConfirmModal.show(
+      context,
+      type: ConfirmModalType.sbTwo,
+      title: '숙소 확정을 취소할까요?',
+      description: '확정을 취소하면 기존 일정이 전부 사라져요.',
+      confirmText: '취소하기',
+      cancelText: '취소',
+      top: 347,
+    );
+
+    if (confirmed != true || !mounted) {
       return;
     }
 
-    AccommodationVoteBottomSheet.show(context, members: data.voters);
-  }
+    // TODO: 숙소 확정 취소 API 연결
+    // TODO: 추천 일정 / 확정 일정 초기화
+    // TODO: 6.2 구현 후 숙소 추천 단계로 이동
 
-  Future<void> _openReservationHomepage() async {
-    final homepage = data.accommodation.reservationHomepage;
+    final callback = widget.onConfirmedAccommodationCanceled;
 
-    if (!_hasValue(homepage)) {
+    if (callback != null) {
+      callback();
       return;
     }
 
-    final uri = Uri.tryParse(homepage!);
-
-    if (uri == null) {
-      return;
-    }
-
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
+    Navigator.of(context).pop(true);
   }
 
   @override
@@ -202,7 +243,6 @@ class _TravelAccommodationDetailPageState
                           children: [
                             _buildHeader(),
 
-                            // 한 줄 소개 → 28
                             const SizedBox(height: 28),
 
                             AccommodationRecommendationStats(
@@ -218,7 +258,7 @@ class _TravelAccommodationDetailPageState
 
                             const SizedBox(height: 26),
 
-                            _buildLocation(),
+                            _buildLocation(context),
 
                             const SizedBox(height: 26),
 
@@ -242,8 +282,8 @@ class _TravelAccommodationDetailPageState
                               ),
                             ],
 
-                            // 숙소 조건 이후 divider
                             const SizedBox(height: 26),
+
                             const _DetailDivider(),
 
                             const SizedBox(height: 26),
@@ -260,15 +300,11 @@ class _TravelAccommodationDetailPageState
                               reasons: data.regretReasons,
                             ),
 
-                            if (_hasFacilities ||
-                                data.accommodation.rooms.isNotEmpty ||
-                                _hasUsageInfo ||
-                                _hasContactInfo) ...[
-                              const SizedBox(height: 26),
-                              const _DetailDivider(),
-                            ],
-
                             if (_hasFacilities) ...[
+                              const SizedBox(height: 26),
+
+                              const _DetailDivider(),
+
                               const SizedBox(height: 26),
 
                               FacilitiesAll(
@@ -279,6 +315,7 @@ class _TravelAccommodationDetailPageState
 
                             if (data.accommodation.rooms.isNotEmpty) ...[
                               const SizedBox(height: 26),
+
                               const _DetailDivider(),
 
                               const SizedBox(height: 26),
@@ -299,6 +336,7 @@ class _TravelAccommodationDetailPageState
 
                             if (_hasUsageInfo) ...[
                               const SizedBox(height: 26),
+
                               const _DetailDivider(),
 
                               const SizedBox(height: 26),
@@ -348,7 +386,10 @@ class _TravelAccommodationDetailPageState
             ),
           ),
 
-          _buildBottomButtons(),
+          if (_isConfirmed)
+            _buildConfirmedBottomButton()
+          else
+            _buildRecommendationBottomButtons(),
         ],
       ),
     );
@@ -377,7 +418,7 @@ class _TravelAccommodationDetailPageState
     );
   }
 
-  Widget _buildLocation() {
+  Widget _buildLocation(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -466,11 +507,11 @@ class _TravelAccommodationDetailPageState
     );
   }
 
-  Widget _buildBottomButtons() {
+  Widget _buildRecommendationBottomButtons() {
     return Positioned(
       left: 16,
       right: 16,
-      bottom: _bottomButtonBottom,
+      bottom: _buttonBottom,
       child: SafeArea(
         top: false,
         child: Row(
@@ -494,6 +535,25 @@ class _TravelAccommodationDetailPageState
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildConfirmedBottomButton() {
+    return Positioned(
+      left: 16,
+      right: 16,
+      bottom: _buttonBottom,
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          width: double.infinity,
+          child: GreenButton(
+            size: GreenButtonSize.long,
+            label: '숙소 확정 취소하기',
+            onTap: _cancelConfirmedAccommodation,
+          ),
         ),
       ),
     );
