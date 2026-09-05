@@ -38,6 +38,11 @@ dependencies:
   flutter_svg: ^2.3.0
   image_picker: ^1.2.0
   gal: ^2.3.3
+  dio: ^5.11.1
+  flutter_secure_storage: ^9.2.4
+  flutter_dotenv: ^6.0.1
+  kakao_flutter_sdk_user: ^2.0.1
+  sign_in_with_apple: ^8.2.0
 
 dev_dependencies:
   flutter_test:
@@ -61,6 +66,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - .env
     - assets/icons/
     - assets/icons/logo/
     - assets/icons/navigation/
@@ -77,6 +83,8 @@ flutter:
     - assets/icons/trash/
     - assets/icons/pin/
     - assets/icons/nonselect/
+    - assets/icons/social/
+    - assets/images/auth/
     - assets/images/character/default/
     - assets/images/character/greeting/
     - assets/images/character/excited/
