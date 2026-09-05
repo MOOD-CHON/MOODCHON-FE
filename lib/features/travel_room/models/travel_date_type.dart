@@ -1,0 +1,1 @@
+enum TravelDateType { date, duration }

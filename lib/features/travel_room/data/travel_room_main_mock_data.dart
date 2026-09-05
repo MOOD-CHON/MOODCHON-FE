@@ -1,4 +1,5 @@
 import '../models/accommodation_recommendation.dart';
+import '../models/travel_date_type.dart';
 import '../models/travel_room_day_plan.dart';
 import '../models/travel_room_main_data.dart';
 import '../models/travel_room_member.dart';
@@ -8,7 +9,8 @@ import '../models/travel_room_stage.dart';
 
 const travelRoomMainMockData = TravelRoomMainData(
   roomName: '보미의 촌캉스',
-  travelDateText: '2026.09.12 - 2026.09.13',
+  travelDateType: TravelDateType.date,
+  travelDateText: '9.12(토) - 9.18(금)',
   stage: TravelRoomStage.moodSelecting,
   members: [
     TravelRoomMember(id: 'member-1', name: '보미', moodCompleted: true),
@@ -62,8 +64,6 @@ const travelRoomMainMockData = TravelRoomMainData(
       facilities: [LodgingFacility.bbq],
       voters: [],
     ),
-
-    // 4위
     AccommodationRecommendation(
       id: 'accommodation-4',
       rank: 4,
@@ -78,8 +78,6 @@ const travelRoomMainMockData = TravelRoomMainData(
       facilities: [LodgingFacility.puppy, LodgingFacility.bbq],
       voters: [],
     ),
-
-    // 5위
     AccommodationRecommendation(
       id: 'accommodation-5',
       rank: 5,

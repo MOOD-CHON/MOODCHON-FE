@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -117,6 +118,9 @@ class _MoodResultDetailPageState extends State<MoodResultDetailPage> {
 
     const double toastHeight = 44;
     const double toastToButtonGap = 12;
+    const double defaultToastTop = 775;
+    const double minimumToastTop = 16;
+    const double bottomMargin = 16;
 
     final overlay = Overlay.of(context);
 
@@ -150,12 +154,25 @@ class _MoodResultDetailPageState extends State<MoodResultDetailPage> {
         },
       );
     } else {
+      final mediaQuery = MediaQuery.of(context);
+
+      final double maximumToastTop =
+          mediaQuery.size.height -
+          mediaQuery.padding.bottom -
+          toastHeight -
+          bottomMargin;
+
+      final double toastTop = math.max(
+        minimumToastTop,
+        math.min(defaultToastTop, maximumToastTop),
+      );
+
       overlayEntry = OverlayEntry(
         builder: (context) {
           return Positioned(
             left: 16,
             right: 16,
-            top: 775,
+            top: toastTop,
             child: Material(
               color: Colors.transparent,
               child: ToastBanner(message: message),

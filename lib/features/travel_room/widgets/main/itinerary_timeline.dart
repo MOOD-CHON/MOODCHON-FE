@@ -49,14 +49,12 @@ class _TimelineItem extends StatelessWidget {
 
   static const double _pinWidth = 17;
   static const double _pinToContentGap = 10;
-  static const double _contentWidth = 341;
 
   @override
   Widget build(BuildContext context) {
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
             width: _pinWidth,
@@ -70,6 +68,7 @@ class _TimelineItem extends StatelessWidget {
                     color: item.category.mapPinColor,
                   ),
                 ),
+
                 if (!isLast)
                   Positioned(
                     top: 17,
@@ -83,8 +82,7 @@ class _TimelineItem extends StatelessWidget {
 
           const SizedBox(width: _pinToContentGap),
 
-          SizedBox(
-            width: _contentWidth,
+          Expanded(
             child: item.hasPlace
                 ? PlanCard(
                     type: PlanCardType.edit2,

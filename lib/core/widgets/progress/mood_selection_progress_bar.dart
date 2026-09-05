@@ -12,7 +12,7 @@ class MoodSelectionProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final progress = value.clamp(0.0, 1.0);
+    final progress = value.clamp(0.0, 1.0).toDouble();
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(_radius),
