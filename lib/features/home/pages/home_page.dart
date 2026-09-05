@@ -20,6 +20,7 @@ class HomePage extends StatefulWidget {
     this.onJoinTrip,
     this.onExploreMoods,
     this.onNotification,
+    this.onRequestNotificationPermission,
     this.onContinueTrip,
     this.onTripTap,
   });
@@ -29,6 +30,7 @@ class HomePage extends StatefulWidget {
   final VoidCallback? onJoinTrip;
   final VoidCallback? onExploreMoods;
   final VoidCallback? onNotification;
+  final VoidCallback? onRequestNotificationPermission;
   final ValueChanged<HomeTrip>? onContinueTrip;
   final ValueChanged<HomeTrip>? onTripTap;
 
@@ -38,6 +40,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   HomeTripFilter _selectedFilter = HomeTripFilter.all;
+  bool _didRequestNotificationPermission = false;
 
   static const double _designSafeHeight = 792;
 
@@ -62,6 +65,24 @@ class _HomePageState extends State<HomePage> {
     }
 
     return _trips.firstOrNull;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _requestNotificationPermissionOnce();
+    });
+  }
+
+  void _requestNotificationPermissionOnce() {
+    if (_didRequestNotificationPermission || !mounted) {
+      return;
+    }
+
+    _didRequestNotificationPermission = true;
+    widget.onRequestNotificationPermission?.call();
   }
 
   @override

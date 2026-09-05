@@ -62,6 +62,10 @@ class _MainPageState extends State<MainPage> {
     _handleTabChanged(BottomTabType.explore);
   }
 
+  void _handleHomeNotificationPermissionRequest() {
+    // TODO: 푸시 알림 패키지 연동 후 OS 권한 요청을 연결
+  }
+
   @override
   Widget build(BuildContext context) {
     final isKeyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0;
@@ -76,6 +80,8 @@ class _MainPageState extends State<MainPage> {
               HomePage(
                 onExploreMoods: _handleExploreMoodsTap,
                 onNotification: _handleNotificationTap,
+                onRequestNotificationPermission:
+                    _handleHomeNotificationPermissionRequest,
               ),
               const ExplorePage(),
               const SavedPage(),
