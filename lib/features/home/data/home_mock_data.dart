@@ -18,5 +18,13 @@ abstract final class HomeMockData {
       dDay: 21,
       status: HomeTripStatus.inProgress,
     ),
+    HomeTrip(
+      name: '봄날 촌캉스',
+      moodLabel: '포근한 낮잠 무드',
+      dateRange: '4.12(토) - 4.13(일)',
+      memberCount: 2,
+      dDay: 0,
+      status: HomeTripStatus.completed,
+    ),
   ];
 }

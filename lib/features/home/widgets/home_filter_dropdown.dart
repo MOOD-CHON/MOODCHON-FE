@@ -20,7 +20,7 @@ extension HomeTripFilterLabel on HomeTripFilter {
   }
 }
 
-class HomeFilterDropdown extends StatelessWidget {
+class HomeFilterDropdown extends StatefulWidget {
   const HomeFilterDropdown({
     super.key,
     required this.selectedFilter,
@@ -31,55 +31,177 @@ class HomeFilterDropdown extends StatelessWidget {
   final ValueChanged<HomeTripFilter> onChanged;
 
   @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<HomeTripFilter>(
-      initialValue: selectedFilter,
-      color: AppColors.backgroundWhite,
-      elevation: 0,
-      shadowColor: Colors.transparent,
-      padding: EdgeInsets.zero,
-      offset: const Offset(0, 32),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      onSelected: onChanged,
-      itemBuilder: (context) {
-        return [
-          for (final filter in HomeTripFilter.values)
-            PopupMenuItem<HomeTripFilter>(
-              value: filter,
-              child: Text(
-                filter.label,
-                style: AppTypography.bodyMedium.copyWith(
-                  color: AppColors.textPrimary,
-                ),
-              ),
-            ),
-        ];
-      },
-      child: Container(
-        height: 26,
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: AppColors.backgroundWhite,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: AppShadows.card,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
+  State<HomeFilterDropdown> createState() => _HomeFilterDropdownState();
+}
+
+class _HomeFilterDropdownState extends State<HomeFilterDropdown> {
+  static const double _buttonWidth = 67;
+  static const double _buttonHeight = 26;
+  static const double _menuWidth = 82;
+  static const double _menuTopGap = 6;
+
+  final LayerLink _layerLink = LayerLink();
+  OverlayEntry? _overlayEntry;
+
+  bool get _isOpen => _overlayEntry != null;
+
+  @override
+  void dispose() {
+    _removeOverlay();
+    super.dispose();
+  }
+
+  void _toggleOverlay() {
+    if (_isOpen) {
+      _removeOverlay();
+    } else {
+      _showOverlay();
+    }
+  }
+
+  void _showOverlay() {
+    final overlay = Overlay.of(context);
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) {
+        return Stack(
           children: [
-            Text(
-              selectedFilter.label,
-              style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textPrimary,
-                height: 1,
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: _removeOverlay,
+                child: const SizedBox.expand(),
               ),
             ),
-            const SizedBox(width: 3),
-            SvgPicture.asset(
-              'assets/icons/filter/dropdown_down_black.svg',
-              width: 12,
-              height: 12,
+            CompositedTransformFollower(
+              link: _layerLink,
+              showWhenUnlinked: false,
+              offset: const Offset(
+                -(_menuWidth - _buttonWidth),
+                _buttonHeight + _menuTopGap,
+              ),
+              child: _FilterMenu(
+                selectedFilter: widget.selectedFilter,
+                onSelected: _selectFilter,
+              ),
             ),
           ],
+        );
+      },
+    );
+
+    overlay.insert(_overlayEntry!);
+  }
+
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  void _selectFilter(HomeTripFilter filter) {
+    _removeOverlay();
+    widget.onChanged(filter);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CompositedTransformTarget(
+      link: _layerLink,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: _toggleOverlay,
+        child: Container(
+          width: _buttonWidth,
+          height: _buttonHeight,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: AppColors.backgroundWhite,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: AppShadows.card,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                widget.selectedFilter.label,
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppColors.textPrimary,
+                  height: 1,
+                ),
+              ),
+              const SizedBox(width: 3),
+              SvgPicture.asset(
+                'assets/icons/filter/dropdown_down_black.svg',
+                width: 12,
+                height: 12,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FilterMenu extends StatelessWidget {
+  const _FilterMenu({required this.selectedFilter, required this.onSelected});
+
+  final HomeTripFilter selectedFilter;
+  final ValueChanged<HomeTripFilter> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        width: _HomeFilterDropdownState._menuWidth,
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        decoration: BoxDecoration(
+          color: AppColors.backgroundWhite,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: AppShadows.card,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final filter in HomeTripFilter.values)
+              _FilterMenuItem(
+                filter: filter,
+                isSelected: filter == selectedFilter,
+                onTap: () => onSelected(filter),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FilterMenuItem extends StatelessWidget {
+  const _FilterMenuItem({
+    required this.filter,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final HomeTripFilter filter;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Container(
+        height: 30,
+        alignment: Alignment.center,
+        color: isSelected ? AppColors.greenTab : AppColors.backgroundWhite,
+        child: Text(
+          filter.label,
+          style: AppTypography.bodyMedium.copyWith(
+            color: isSelected ? AppColors.main : AppColors.textPrimary,
+          ),
         ),
       ),
     );
