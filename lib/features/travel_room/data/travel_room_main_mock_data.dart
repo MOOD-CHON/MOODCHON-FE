@@ -6,11 +6,16 @@ import '../models/travel_room_member.dart';
 import '../models/travel_room_plan_category.dart';
 import '../models/travel_room_plan_item.dart';
 import '../models/travel_room_stage.dart';
+import '../utils/travel_date_formatter.dart';
 
-const travelRoomMainMockData = TravelRoomMainData(
+final travelRoomMainMockData = TravelRoomMainData(
   roomName: '보미의 촌캉스',
   travelDateType: TravelDateType.date,
-  travelDateText: '9.12(토) - 9.18(금)',
+  travelDateText: TravelDateFormatter.format(
+    type: TravelDateType.date,
+    startDate: '2026-09-12',
+    endDate: '2026-09-18',
+  ),
   stage: TravelRoomStage.moodSelecting,
   members: [
     TravelRoomMember(id: 'member-1', name: '보미', moodCompleted: true),

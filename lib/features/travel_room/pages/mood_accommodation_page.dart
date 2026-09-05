@@ -18,12 +18,9 @@ import 'accommodation_search_page.dart';
 import 'travel_accommodation_detail_page.dart';
 
 class MoodAccommodationPage extends StatefulWidget {
-  const MoodAccommodationPage({
-    super.key,
-    this.data = moodAccommodationMockData,
-  });
+  const MoodAccommodationPage({super.key, this.data});
 
-  final MoodAccommodationPageData data;
+  final MoodAccommodationPageData? data;
 
   @override
   State<MoodAccommodationPage> createState() => _MoodAccommodationPageState();
@@ -31,6 +28,9 @@ class MoodAccommodationPage extends StatefulWidget {
 
 class _MoodAccommodationPageState extends State<MoodAccommodationPage> {
   int _currentTopIndex = 0;
+
+  MoodAccommodationPageData get _data =>
+      widget.data ?? moodAccommodationMockData;
 
   void _onTopAccommodationChanged(int index) {
     setState(() {
@@ -81,7 +81,6 @@ class _MoodAccommodationPageState extends State<MoodAccommodationPage> {
                 Navigator.of(context).pop();
               },
             ),
-
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.only(bottom: 36),
@@ -91,9 +90,9 @@ class _MoodAccommodationPageState extends State<MoodAccommodationPage> {
                     const SizedBox(height: 9),
 
                     MoodAccommodationHeader(
-                      moodName: widget.data.moodName,
-                      moodTags: widget.data.moodTags,
-                      travelInfo: widget.data.travelInfo,
+                      moodName: _data.moodName,
+                      moodTags: _data.moodTags,
+                      travelInfo: _data.travelInfo,
                     ),
 
                     const SizedBox(height: 26),
@@ -127,20 +126,16 @@ class _MoodAccommodationPageState extends State<MoodAccommodationPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
                         children: List.generate(
-                          widget.data.similarAccommodations.length,
+                          _data.similarAccommodations.length,
                           (index) {
                             final accommodation =
-                                widget.data.similarAccommodations[index];
+                                _data.similarAccommodations[index];
 
                             return Padding(
                               padding: EdgeInsets.only(
                                 bottom:
                                     index ==
-                                        widget
-                                                .data
-                                                .similarAccommodations
-                                                .length -
-                                            1
+                                        _data.similarAccommodations.length - 1
                                     ? 0
                                     : 10,
                               ),
@@ -183,7 +178,6 @@ class _MoodAccommodationPageState extends State<MoodAccommodationPage> {
                   ),
                 ),
               ),
-
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -208,7 +202,7 @@ class _MoodAccommodationPageState extends State<MoodAccommodationPage> {
         const SizedBox(height: 14),
 
         LodgingCarousel(
-          items: widget.data.topAccommodations.take(5).toList(),
+          items: _data.topAccommodations.take(5).toList(),
           onPageChanged: _onTopAccommodationChanged,
           onDetailTap: _onAccommodationDetailTap,
         ),

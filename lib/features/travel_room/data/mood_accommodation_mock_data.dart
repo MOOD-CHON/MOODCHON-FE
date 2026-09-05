@@ -1,12 +1,18 @@
 import '../models/accommodation_recommendation.dart';
 import '../models/mood_accommodation_page_data.dart';
+import '../models/travel_date_type.dart';
 import '../models/vote_member.dart';
+import '../utils/travel_date_formatter.dart';
 
-const moodAccommodationMockData = MoodAccommodationPageData(
+final moodAccommodationMockData = MoodAccommodationPageData(
   moodName: '고즈넉한 쉼표 무드',
   moodTags: ['고즈넉한', '#조용한', '골목길', '마당'],
   travelInfo: [
-    '9.22(화) - 9.23(수)',
+    TravelDateFormatter.format(
+      type: TravelDateType.date,
+      startDate: '2026-09-22',
+      endDate: '2026-09-23',
+    ),
     '3명',
     '친구',
     '대중교통',
