@@ -28,7 +28,7 @@ class MoodChonApp extends StatelessWidget {
         builder: (context) {
           return LoginEntryPage(
             onKakaoLogin: () => _handleKakaoLogin(context),
-            onAppleLogin: () => _openMain(context),
+            onAppleLogin: () => _handleAppleLogin(context),
           );
         },
       ),
@@ -44,6 +44,19 @@ class MoodChonApp extends StatelessWidget {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result.errorMessage ?? '카카오 로그인에 실패했어요.')),
+      );
+    }
+  }
+
+  Future<void> _handleAppleLogin(BuildContext context) async {
+    final result = await SocialAuthService.instance.loginWithApple();
+    if (!context.mounted) return;
+
+    if (result.success) {
+      _openMain(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.errorMessage ?? 'Apple 로그인에 실패했어요.')),
       );
     }
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../core/network/api_client.dart';
 import '../../../core/network/token_storage.dart';
@@ -23,6 +24,25 @@ class SocialAuthService {
       final kakaoToken = await _obtainKakaoToken();
       await _loginToBackend('/api/auth/kakao', {
         'accessToken': kakaoToken.accessToken,
+      });
+      return const AuthResult.success();
+    } catch (e) {
+      return AuthResult.failure(e.toString());
+    }
+  }
+
+  Future<AuthResult> loginWithApple() async {
+    try {
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [AppleIDAuthorizationScopes.email],
+      );
+      final identityToken = credential.identityToken;
+      if (identityToken == null) {
+        return const AuthResult.failure('애플 로그인에 실패했어요.');
+      }
+
+      await _loginToBackend('/api/auth/apple', {
+        'identityToken': identityToken,
       });
       return const AuthResult.success();
     } catch (e) {
