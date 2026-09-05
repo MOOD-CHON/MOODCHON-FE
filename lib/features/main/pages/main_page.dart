@@ -5,6 +5,7 @@ import '../../../core/widgets/bottom_tab/bottom_tab_type.dart';
 import '../../../core/widgets/navigation/bottom_tab_bar.dart';
 import '../../explore/pages/explore_page.dart';
 import '../../home/pages/home_page.dart';
+import '../../notification/utils/open_notification_page.dart';
 import '../../profile/pages/profile_page.dart';
 import '../../saved/pages/saved_page.dart';
 
@@ -53,6 +54,14 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  void _handleNotificationTap() {
+    openNotificationPage(context);
+  }
+
+  void _handleExploreMoodsTap() {
+    _handleTabChanged(BottomTabType.explore);
+  }
+
   @override
   Widget build(BuildContext context) {
     final isKeyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0;
@@ -63,11 +72,14 @@ class _MainPageState extends State<MainPage> {
         children: [
           IndexedStack(
             index: _selectedIndex,
-            children: const [
-              HomePage(),
-              ExplorePage(),
-              SavedPage(),
-              ProfilePage(),
+            children: [
+              HomePage(
+                onExploreMoods: _handleExploreMoodsTap,
+                onNotification: _handleNotificationTap,
+              ),
+              const ExplorePage(),
+              const SavedPage(),
+              const ProfilePage(),
             ],
           ),
 
