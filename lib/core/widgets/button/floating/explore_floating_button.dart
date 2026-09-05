@@ -102,7 +102,7 @@ class _ExploreFloatingButtonState extends State<ExploreFloatingButton> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '무드 선택을 기다리는 동안',
+                            '어떤 촌캉스를 떠날지 고민된다면?',
                             style: AppTypography.tabSmall.copyWith(
                               color: AppColors.backgroundPrimary,
                             ),
