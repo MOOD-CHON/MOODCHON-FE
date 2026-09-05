@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_interactions.dart';
-import '../../../app/theme/app_shadows.dart';
 import '../../../app/theme/app_typography.dart';
-import '../../../core/widgets/border/wiggly_border.dart';
-import '../../../core/widgets/character/character.dart';
-import '../../../core/widgets/character/character_size.dart';
-import '../../../core/widgets/character/character_type.dart';
 
 enum HomeQuickActionType { create, join }
 
@@ -28,6 +24,7 @@ class HomeQuickActionCard extends StatefulWidget {
 class _HomeQuickActionCardState extends State<HomeQuickActionCard> {
   static const double _height = 110;
   static const double _radius = 20;
+  static const double _exportOverflow = 15;
 
   bool _isPressed = false;
 
@@ -37,19 +34,12 @@ class _HomeQuickActionCardState extends State<HomeQuickActionCard> {
 
   String get _title => _isCreate ? '촌캉스 만들기' : '참여하기';
 
-  Color get _backgroundColor => _isCreate ? AppColors.main : AppColors.greenTab;
-
-  Color get _borderColor => _isCreate ? AppColors.greenTab : AppColors.main;
-
   Color get _textColor =>
       _isCreate ? AppColors.greenTab : AppColors.textPrimary;
 
-  CharacterType get _characterType =>
-      _isCreate ? CharacterType.greeting : CharacterType.letter;
-
-  double get _characterLeft => _isCreate ? 80.5 : 72.5;
-
-  double get _characterTop => _isCreate ? 32.5 : 25.5;
+  String get _assetPath => _isCreate
+      ? 'assets/images/home/quick_action_create.svg'
+      : 'assets/images/home/quick_action_join.svg';
 
   void _setPressed(bool value) {
     if (_isPressed == value) {
@@ -80,27 +70,13 @@ class _HomeQuickActionCardState extends State<HomeQuickActionCard> {
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                Positioned.fill(
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: _backgroundColor,
-                      borderRadius: BorderRadius.circular(_radius),
-                      border: Border.all(color: _borderColor),
-                      boxShadow: AppShadows.base,
-                    ),
-                  ),
-                ),
-                Positioned.fill(
+                Positioned(
+                  left: -_exportOverflow,
+                  top: -_exportOverflow,
+                  right: -_exportOverflow,
+                  bottom: -_exportOverflow,
                   child: IgnorePointer(
-                    child: CustomPaint(
-                      foregroundPainter: WigglyBorderPainter(
-                        color: _borderColor,
-                        radius: _radius,
-                        strokeWidth: 1,
-                        amplitude: 0.7,
-                        drawOutside: true,
-                      ),
-                    ),
+                    child: SvgPicture.asset(_assetPath, fit: BoxFit.fill),
                   ),
                 ),
                 Positioned(
@@ -113,6 +89,7 @@ class _HomeQuickActionCardState extends State<HomeQuickActionCard> {
                         _caption,
                         style: AppTypography.tabSmall.copyWith(
                           color: _textColor,
+                          height: 1,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -120,19 +97,10 @@ class _HomeQuickActionCardState extends State<HomeQuickActionCard> {
                         _title,
                         style: AppTypography.titleSmall.copyWith(
                           color: _textColor,
+                          height: 1,
                         ),
                       ),
                     ],
-                  ),
-                ),
-                Positioned(
-                  left: _characterLeft,
-                  top: _characterTop,
-                  child: Character(
-                    type: _characterType,
-                    size: CharacterSize.medium,
-                    width: 108,
-                    height: 108,
                   ),
                 ),
                 if (_isPressed)

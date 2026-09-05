@@ -86,6 +86,7 @@ flutter:
     - assets/icons/nonselect/
     - assets/icons/social/
     - assets/images/auth/
+    - assets/images/home/
     - assets/images/character/default/
     - assets/images/character/greeting/
     - assets/images/character/excited/

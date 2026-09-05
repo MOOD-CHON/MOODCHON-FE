@@ -165,11 +165,7 @@ class _FilterMenu extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             for (final filter in HomeTripFilter.values)
-              _FilterMenuItem(
-                filter: filter,
-                isSelected: filter == selectedFilter,
-                onTap: () => onSelected(filter),
-              ),
+              _FilterMenuItem(filter: filter, onTap: () => onSelected(filter)),
           ],
         ),
       ),
@@ -178,14 +174,9 @@ class _FilterMenu extends StatelessWidget {
 }
 
 class _FilterMenuItem extends StatelessWidget {
-  const _FilterMenuItem({
-    required this.filter,
-    required this.isSelected,
-    required this.onTap,
-  });
+  const _FilterMenuItem({required this.filter, required this.onTap});
 
   final HomeTripFilter filter;
-  final bool isSelected;
   final VoidCallback onTap;
 
   @override
@@ -196,11 +187,11 @@ class _FilterMenuItem extends StatelessWidget {
       child: Container(
         height: 30,
         alignment: Alignment.center,
-        color: isSelected ? AppColors.greenTab : AppColors.backgroundWhite,
+        color: AppColors.backgroundWhite,
         child: Text(
           filter.label,
           style: AppTypography.bodyMedium.copyWith(
-            color: isSelected ? AppColors.main : AppColors.textPrimary,
+            color: AppColors.textPrimary,
           ),
         ),
       ),

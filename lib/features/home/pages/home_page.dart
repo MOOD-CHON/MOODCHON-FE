@@ -101,6 +101,7 @@ class _HomePageState extends State<HomePage> {
             final hasTrips = _trips.isNotEmpty;
 
             return Stack(
+              fit: StackFit.expand,
               children: [
                 TopBar(
                   type: TopBarType.logo,

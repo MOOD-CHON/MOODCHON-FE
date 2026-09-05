@@ -5,10 +5,6 @@ import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_interactions.dart';
 import '../../../app/theme/app_shadows.dart';
 import '../../../app/theme/app_typography.dart';
-import '../../../core/widgets/border/wiggly_border.dart';
-import '../../../core/widgets/character/character.dart';
-import '../../../core/widgets/character/character_size.dart';
-import '../../../core/widgets/character/character_type.dart';
 import '../models/home_trip.dart';
 
 class HomeContinueTripButton extends StatefulWidget {
@@ -60,70 +56,57 @@ class _HomeContinueTripButtonState extends State<HomeContinueTripButton> {
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                Positioned.fill(
-                  child: DecoratedBox(
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    height: _height,
+                    padding: const EdgeInsets.fromLTRB(4, 4, 15, 4),
                     decoration: BoxDecoration(
                       color: AppColors.main,
                       borderRadius: BorderRadius.circular(_radius),
                       boxShadow: AppShadows.base,
                     ),
-                  ),
-                ),
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: CustomPaint(
-                      foregroundPainter: const WigglyBorderPainter(
-                        color: AppColors.main,
-                        radius: _radius,
-                        strokeWidth: 1,
-                        amplitude: 0.8,
-                        drawOutside: true,
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(left: 4, top: 4, child: _TripThumbnail(size: 51)),
-                Positioned(
-                  left: 63,
-                  top: 13,
-                  right: 46,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(text: widget.trip.name),
-                            const TextSpan(text: ' 계획 이어가기'),
-                          ],
+                    child: Row(
+                      children: [
+                        const HomeTripThumbnail(
+                          width: 51,
+                          height: 51,
+                          borderRadius: 100,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.bodyExtraLarge.copyWith(
-                          color: AppColors.backgroundIvory,
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(text: widget.trip.name),
+                                    const TextSpan(text: ' 계획 이어가기'),
+                                  ],
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTypography.bodyExtraLarge.copyWith(
+                                  color: AppColors.backgroundIvory,
+                                  height: 1,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              _ContinueTripMeta(trip: widget.trip),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        '다가오는 촌캉스   D-${widget.trip.dDay}   ${widget.trip.dateRange}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.tabSmall.copyWith(
-                          color: AppColors.backgroundIvory,
+                        const SizedBox(width: 12),
+                        SvgPicture.asset(
+                          'assets/icons/arrow_go/arrow_go_medium_white.svg',
+                          width: 12,
+                          height: 12,
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  right: 16,
-                  top: 0,
-                  bottom: 0,
-                  child: Center(
-                    child: SvgPicture.asset(
-                      'assets/icons/arrow_go/arrow_go_medium_white.svg',
-                      width: 12,
-                      height: 12,
+                      ],
                     ),
                   ),
                 ),
@@ -168,10 +151,16 @@ class _HomeContinueTripButtonState extends State<HomeContinueTripButton> {
 }
 
 class HomeTripThumbnail extends StatelessWidget {
-  const HomeTripThumbnail({super.key, this.width = 82, this.height = 66});
+  const HomeTripThumbnail({
+    super.key,
+    this.width = 82,
+    this.height = 66,
+    this.borderRadius = 10,
+  });
 
   final double width;
   final double height;
+  final double borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -179,42 +168,63 @@ class HomeTripThumbnail extends StatelessWidget {
       width: width,
       height: height,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: FittedBox(
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: Image.asset(
+          'assets/images/home/empty_thumbnail.png',
           fit: BoxFit.cover,
-          child: _TripThumbnail(size: width),
+          width: width,
+          height: height,
         ),
       ),
     );
   }
 }
 
-class _TripThumbnail extends StatelessWidget {
-  const _TripThumbnail({required this.size});
+class _ContinueTripMeta extends StatelessWidget {
+  const _ContinueTripMeta({required this.trip});
 
-  final double size;
+  final HomeTrip trip;
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = AppTypography.tabSmall.copyWith(
+      color: AppColors.backgroundIvory,
+      height: 1,
+    );
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(child: Text('다가오는 촌캉스', maxLines: 1, style: textStyle)),
+        const _VerticalSeparator(color: AppColors.backgroundIvory, height: 7),
+        Text('D-${trip.dDay}', maxLines: 1, style: textStyle),
+        const _VerticalSeparator(color: AppColors.backgroundIvory, height: 7),
+        Flexible(
+          child: Text(
+            trip.dateRange,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: textStyle,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _VerticalSeparator extends StatelessWidget {
+  const _VerticalSeparator({required this.color, required this.height});
+
+  final Color color;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: size,
-      height: size,
-      color: const Color(0xFFF3F4E6),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Positioned(
-            left: size * 0.14,
-            top: size * 0.14,
-            child: Character(
-              type: CharacterType.defaultCharacter,
-              size: CharacterSize.small,
-              width: size * 0.65,
-              height: size * 0.65,
-            ),
-          ),
-        ],
-      ),
+      width: 1,
+      height: height,
+      margin: const EdgeInsets.symmetric(horizontal: 5),
+      color: color.withValues(alpha: 0.72),
     );
   }
 }
