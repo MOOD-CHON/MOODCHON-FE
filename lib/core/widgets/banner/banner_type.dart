@@ -1,1 +1,1 @@
-enum BannerType { toast, info, button }
+enum BannerType { toast, info, button, character, characterButton }

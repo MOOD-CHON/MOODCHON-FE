@@ -9,23 +9,35 @@ import '../../profile/pages/profile_page.dart';
 import '../../saved/pages/saved_page.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  const MainPage({super.key, this.initialTab = BottomTabType.home});
+
+  final BottomTabType initialTab;
 
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-  BottomTabType _selectedTab = BottomTabType.home;
+  late BottomTabType _selectedTab;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _selectedTab = widget.initialTab;
+  }
 
   int get _selectedIndex {
     switch (_selectedTab) {
       case BottomTabType.home:
         return 0;
+
       case BottomTabType.explore:
         return 1;
+
       case BottomTabType.saved:
         return 2;
+
       case BottomTabType.my:
         return 3;
     }

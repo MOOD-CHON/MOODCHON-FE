@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -16,9 +17,14 @@ import '../widgets/mood_result/mood_result_card.dart';
 import 'mood_accommodation_page.dart';
 
 class MoodResultDetailPage extends StatefulWidget {
-  const MoodResultDetailPage({super.key, this.result = moodResultMockData});
+  const MoodResultDetailPage({
+    super.key,
+    this.result = moodResultMockData,
+    this.showAccommodationButton = true,
+  });
 
   final MoodResult result;
+  final bool showAccommodationButton;
 
   @override
   State<MoodResultDetailPage> createState() => _MoodResultDetailPageState();
@@ -110,38 +116,74 @@ class _MoodResultDetailPageState extends State<MoodResultDetailPage> {
     _toastOverlay?.remove();
     _toastOverlay = null;
 
-    final RenderBox? buttonRenderBox =
-        _accommodationButtonKey.currentContext?.findRenderObject()
-            as RenderBox?;
-
-    if (buttonRenderBox == null) {
-      return;
-    }
-
-    final Offset buttonPosition = buttonRenderBox.localToGlobal(Offset.zero);
-
     const double toastHeight = 44;
     const double toastToButtonGap = 12;
-
-    final double toastTop = buttonPosition.dy - toastHeight - toastToButtonGap;
+    const double defaultToastTop = 775;
+    const double minimumToastTop = 16;
+    const double bottomMargin = 16;
 
     final overlay = Overlay.of(context);
 
-    _toastOverlay = OverlayEntry(
-      builder: (context) {
-        return Positioned(
-          left: 16,
-          right: 16,
-          top: toastTop,
-          child: Material(
-            color: Colors.transparent,
-            child: ToastBanner(message: message),
-          ),
-        );
-      },
-    );
+    late final OverlayEntry overlayEntry;
 
-    overlay.insert(_toastOverlay!);
+    if (widget.showAccommodationButton) {
+      final RenderBox? buttonRenderBox =
+          _accommodationButtonKey.currentContext?.findRenderObject()
+              as RenderBox?;
+
+      if (buttonRenderBox == null) {
+        return;
+      }
+
+      final Offset buttonPosition = buttonRenderBox.localToGlobal(Offset.zero);
+
+      final double toastTop =
+          buttonPosition.dy - toastHeight - toastToButtonGap;
+
+      overlayEntry = OverlayEntry(
+        builder: (context) {
+          return Positioned(
+            left: 16,
+            right: 16,
+            top: toastTop,
+            child: Material(
+              color: Colors.transparent,
+              child: ToastBanner(message: message),
+            ),
+          );
+        },
+      );
+    } else {
+      final mediaQuery = MediaQuery.of(context);
+
+      final double maximumToastTop =
+          mediaQuery.size.height -
+          mediaQuery.padding.bottom -
+          toastHeight -
+          bottomMargin;
+
+      final double toastTop = math.max(
+        minimumToastTop,
+        math.min(defaultToastTop, maximumToastTop),
+      );
+
+      overlayEntry = OverlayEntry(
+        builder: (context) {
+          return Positioned(
+            left: 16,
+            right: 16,
+            top: toastTop,
+            child: Material(
+              color: Colors.transparent,
+              child: ToastBanner(message: message),
+            ),
+          );
+        },
+      );
+    }
+
+    _toastOverlay = overlayEntry;
+    overlay.insert(overlayEntry);
 
     _toastTimer = Timer(const Duration(seconds: 2), () {
       _toastOverlay?.remove();
@@ -170,7 +212,6 @@ class _MoodResultDetailPageState extends State<MoodResultDetailPage> {
                 Navigator.of(context).pop();
               },
             ),
-
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
@@ -184,17 +225,18 @@ class _MoodResultDetailPageState extends State<MoodResultDetailPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 17),
-
-                    Container(
-                      key: _accommodationButtonKey,
-                      width: double.infinity,
-                      child: GreenButton(
-                        size: GreenButtonSize.long,
-                        label: '무드 맞춤 숙소 보기',
-                        onTap: _onAccommodationTap,
+                    if (widget.showAccommodationButton) ...[
+                      const SizedBox(height: 17),
+                      Container(
+                        key: _accommodationButtonKey,
+                        width: double.infinity,
+                        child: GreenButton(
+                          size: GreenButtonSize.long,
+                          label: '무드 맞춤 숙소 보기',
+                          onTap: _onAccommodationTap,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),
