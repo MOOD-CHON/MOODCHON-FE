@@ -80,6 +80,7 @@ flutter:
     - assets/icons/place_info/
     - assets/icons/check/
     - assets/icons/banner/
+    - assets/icons/filter/
     - assets/icons/trash/
     - assets/icons/pin/
     - assets/icons/nonselect/
