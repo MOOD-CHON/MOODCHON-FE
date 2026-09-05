@@ -8,6 +8,7 @@ import '../../../app/theme/app_typography.dart';
 import '../../../core/widgets/character/character.dart';
 import '../../../core/widgets/character/character_size.dart';
 import '../../../core/widgets/character/character_type.dart';
+import 'legal_document_page.dart';
 import '../widgets/social_login_button.dart';
 
 class LoginEntryPage extends StatelessWidget {
@@ -94,8 +95,8 @@ class LoginEntryPage extends StatelessWidget {
                   right: 24,
                   bottom: _scaled(height, 116, _designHeight),
                   child: _AgreementText(
-                    onTermsTap: onTermsTap,
-                    onPrivacyTap: onPrivacyTap,
+                    onTermsTap: onTermsTap ?? () => _openTerms(context),
+                    onPrivacyTap: onPrivacyTap ?? () => _openPrivacy(context),
                   ),
                 ),
               ],
@@ -108,6 +109,18 @@ class LoginEntryPage extends StatelessWidget {
 
   static double _scaled(double actual, double value, double design) {
     return actual * value / design;
+  }
+
+  static void _openTerms(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => const TermsOfServicePage()),
+    );
+  }
+
+  static void _openPrivacy(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => const PrivacyPolicyPage()),
+    );
   }
 }
 
