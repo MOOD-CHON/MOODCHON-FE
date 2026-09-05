@@ -27,6 +27,8 @@ class LoginEntryPage extends StatelessWidget {
 
   static const double _designWidth = 393;
   static const double _designHeight = 852;
+  static const double _loginButtonHeight = 49;
+  static const double _loginButtonGap = 15;
 
   @override
   Widget build(BuildContext context) {
@@ -57,37 +59,40 @@ class LoginEntryPage extends StatelessWidget {
                 Positioned(
                   left: contentLeft,
                   right: contentLeft,
-                  bottom: _scaled(height, 215, _designHeight),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      SocialLoginButton(
-                        provider: SocialLoginProvider.kakao,
-                        onTap: onKakaoLogin ?? () {},
-                      ),
-                      Positioned(
-                        right: -4,
-                        bottom: 13,
-                        child: Transform.translate(
-                          offset: const Offset(0, -49),
-                          child: const Character(
-                            type: CharacterType.excited,
-                            size: CharacterSize.small,
-                            width: 98,
-                            height: 98,
+                  bottom: _scaled(height, 151, _designHeight),
+                  child: SizedBox(
+                    height: _loginButtonHeight * 2 + _loginButtonGap,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: _loginButtonHeight,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Positioned(
+                                right: -4,
+                                bottom: 13,
+                                child: const Character(
+                                  type: CharacterType.excited,
+                                  size: CharacterSize.small,
+                                  width: 98,
+                                  height: 98,
+                                ),
+                              ),
+                              SocialLoginButton(
+                                provider: SocialLoginProvider.kakao,
+                                onTap: onKakaoLogin ?? () {},
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  left: contentLeft,
-                  right: contentLeft,
-                  bottom: _scaled(height, 151, _designHeight),
-                  child: SocialLoginButton(
-                    provider: SocialLoginProvider.apple,
-                    onTap: onAppleLogin ?? () {},
+                        const SizedBox(height: _loginButtonGap),
+                        SocialLoginButton(
+                          provider: SocialLoginProvider.apple,
+                          onTap: onAppleLogin ?? () {},
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Positioned(
@@ -134,6 +139,7 @@ class _LoginBackground extends StatelessWidget {
       children: [
         Image.asset(
           'assets/images/auth/login_background.jpg',
+          alignment: const Alignment(-0.12, 0),
           fit: BoxFit.cover,
         ),
         const DecoratedBox(
@@ -229,7 +235,10 @@ class _AgreementTextState extends State<_AgreementText> {
     final baseStyle = AppTypography.captionExtraSmall.copyWith(
       color: AppColors.backgroundWhite,
     );
-    final linkStyle = baseStyle.copyWith(decoration: TextDecoration.underline);
+    final linkStyle = baseStyle.copyWith(
+      decoration: TextDecoration.underline,
+      decorationColor: AppColors.backgroundWhite,
+    );
 
     return Text.rich(
       TextSpan(
