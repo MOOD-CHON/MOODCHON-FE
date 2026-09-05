@@ -112,15 +112,15 @@ class LoginEntryPage extends StatelessWidget {
   }
 
   static void _openTerms(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => const TermsOfServicePage()),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const TermsOfServicePage()));
   }
 
   static void _openPrivacy(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => const PrivacyPolicyPage()),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const PrivacyPolicyPage()));
   }
 }
 
