@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../core/network/token_storage.dart';
 import '../features/auth/data/social_auth_service.dart';
 import '../features/auth/pages/login_entry_page.dart';
 import '../features/main/pages/main_page.dart';
+import 'theme/app_colors.dart';
 import 'theme/app_theme.dart';
 
 class MoodChonApp extends StatelessWidget {
@@ -24,11 +26,24 @@ class MoodChonApp extends StatelessWidget {
         );
       },
 
-      home: Builder(
-        builder: (context) {
-          return LoginEntryPage(
-            onKakaoLogin: () => _handleKakaoLogin(context),
-            onAppleLogin: () => _handleAppleLogin(context),
+      home: FutureBuilder<bool>(
+        future: TokenStorage.instance.hasAccessToken(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Scaffold(backgroundColor: AppColors.black);
+          }
+
+          if (snapshot.data!) {
+            return const MainPage();
+          }
+
+          return Builder(
+            builder: (context) {
+              return LoginEntryPage(
+                onKakaoLogin: () => _handleKakaoLogin(context),
+                onAppleLogin: () => _handleAppleLogin(context),
+              );
+            },
           );
         },
       ),
