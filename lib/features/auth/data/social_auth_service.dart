@@ -6,11 +6,20 @@ import '../../../core/network/api_client.dart';
 import '../../../core/network/token_storage.dart';
 
 class AuthResult {
-  const AuthResult.success() : success = true, errorMessage = null;
+  const AuthResult.success()
+    : success = true,
+      canceled = false,
+      errorMessage = null;
 
-  const AuthResult.failure(this.errorMessage) : success = false;
+  const AuthResult.canceled()
+    : success = false,
+      canceled = true,
+      errorMessage = null;
+
+  const AuthResult.failure(this.errorMessage) : success = false, canceled = false;
 
   final bool success;
+  final bool canceled;
   final String? errorMessage;
 }
 
@@ -26,6 +35,11 @@ class SocialAuthService {
         'accessToken': kakaoToken.accessToken,
       });
       return const AuthResult.success();
+    } on PlatformException catch (error) {
+      if (error.code == 'CANCELED') {
+        return const AuthResult.canceled();
+      }
+      return AuthResult.failure(error.toString());
     } catch (e) {
       return AuthResult.failure(e.toString());
     }
@@ -43,8 +57,14 @@ class SocialAuthService {
 
       await _loginToBackend('/api/auth/apple', {
         'identityToken': identityToken,
+        'authorizationCode': credential.authorizationCode,
       });
       return const AuthResult.success();
+    } on SignInWithAppleAuthorizationException catch (error) {
+      if (error.code == AuthorizationErrorCode.canceled) {
+        return const AuthResult.canceled();
+      }
+      return AuthResult.failure(error.toString());
     } catch (e) {
       return AuthResult.failure(e.toString());
     }

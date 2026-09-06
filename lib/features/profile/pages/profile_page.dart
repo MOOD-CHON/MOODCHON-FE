@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../app/app.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_typography.dart';
+import '../../auth/data/auth_api.dart';
 import '../../../core/widgets/banner/app_banner.dart';
 import '../../../core/widgets/banner/banner_type.dart';
 import '../../../core/widgets/button/alert_toggle/alert_toggle_button.dart';
@@ -95,8 +97,10 @@ class _ProfilePageState extends State<ProfilePage> {
     // TODO: 개인정보 처리방침 외부 URL 연결
   }
 
-  void _onLogoutTap() {
-    // TODO: 로그아웃 처리 후 로그인 전 진입 화면 연결
+  Future<void> _onLogoutTap() async {
+    await AuthApi.instance.logout();
+    if (!mounted) return;
+    navigateToLogin();
   }
 
   Future<void> _onWithdrawTap() async {
@@ -113,7 +117,9 @@ class _ProfilePageState extends State<ProfilePage> {
       return;
     }
 
-    // TODO: 회원 탈퇴 처리 후 로그인 전 진입 화면 연결
+    await AuthApi.instance.withdraw();
+    if (!mounted) return;
+    navigateToLogin();
   }
 
   @override

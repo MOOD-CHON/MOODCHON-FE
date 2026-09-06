@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../core/network/token_storage.dart';
-import '../features/auth/data/social_auth_service.dart';
-import '../features/auth/pages/login_entry_page.dart';
-import '../features/main/pages/main_page.dart';
-import 'theme/app_colors.dart';
+import 'app_entry_point.dart';
 import 'theme/app_theme.dart';
+
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 class MoodChonApp extends StatelessWidget {
   const MoodChonApp({super.key});
@@ -13,6 +11,7 @@ class MoodChonApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: rootNavigatorKey,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
 
@@ -26,59 +25,16 @@ class MoodChonApp extends StatelessWidget {
         );
       },
 
-      home: FutureBuilder<bool>(
-        future: TokenStorage.instance.hasAccessToken(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Scaffold(backgroundColor: AppColors.black);
-          }
-
-          if (snapshot.data!) {
-            return const MainPage();
-          }
-
-          return Builder(
-            builder: (context) {
-              return LoginEntryPage(
-                onKakaoLogin: () => _handleKakaoLogin(context),
-                onAppleLogin: () => _handleAppleLogin(context),
-              );
-            },
-          );
-        },
-      ),
+      home: const AppEntryPoint(),
     );
   }
+}
 
-  Future<void> _handleKakaoLogin(BuildContext context) async {
-    final result = await SocialAuthService.instance.loginWithKakao();
-    if (!context.mounted) return;
-
-    if (result.success) {
-      _openMain(context);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result.errorMessage ?? '카카오 로그인에 실패했어요.')),
-      );
-    }
-  }
-
-  Future<void> _handleAppleLogin(BuildContext context) async {
-    final result = await SocialAuthService.instance.loginWithApple();
-    if (!context.mounted) return;
-
-    if (result.success) {
-      _openMain(context);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result.errorMessage ?? 'Apple 로그인에 실패했어요.')),
-      );
-    }
-  }
-
-  void _openMain(BuildContext context) {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(builder: (_) => const MainPage()),
-    );
-  }
+// 로그아웃/탈퇴/세션 만료 시 지금까지 쌓인 화면 스택을 전부 걷어내고
+// 로그인 여부를 다시 판단하는 진입 지점으로 되돌아간다.
+void navigateToLogin() {
+  rootNavigatorKey.currentState?.pushAndRemoveUntil(
+    MaterialPageRoute<void>(builder: (_) => const AppEntryPoint()),
+    (route) => false,
+  );
 }
