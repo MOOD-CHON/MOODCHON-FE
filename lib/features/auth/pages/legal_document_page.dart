@@ -60,18 +60,6 @@ class TermsOfServicePage extends StatelessWidget {
   }
 }
 
-class PrivacyPolicyPage extends StatelessWidget {
-  const PrivacyPolicyPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const LegalDocumentPage(
-      title: '개인정보 안내',
-      blocks: LegalDocuments.privacyPolicy,
-    );
-  }
-}
-
 class _LegalText extends StatelessWidget {
   const _LegalText({required this.block});
 

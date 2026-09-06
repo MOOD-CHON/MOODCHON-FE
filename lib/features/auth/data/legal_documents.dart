@@ -11,389 +11,320 @@ abstract final class LegalDocuments {
   static const List<LegalTextBlock> termsOfService = [
     LegalTextBlock('제1조 목적'),
     LegalTextBlock(
-      '본 약관은 무드촌이 제공하는 무드 기반 촌캉스 계획 및 관광정보 추천 서비스의 '
-      '이용과 관련하여 서비스 운영자와 이용자 간의 권리, 의무 및 책임사항을 '
-      '규정함을 목적으로 합니다.',
+      '본 약관은 MOODI(이하 “운영자”)가 제공하는 무드 기반 촌캉스 여행 추천 서비스 '
+      '“무드촌”(이하 “서비스”)의 이용과 관련하여 운영자와 회원 간의 권리, 의무 및 '
+      '책임사항과 서비스 이용에 필요한 사항을 규정함을 목적으로 합니다.',
     ),
     LegalTextBlock(''),
     LegalTextBlock('제2조 용어의 정의'),
     LegalTextBlock(
-      '1. “서비스”란 이용자가 여행 조건과 선호 이미지를 선택하고, 이를 바탕으로 '
-      '공통 무드와 숙소·관광지·여행 일정 추천을 제공받을 수 있는 무드촌의 '
-      '제반 기능을 의미합니다.',
-    ),
-    LegalTextBlock('2. “회원”이란 본 약관에 동의하고 서비스에 가입하여 서비스를 이용하는 자를 의미합니다.'),
-    LegalTextBlock(
-      '3. “약속방”이란 여러 회원이 함께 여행 정보를 입력하고 무드를 선택하기 위해 '
-      '생성한 공동 이용 공간을 의미합니다.',
+      '1. “서비스”란 회원이 여행 정보를 입력하고 선호하는 무드 이미지를 선택하여 '
+      '무드 결과를 확인하고, 숙소·여행 일정·활동 등의 추천을 받아 촌캉스 여행을 '
+      '계획하거나 관광 콘텐츠를 탐색·저장할 수 있도록 무드촌이 제공하는 기능을 의미합니다.',
     ),
     LegalTextBlock(
-      '4. “참여자”란 특정 약속방에 참여하여 여행 정보 입력·수정 및 무드 선택 등의 '
-      '기능을 이용하는 회원을 의미합니다.',
+      '2. “회원”이란 본 약관에 동의하고 카카오 로그인, Apple 로그인 등 서비스가 '
+      '제공하는 방법을 통해 가입하여 서비스를 이용하는 자를 의미합니다.',
     ),
     LegalTextBlock(
-      '5. “추천 정보”란 이용자가 입력하거나 선택한 정보와 관광 관련 데이터를 '
-      '바탕으로 서비스가 제공하는 숙소, 관광지, 활동 및 일정 정보를 의미합니다.',
+      '3. “촌캉스방”이란 여러 회원이 함께 여행 정보를 입력하고 무드 이미지를 선택하여 '
+      '촌캉스 여행을 계획할 수 있도록 서비스 내에 생성되는 공동 이용 공간을 의미합니다.',
+    ),
+    LegalTextBlock(
+      '4. “참여자”란 특정 촌캉스방에 참여하여 여행 정보 입력, 무드 이미지 선택, '
+      '추천 결과 확인 및 여행 일정 편집 등의 기능을 이용하는 회원을 의미합니다.',
+    ),
+    LegalTextBlock(
+      '5. “여행 정보”란 여행 날짜, 인원수, 이동 방식, 희망 지역 등 회원 또는 참여자가 '
+      '서비스에 입력하거나 선택하는 여행 조건을 의미합니다.',
+    ),
+    LegalTextBlock(
+      '6. “무드”란 회원 또는 참여자가 선택한 무드 이미지의 태그를 바탕으로 서비스가 '
+      '도출하는 여행 분위기 또는 취향 유형 결과를 의미합니다.',
+    ),
+    LegalTextBlock(
+      '7. “추천 정보”란 회원 또는 참여자가 입력하거나 선택한 여행 정보, 무드 이미지의 '
+      '태그, 선택한 숙소 및 서비스 이용 과정에서 입력하거나 선택한 정보 등을 바탕으로 '
+      '서비스가 제공하는 숙소, 여행 일정 및 활동 추천 등의 정보를 의미합니다.',
+    ),
+    LegalTextBlock(
+      '8. “활동”이란 여행 일정에 추가할 수 있는 관광지, 문화시설, 쇼핑, 레포츠, '
+      '행사·공연·축제, 음식점 등의 장소 또는 관광 콘텐츠를 의미합니다.',
+    ),
+    LegalTextBlock(
+      '9. “탐색 기능”이란 회원이 관광지, 문화시설, 쇼핑, 레포츠, 행사·공연·축제, '
+      '음식점, 숙박 등의 관광 콘텐츠를 확인할 수 있도록 제공하는 개인 이용 기능을 의미합니다.',
+    ),
+    LegalTextBlock(
+      '10. “저장 기능”이란 회원이 탐색한 관광 콘텐츠를 개인 폴더에 저장하고 다시 '
+      '확인하거나 관리할 수 있도록 제공하는 개인 이용 기능을 의미합니다.',
     ),
     LegalTextBlock(''),
     LegalTextBlock('제3조 약관의 게시 및 변경'),
-    LegalTextBlock('1. 운영자는 이용자가 약관의 내용을 쉽게 확인할 수 있도록 서비스 내에 게시합니다.'),
-    LegalTextBlock('2. 운영자는 관련 법령을 위반하지 않는 범위에서 약관을 변경할 수 있습니다.'),
-    LegalTextBlock('3. 약관을 변경하는 경우 시행일과 변경 내용을 서비스 내 공지사항 등을 통해 사전에 안내합니다.'),
+    LegalTextBlock('1. 운영자는 회원이 본 약관의 내용을 쉽게 확인할 수 있도록 서비스 내 이용약관 페이지에 게시합니다.'),
+    LegalTextBlock('2. 운영자는 관련 법령을 위반하지 않는 범위에서 필요한 경우 본 약관을 변경할 수 있습니다.'),
+    LegalTextBlock(
+      '3. 약관을 변경하는 경우 변경 내용과 시행일을 서비스 내 이용약관 페이지 또는 '
+      '기타 적절한 방법을 통해 사전에 안내합니다.',
+    ),
+    LegalTextBlock(
+      '4. 관련 법령에 따라 회원의 별도 동의가 필요한 변경사항이 있는 경우 운영자는 해당 절차에 따라 동의를 받습니다.',
+    ),
     LegalTextBlock(''),
     LegalTextBlock('제4조 이용계약의 성립'),
-    LegalTextBlock('1. 이용계약은 이용자가 본 약관에 동의하고 회원가입 절차를 완료한 때 성립합니다.'),
     LegalTextBlock(
-      '2. 운영자는 허위 정보를 입력하거나 타인의 정보를 도용한 경우 회원가입을 거절하거나 서비스 이용을 제한할 수 있습니다.',
+      '1. 이용계약은 회원가입을 신청하는 자가 본 약관 및 필요한 정책에 동의하고 '
+      '서비스에서 제공하는 회원가입 절차를 완료한 때 성립합니다.',
     ),
+    LegalTextBlock(
+      '2. 회원가입은 카카오 로그인, Apple 로그인 등 운영자가 제공하는 소셜 로그인 방식을 통해 이루어질 수 있습니다.',
+    ),
+    LegalTextBlock(
+      '3. 운영자는 다음 각 호에 해당하는 경우 회원가입을 거절하거나 사후에 서비스 이용을 제한할 수 있습니다.',
+    ),
+    LegalTextBlock('1) 타인의 정보를 도용하거나 허위 정보를 이용한 경우'),
+    LegalTextBlock('2) 서비스 운영을 고의로 방해할 목적으로 가입한 경우'),
+    LegalTextBlock('3) 관련 법령 또는 본 약관을 위반한 경우'),
+    LegalTextBlock('4) 기타 정상적인 서비스 이용이 어렵다고 합리적으로 판단되는 경우'),
     LegalTextBlock(''),
     LegalTextBlock('제5조 서비스의 제공'),
     LegalTextBlock('운영자는 다음과 같은 서비스를 제공합니다.'),
-    LegalTextBlock('1. 약속방 생성 및 참여'),
-    LegalTextBlock('2. 여행 날짜, 인원, 이동 방식, 희망 지역 등 여행 조건 입력'),
-    LegalTextBlock('3. 참여자별 무드 이미지 선택 및 공통 무드 도출'),
-    LegalTextBlock('4. 공통 무드와 여행 조건에 따른 숙소, 관광지 및 여행 일정 추천'),
-    LegalTextBlock('5. 관광 콘텐츠 탐색 및 저장'),
-    LegalTextBlock('6. 그 밖에 운영자가 추가로 개발하거나 제휴를 통해 제공하는 서비스'),
+    LegalTextBlock('1. 촌캉스방 생성 및 참여'),
+    LegalTextBlock('2. 여행 날짜, 인원수, 이동 방식, 희망 지역 등 여행 정보 입력 및 설정'),
+    LegalTextBlock('3. 참여자별 무드 이미지 선택'),
+    LegalTextBlock('4. 선택한 무드 이미지의 태그를 바탕으로 한 무드 결과 도출'),
+    LegalTextBlock(
+      '5. 여행 정보와 선택한 무드 이미지의 태그 등 서비스에 입력하거나 선택한 정보를 바탕으로 한 숙소 추천',
+    ),
+    LegalTextBlock('6. 추천된 숙소 중 하나를 선택하거나 숙소명을 직접 검색하여 여행에 이용할 숙소를 선택하는 기능'),
+    LegalTextBlock('7. 선택한 숙소와 여행 정보 등 서비스 이용 과정에서 입력하거나 선택한 정보를 반영한 여행 일정 추천'),
+    LegalTextBlock('8. 여행 일정에 추가할 수 있는 활동 추천'),
+    LegalTextBlock(
+      '9. 추천 활동을 여행 일정에 추가하거나 삭제하고, 회원이 직접 장소를 선택하거나 '
+      '장소 없이 일정을 추가할 수 있는 일정 편집 기능',
+    ),
+    LegalTextBlock('10. 관광지, 문화시설, 쇼핑, 레포츠, 행사·공연·축제, 음식점, 숙박 등의 관광 콘텐츠 탐색'),
+    LegalTextBlock('11. 관광 콘텐츠를 개인 폴더에 저장하고 관리하는 기능'),
+    LegalTextBlock('12. 촌캉스방 참여자 간의 무드 이미지 선택 요청 알림 제공'),
+    LegalTextBlock('13. 그 밖에 운영자가 서비스 개선을 위해 추가로 개발하거나 제휴 등을 통해 제공하는 기능'),
     LegalTextBlock(''),
-    LegalTextBlock('제6조 추천 정보'),
+    LegalTextBlock('제6조 추천 정보 및 관광정보'),
     LegalTextBlock(
-      '1. 서비스가 제공하는 추천 정보는 이용자의 입력 및 선택 정보와 한국관광공사를 포함한 외부 데이터를 기반으로 제공되는 참고 정보입니다.',
+      '1. 서비스에서 제공하는 숙소, 관광지, 문화시설, 쇼핑, 레포츠, 행사·공연·축제, '
+      '음식점 등의 관광정보는 한국관광공사 한국관광콘텐츠랩의 데이터를 활용합니다.',
+    ),
+    LegalTextBlock('2. 관광정보의 출처는 다음과 같습니다.'),
+    LegalTextBlock('출처: ⓒ한국관광공사'),
+    LegalTextBlock(
+      '3. 서비스에서 제공하는 무드 결과 및 추천 정보는 회원 또는 참여자가 입력하거나 '
+      '선택한 정보를 바탕으로 제공되는 참고 정보입니다.',
     ),
     LegalTextBlock(
-      '2. 운영자는 추천 결과가 모든 이용자의 취향에 부합하거나 특정 수준의 만족도를 제공할 것을 보장하지 않습니다.',
+      '4. 운영자는 무드 결과 및 추천 정보가 모든 회원의 실제 취향이나 기대와 일치하거나 '
+      '특정 수준의 만족도를 제공할 것을 보장하지 않습니다.',
     ),
     LegalTextBlock(
-      '3. 숙소 가격, 운영시간, 휴무일, 예약 가능 여부 등은 정보 제공처의 사정에 따라 변경될 수 있습니다.',
+      '5. 서비스에서 제공되는 관광정보는 정보 제공처의 갱신 시점이나 운영 상황 등에 따라 실제 정보와 차이가 발생할 수 있습니다.',
+    ),
+    LegalTextBlock('6. 숙소 객실 가격, 영업시간, 휴무일, 이용요금 등의 정보는 변경될 수 있습니다.'),
+    LegalTextBlock(
+      '7. 회원은 실제 방문, 이용 또는 예약 전에 해당 시설이나 공식 홈페이지, '
+      '예약 서비스 등을 통해 최신 정보를 직접 확인해야 합니다.',
     ),
     LegalTextBlock(
-      '4. 이용자는 실제 예약 또는 방문 전에 해당 시설이나 외부 서비스에서 최신 정보를 직접 확인해야 합니다.',
+      '8. 운영자는 회원이 입력하거나 선택한 정보, 서비스 운영 상황 또는 외부 데이터 '
+      '제공 범위에 따라 일부 추천 결과를 제공하지 못할 수 있습니다.',
     ),
     LegalTextBlock(''),
-    LegalTextBlock('제7조 약속방 이용'),
+    LegalTextBlock('제7조 촌캉스방 이용'),
     LegalTextBlock(
-      '1. 약속방 참여자는 여행 날짜, 인원수, 이동 방식, 희망 지역 등 약속방의 여행 정보를 공동으로 입력하거나 수정할 수 있습니다.',
+      '1. 촌캉스방 참여자는 서비스가 허용하는 범위에서 여행 날짜, 인원수, 이동 방식, '
+      '희망 지역 등의 여행 정보를 입력하거나 변경할 수 있습니다.',
     ),
-    LegalTextBlock('2. 참여자가 수정한 내용은 같은 약속방의 다른 참여자에게 공유되며, 약속방의 최신 정보로 반영됩니다.'),
-    LegalTextBlock('3. 약속방에 입력하거나 선택한 여행 정보와 무드 결과는 같은 약속방의 참여자에게 공개됩니다.'),
-    LegalTextBlock('4. 약속방이 삭제되거나 회원이 약속방에서 나간 경우 해당 정보에 대한 접근이 제한될 수 있습니다.'),
-    LegalTextBlock(''),
-    LegalTextBlock('제8조 이용자의 의무'),
-    LegalTextBlock('이용자는 다음 각 호의 행위를 하여서는 안 됩니다.'),
-    LegalTextBlock('1. 타인의 정보 또는 계정을 도용하는 행위'),
-    LegalTextBlock('2. 허위 정보를 등록하는 행위'),
-    LegalTextBlock('3. 서비스의 운영을 방해하거나 시스템에 비정상적으로 접근하는 행위'),
-    LegalTextBlock('4. 서비스 내 정보나 콘텐츠를 무단으로 수집, 복제 또는 상업적으로 이용하는 행위'),
-    LegalTextBlock('5. 타인의 권리 또는 관련 법령을 침해하는 행위'),
-    LegalTextBlock('6. 그 밖에 관련 법령, 본 약관 또는 서비스 운영정책을 위반하는 행위'),
-    LegalTextBlock(''),
-    LegalTextBlock('제9조 서비스의 변경 및 중단'),
     LegalTextBlock(
-      '1. 운영자는 서비스 개선, 시스템 점검, 한국관광공사를 포함한 외부 데이터 제공 중단 등의 사유로 서비스의 일부 또는 전부를 변경하거나 일시 중단할 수 있습니다.',
+      '2. 참여자가 입력하거나 선택한 여행 정보 및 무드 관련 정보는 같은 촌캉스방의 다른 참여자가 확인할 수 있습니다.',
     ),
-    LegalTextBlock('2. 이용자에게 중대한 영향을 미치는 변경이나 중단은 가능한 범위에서 사전에 안내합니다.'),
-    LegalTextBlock(''),
-    LegalTextBlock('제10조 외부 서비스'),
-    LegalTextBlock('1. 서비스는 숙소, 관광지, 예약과 관련된 외부 사이트로 연결되는 기능을 제공할 수 있습니다.'),
     LegalTextBlock(
-      '2. 외부 서비스에서 이루어지는 예약, 결제 또는 거래는 해당 외부 서비스 운영자와 이용자 간에 이루어집니다.',
+      '3. 참여자들이 선택한 무드 이미지의 태그를 바탕으로 공통 무드 유형 결과가 '
+      '도출될 수 있으며, 해당 결과는 같은 촌캉스방의 참여자에게 공유됩니다.',
     ),
-    LegalTextBlock('3. 외부 서비스 이용에는 해당 서비스의 이용약관과 정책이 적용됩니다.'),
-    LegalTextBlock(''),
-    LegalTextBlock('제11조 회원 탈퇴 및 이용 제한'),
-    LegalTextBlock('1. 회원은 서비스에서 제공하는 절차에 따라 언제든지 탈퇴할 수 있습니다.'),
     LegalTextBlock(
-      '2. 회원이 약관 또는 관련 법령을 위반한 경우 운영자는 서비스 이용을 제한하거나 이용계약을 해지할 수 있습니다.',
+      '4. 서비스는 촌캉스방에서 입력한 여행 정보와 선택한 무드 이미지의 태그 등을 '
+      '바탕으로 숙소를 추천할 수 있으며, 참여자는 추천된 숙소 중 하나를 선택하거나 '
+      '숙소명을 직접 검색하여 여행에 이용할 숙소를 선택할 수 있습니다.',
     ),
-    LegalTextBlock('3. 탈퇴 시 회원의 개인정보와 서비스 이용 정보는 개인정보 처리방침에 따라 처리됩니다.'),
-    LegalTextBlock(''),
-    LegalTextBlock('제12조 책임의 제한'),
     LegalTextBlock(
-      '1. 운영자는 천재지변, 통신 장애, 외부 서비스 장애 등 합리적으로 통제하기 어려운 사유로 서비스를 제공할 수 없는 경우 책임을 부담하지 않습니다.',
+      '5. 서비스는 선택한 숙소와 여행 정보 등 서비스 이용 과정에서 입력하거나 '
+      '선택한 정보를 바탕으로 여행 일정을 추천할 수 있습니다.',
     ),
-    LegalTextBlock('2. 운영자는 이용자의 귀책사유로 발생한 손해에 대하여 책임을 부담하지 않습니다.'),
-    LegalTextBlock('3. 다만, 운영자의 고의 또는 중대한 과실로 발생한 손해에 대해서는 책임을 부담합니다.'),
-    LegalTextBlock(''),
-    LegalTextBlock('제13조 분쟁 해결'),
     LegalTextBlock(
-      '서비스 이용과 관련하여 분쟁이 발생한 경우 운영자와 이용자는 원만한 해결을 '
-      '위해 성실히 협의합니다. 협의로 해결되지 않는 경우 관련 법령이 정한 '
-      '절차와 관할 법원에 따릅니다.',
+      '6. 참여자는 서비스가 추천하는 활동을 여행 일정에 추가하거나 삭제할 수 있으며, '
+      '서비스가 제공하는 범위에서 장소를 직접 선택하거나 장소 없이 일정을 추가할 수 있습니다.',
+    ),
+    LegalTextBlock(
+      '7. 촌캉스방의 여행 정보, 선택한 숙소 또는 기타 정보가 변경되는 경우 추천 결과 또는 여행 일정이 달라질 수 있습니다.',
+    ),
+    LegalTextBlock(
+      '8. 촌캉스방이 삭제되거나 회원이 해당 촌캉스방에서 나가는 경우 기존 촌캉스방 및 '
+      '관련 정보에 대한 접근이 제한될 수 있습니다.',
+    ),
+    LegalTextBlock(''),
+    LegalTextBlock('제8조 관광 콘텐츠 탐색 및 저장'),
+    LegalTextBlock(
+      '1. 회원은 촌캉스방 이용 여부와 관계없이 서비스의 탐색 기능을 통해 관광 콘텐츠를 확인할 수 있습니다.',
+    ),
+    LegalTextBlock(
+      '2. 탐색 기능에서는 관광지, 문화시설, 쇼핑, 레포츠, 행사·공연·축제, 음식점, 숙박 등의 관광 콘텐츠를 제공합니다.',
+    ),
+    LegalTextBlock('3. 회원은 관심 있는 관광 콘텐츠를 개인 폴더에 저장하고 관리할 수 있습니다.'),
+    LegalTextBlock(
+      '4. 탐색 및 저장 정보는 해당 회원의 개인 이용 정보로 관리되며, 촌캉스방의 다른 참여자에게 자동으로 공유되지 않습니다.',
+    ),
+    LegalTextBlock(
+      '5. 저장된 콘텐츠는 외부 데이터의 변경, 콘텐츠 삭제 또는 서비스 운영상의 필요에 '
+      '따라 내용이 변경되거나 더 이상 제공되지 않을 수 있습니다.',
+    ),
+    LegalTextBlock(
+      '6. 탐색 및 저장 기능은 회원의 편의를 위한 기능이며 실제 예약, 이용 가능 여부 또는 해당 장소의 운영을 보장하는 기능이 아닙니다.',
+    ),
+    LegalTextBlock(''),
+    LegalTextBlock('제9조 알림 서비스'),
+    LegalTextBlock('1. 운영자는 촌캉스방 참여자 간의 무드 이미지 선택 요청을 전달하기 위해 알림 기능을 제공합니다.'),
+    LegalTextBlock(
+      '2. 촌캉스방에서 무드 이미지 선택 요청 기능을 이용하는 경우, 해당 시점에 무드 '
+      '이미지 선택을 완료하지 않은 참여자에게 알림이 제공될 수 있습니다.',
+    ),
+    LegalTextBlock('3. 알림은 회원이 서비스 내에서 설정한 알림 수신 여부에 따라 제공될 수 있습니다.'),
+    LegalTextBlock(
+      '4. 회원의 기기 설정, 네트워크 환경 또는 서비스 상태 등에 따라 알림의 전달이 지연되거나 제공되지 않을 수 있습니다.',
+    ),
+    LegalTextBlock(''),
+    LegalTextBlock('제10조 회원의 의무'),
+    LegalTextBlock('회원은 다음 각 호의 행위를 하여서는 안 됩니다.'),
+    LegalTextBlock('1. 타인의 개인정보, 계정 또는 인증 정보를 도용하거나 부정하게 이용하는 행위'),
+    LegalTextBlock('2. 허위 또는 사실과 다른 정보를 등록하는 행위'),
+    LegalTextBlock('3. 다른 회원의 정상적인 서비스 이용을 방해하는 행위'),
+    LegalTextBlock('4. 서비스의 서버 또는 시스템에 비정상적인 방법으로 접근하거나 서비스 운영을 방해하는 행위'),
+    LegalTextBlock('5. 자동화된 수단 등을 이용하여 서비스 내 데이터를 허가 없이 대량으로 수집하는 행위'),
+    LegalTextBlock(
+      '6. 서비스에서 제공하는 정보, 콘텐츠 또는 데이터를 운영자 또는 해당 권리자의 '
+      '허락 없이 복제, 배포, 판매하거나 상업적으로 이용하는 행위',
+    ),
+    LegalTextBlock('7. 운영자 또는 제3자의 지식재산권, 개인정보, 명예 등 권리를 침해하는 행위'),
+    LegalTextBlock('8. 관련 법령, 본 약관 또는 서비스 운영정책을 위반하는 행위'),
+    LegalTextBlock('9. 그 밖에 서비스의 정상적인 운영을 방해하는 행위'),
+    LegalTextBlock(''),
+    LegalTextBlock('제11조 서비스의 변경 및 중단'),
+    LegalTextBlock(
+      '1. 운영자는 다음 각 호의 사유가 있는 경우 서비스의 일부 또는 전부를 변경하거나 일시적으로 중단할 수 있습니다.',
+    ),
+    LegalTextBlock('1) 서비스 개선 또는 기능 변경이 필요한 경우'),
+    LegalTextBlock('2) 시스템 점검, 유지보수 또는 장애가 발생한 경우'),
+    LegalTextBlock('3) 서버 또는 네트워크 등 기술적 문제가 발생한 경우'),
+    LegalTextBlock('4) 한국관광공사를 포함한 외부 데이터 제공처의 서비스가 변경 또는 중단된 경우'),
+    LegalTextBlock('5) 기타 서비스의 정상적인 운영을 위해 필요한 경우'),
+    LegalTextBlock(
+      '2. 회원에게 중대한 영향을 미치는 서비스 변경 또는 중단이 예상되는 경우 운영자는 가능한 범위에서 사전에 안내합니다.',
+    ),
+    LegalTextBlock(
+      '3. 긴급한 시스템 장애, 외부 서비스 장애 등 사전에 안내하기 어려운 사유가 있는 경우에는 사후에 안내할 수 있습니다.',
+    ),
+    LegalTextBlock(''),
+    LegalTextBlock('제12조 외부 정보 및 외부 서비스'),
+    LegalTextBlock(
+      '1. 서비스는 관광정보 제공을 위해 한국관광공사 등 외부 기관 또는 제3자가 제공하는 정보를 활용할 수 있습니다.',
+    ),
+    LegalTextBlock(
+      '2. 서비스는 필요한 경우 숙소, 관광지 또는 기타 관광 콘텐츠와 관련된 외부 사이트 또는 서비스로 연결되는 기능을 제공할 수 있습니다.',
+    ),
+    LegalTextBlock(
+      '3. 외부 사이트 또는 서비스에서 이루어지는 예약, 구매, 결제, 문의 및 기타 거래는 해당 외부 서비스 운영자와 회원 간에 이루어집니다.',
+    ),
+    LegalTextBlock('4. 외부 서비스의 이용에는 해당 서비스 운영자가 정한 이용약관 및 개인정보 처리방침 등이 적용됩니다.'),
+    LegalTextBlock(
+      '5. 운영자의 고의 또는 과실이 없는 한 외부 서비스의 이용 과정에서 발생하는 문제에 대해서는 해당 외부 서비스의 정책에 따릅니다.',
+    ),
+    LegalTextBlock(''),
+    LegalTextBlock('제13조 지식재산권'),
+    LegalTextBlock(
+      '1. 서비스의 디자인, 상표, 로고, 프로그램, 화면 구성 및 운영자가 직접 제작한 '
+      '콘텐츠 등에 대한 권리는 운영자 또는 정당한 권리자에게 귀속됩니다.',
+    ),
+    LegalTextBlock(
+      '2. 한국관광공사 한국관광콘텐츠랩을 통해 제공되는 관광정보, 이미지 등의 권리는 '
+      '한국관광공사 또는 해당 콘텐츠의 정당한 권리자에게 귀속됩니다.',
+    ),
+    LegalTextBlock(
+      '3. 한국관광콘텐츠랩의 자료를 활용하는 경우 해당 자료의 저작권 정책 및 공공누리 이용조건 등 관련 정책을 따릅니다.',
+    ),
+    LegalTextBlock(
+      '4. 회원은 서비스에서 제공되는 콘텐츠를 개인적인 서비스 이용 목적을 넘어 '
+      '운영자 또는 해당 권리자의 허락 없이 복제, 배포, 수정 또는 상업적으로 이용하여서는 안 됩니다.',
+    ),
+    LegalTextBlock(''),
+    LegalTextBlock('제14조 회원 탈퇴 및 이용 제한'),
+    LegalTextBlock('1. 회원은 서비스에서 제공하는 회원 탈퇴 절차를 통해 언제든지 이용계약을 해지할 수 있습니다.'),
+    LegalTextBlock(
+      '2. 회원이 본 약관 또는 관련 법령을 위반한 경우 운영자는 사안의 정도에 따라 '
+      '서비스 이용을 제한하거나 이용계약을 해지할 수 있습니다.',
+    ),
+    LegalTextBlock(
+      '3. 회원 탈퇴 시 회원의 개인정보 및 서비스 이용 정보는 관련 법령 및 개인정보 처리방침에 따라 처리됩니다.',
+    ),
+    LegalTextBlock(
+      '4. 회원 탈퇴 후에는 기존 촌캉스방, 저장 정보, 추천 결과 등 일부 서비스 이용 '
+      '정보에 대한 접근이 제한되거나 삭제될 수 있습니다.',
+    ),
+    LegalTextBlock(
+      '5. 관련 법령에 따라 일정 기간 보관이 필요한 정보가 있는 경우에는 해당 기간 '
+      '동안 관련 법령이 정한 범위에서 보관할 수 있습니다.',
+    ),
+    LegalTextBlock(''),
+    LegalTextBlock('제15조 책임의 제한'),
+    LegalTextBlock(
+      '1. 운영자는 천재지변, 통신 장애, 서버 장애, 외부 데이터 제공처 또는 외부 '
+      '서비스의 장애 등 운영자가 합리적으로 통제하기 어려운 사유로 서비스를 정상적으로 '
+      '제공할 수 없는 경우 이에 대한 책임을 부담하지 않습니다.',
+    ),
+    LegalTextBlock(
+      '2. 운영자는 회원이 입력하거나 선택한 정보의 오류 또는 회원의 귀책사유로 인해 '
+      '발생한 손해에 대해서는 책임을 부담하지 않습니다.',
+    ),
+    LegalTextBlock(
+      '3. 운영자는 서비스에서 제공되는 무드 결과 및 추천 정보가 회원의 개인적인 취향, '
+      '목적 또는 기대에 반드시 부합할 것을 보장하지 않습니다.',
+    ),
+    LegalTextBlock(
+      '4. 운영자는 외부 정보 제공처의 정보 변경으로 인해 서비스 내 관광정보와 실제 '
+      '정보 사이에 차이가 발생한 경우, 운영자의 고의 또는 과실이 없는 한 이에 대한 '
+      '책임을 부담하지 않습니다.',
+    ),
+    LegalTextBlock(
+      '5. 본 조의 규정에도 불구하고 운영자의 고의 또는 과실로 회원에게 손해가 발생한 경우에는 관련 법령에 따라 책임을 부담합니다.',
+    ),
+    LegalTextBlock(''),
+    LegalTextBlock('제16조 개인정보 보호'),
+    LegalTextBlock('1. 운영자는 서비스 제공을 위해 필요한 범위에서 회원의 개인정보를 처리할 수 있습니다.'),
+    LegalTextBlock(
+      '2. 개인정보의 수집 항목, 이용 목적, 보유 기간, 제3자 제공 및 파기 등에 관한 '
+      '구체적인 사항은 별도로 게시하는 개인정보 처리방침에 따릅니다.',
+    ),
+    LegalTextBlock('3. 운영자는 관련 법령에 따라 회원의 개인정보를 보호하기 위해 필요한 조치를 취합니다.'),
+    LegalTextBlock(''),
+    LegalTextBlock('제17조 분쟁 해결 및 준거법'),
+    LegalTextBlock(
+      '1. 서비스 이용과 관련하여 운영자와 회원 사이에 분쟁이 발생한 경우 양 당사자는 '
+      '원만한 해결을 위해 성실하게 협의합니다.',
+    ),
+    LegalTextBlock(
+      '2. 협의로 분쟁이 해결되지 않는 경우 대한민국 법령을 적용하며, 관할 법원은 관련 법령에서 정하는 바에 따릅니다.',
     ),
     LegalTextBlock(''),
     LegalTextBlock('부칙'),
-    LegalTextBlock('본 약관은 2026년 8월 29일부터 시행합니다.'),
+    LegalTextBlock('본 약관은 2026년 9월 7일부터 시행합니다.'),
     LegalTextBlock(''),
     LegalTextBlock('운영자: MOODI'),
-    LegalTextBlock('대표 운영자: [앱스토어등록자 실명]'),
-    LegalTextBlock('문의 이메일: [무드촌 공식 이메일]'),
-  ];
-
-  static const List<LegalTextBlock> privacyPolicy = [
-    LegalTextBlock(
-      'MOODI는 무드촌 서비스 이용자의 개인정보를 중요하게 생각하며, 관련 법령에 '
-      '따라 개인정보를 안전하게 처리하고 있습니다.',
-    ),
-    LegalTextBlock('본 개인정보 안내는 개인정보 수집·이용 동의와 개인정보 처리방침으로 구성됩니다.'),
-    LegalTextBlock(''),
-    LegalTextBlock('1. 개인정보 수집·이용 동의', level: LegalTextLevel.section),
-    LegalTextBlock('MOODI는 무드촌 회원가입 및 서비스 제공을 위해 다음과 같이 개인정보를 수집·이용합니다.'),
-    LegalTextBlock(''),
-    LegalTextBlock('1. 수집·이용 목적', level: LegalTextLevel.subsection),
-    LegalTextBlock('• 카카오 계정을 통한 회원가입 및 로그인'),
-    LegalTextBlock('• 회원 식별 및 회원 관리'),
-    LegalTextBlock('• 약속방 생성 및 참여자 식별'),
-    LegalTextBlock('• 여행 정보 입력·수정 및 참여자 간 공유'),
-    LegalTextBlock('• 무드 선택 결과 저장 및 공통 무드 도출'),
-    LegalTextBlock('• 여행 조건과 무드에 따른 숙소, 관광지 및 일정 추천'),
-    LegalTextBlock('• 관광 콘텐츠 저장 및 조회'),
-    LegalTextBlock('• 서비스 이용 문의 및 오류 대응'),
-    LegalTextBlock('• 부정 이용 방지 및 서비스 안정성 확보'),
-    LegalTextBlock(''),
-    LegalTextBlock('2. 수집하는 개인정보 항목', level: LegalTextLevel.subsection),
-    LegalTextBlock('필수 항목', level: LegalTextLevel.subsection),
-    LegalTextBlock('• 카카오 회원번호'),
-    LegalTextBlock('• 카카오 계정 닉네임'),
-    LegalTextBlock(
-      '카카오 회원번호는 카카오 계정과 무드촌 서비스를 연결할 때 카카오가 무드촌에 제공하는 앱별 회원 식별값입니다.',
-    ),
-    LegalTextBlock(''),
-    LegalTextBlock(
-      '서비스 이용 과정에서 생성되거나 입력되는 정보',
-      level: LegalTextLevel.subsection,
-    ),
-    LegalTextBlock('• 프로필 이미지'),
-    LegalTextBlock('• 약속방 생성 및 참여 정보'),
-    LegalTextBlock('• 여행 이름'),
-    LegalTextBlock('• 여행 날짜'),
-    LegalTextBlock('• 여행 인원수'),
-    LegalTextBlock('• 동행인 유형'),
-    LegalTextBlock('• 이동 방식'),
-    LegalTextBlock('• 희망 지역'),
-    LegalTextBlock('• 기타 숙소 조건'),
-    LegalTextBlock('• 무드 이미지 선택 결과'),
-    LegalTextBlock('• 공통 무드 결과'),
-    LegalTextBlock('• 저장한 관광 콘텐츠 정보'),
-    LegalTextBlock(''),
-    LegalTextBlock(
-      '서비스 이용 과정에서 자동으로 생성될 수 있는 정보',
-      level: LegalTextLevel.subsection,
-    ),
-    LegalTextBlock('• 서비스 이용 기록'),
-    LegalTextBlock('• 접속 일시'),
-    LegalTextBlock('• 오류 기록'),
-    LegalTextBlock(''),
-    LegalTextBlock('3. 보유 및 이용 기간', level: LegalTextLevel.subsection),
-    LegalTextBlock('수집한 개인정보는 회원 탈퇴 시까지 보유·이용합니다.'),
-    LegalTextBlock('다만, 다음의 경우에는 해당 정보의 처리 목적이 달성될 때까지 보유할 수 있습니다.'),
-    LegalTextBlock('• 약속방 정보: 해당 약속방 삭제 시까지'),
-    LegalTextBlock('• 저장한 관광 콘텐츠 정보: 이용자가 삭제하거나 회원 탈퇴할 때까지'),
-    LegalTextBlock('• 오류 기록: 수집일로부터 3개월'),
-    LegalTextBlock('• 관계 법령에 따라 보관이 필요한 정보: 해당 법령에서 정한 기간'),
-    LegalTextBlock(
-      '회원 탈퇴 후에도 다른 참여자가 속한 약속방에 공동으로 입력된 여행 정보는 '
-      '약속방 운영에 필요한 범위에서 유지될 수 있습니다. 이 경우 탈퇴한 회원을 '
-      '직접 식별할 수 있는 정보는 삭제하거나 별도로 처리합니다.',
-    ),
-    LegalTextBlock(''),
-    LegalTextBlock('4. 동의 거부 권리 및 불이익', level: LegalTextLevel.subsection),
-    LegalTextBlock('이용자는 개인정보 수집·이용에 동의하지 않을 권리가 있습니다.'),
-    LegalTextBlock(
-      '다만, 위 필수 정보는 회원가입과 무드촌 서비스 제공에 필요한 최소한의 '
-      '정보이므로, 개인정보 수집·이용에 동의하지 않을 경우 회원가입 및 서비스 '
-      '이용이 제한됩니다.',
-    ),
-    LegalTextBlock('카카오톡으로 계속하기 버튼을 선택하면 위 개인정보 수집·이용 내용에 동의한 것으로 봅니다.'),
-    LegalTextBlock(''),
-    LegalTextBlock('2. 개인정보 처리방침', level: LegalTextLevel.section),
-    LegalTextBlock(
-      'MOODI는 개인정보 보호법 등 관련 법령에 따라 이용자의 개인정보를 보호하고, '
-      '개인정보 처리에 관한 절차와 기준을 안내하기 위해 다음과 같이 개인정보 '
-      '처리방침을 수립·공개합니다.',
-    ),
-    LegalTextBlock(''),
-    LegalTextBlock('제1조 개인정보의 처리 목적', level: LegalTextLevel.subsection),
-    LegalTextBlock('MOODI는 다음의 목적을 위해 개인정보를 처리합니다.'),
-    LegalTextBlock(''),
-    LegalTextBlock('1. 회원가입 및 회원 관리', level: LegalTextLevel.subsection),
-    LegalTextBlock('• 카카오 계정을 통한 회원가입 및 로그인'),
-    LegalTextBlock('• 회원 식별 및 인증'),
-    LegalTextBlock('• 회원 자격 유지 및 관리'),
-    LegalTextBlock('• 부정 이용 방지'),
-    LegalTextBlock('• 회원 문의 및 고충 처리'),
-    LegalTextBlock(''),
-    LegalTextBlock('2. 무드촌 서비스 제공', level: LegalTextLevel.subsection),
-    LegalTextBlock('• 약속방 생성 및 참여'),
-    LegalTextBlock('• 약속방 참여자 식별'),
-    LegalTextBlock('• 참여자 간 여행 정보 입력·수정 및 공유'),
-    LegalTextBlock('• 이용자별 무드 이미지 선택 결과 저장'),
-    LegalTextBlock('• 약속방의 공통 무드 도출'),
-    LegalTextBlock('• 여행 조건과 무드에 따른 숙소, 관광지 및 일정 추천'),
-    LegalTextBlock('• 관광 콘텐츠 저장 및 조회'),
-    LegalTextBlock(''),
-    LegalTextBlock('3. 서비스 운영 및 개선', level: LegalTextLevel.subsection),
-    LegalTextBlock('• 서비스 이용 현황 확인'),
-    LegalTextBlock('• 오류 및 장애 대응'),
-    LegalTextBlock('• 서비스 품질 개선'),
-    LegalTextBlock('• 비정상적인 접근 및 부정 이용 방지'),
-    LegalTextBlock(''),
-    LegalTextBlock(
-      'MOODI는 위 목적과 다른 목적으로 개인정보를 이용하지 않습니다. 처리 목적이 '
-      '변경되는 경우 관련 법령에 따라 필요한 안내 및 동의 절차를 진행합니다.',
-    ),
-    LegalTextBlock(''),
-    LegalTextBlock('제2조 처리하는 개인정보 항목', level: LegalTextLevel.subsection),
-    LegalTextBlock('MOODI는 다음과 같은 개인정보를 처리합니다.'),
-    LegalTextBlock(''),
-    LegalTextBlock('1. 카카오 로그인으로 제공받는 정보', level: LegalTextLevel.subsection),
-    LegalTextBlock('• 카카오 회원번호'),
-    LegalTextBlock('• 카카오 계정 닉네임'),
-    LegalTextBlock(''),
-    LegalTextBlock(
-      '2. 이용자가 직접 입력하거나 서비스 이용 과정에서 생성되는 정보',
-      level: LegalTextLevel.subsection,
-    ),
-    LegalTextBlock('• 프로필 이미지'),
-    LegalTextBlock('• 약속방 생성 및 참여 정보'),
-    LegalTextBlock('• 여행 이름'),
-    LegalTextBlock('• 여행 날짜'),
-    LegalTextBlock('• 여행 인원수'),
-    LegalTextBlock('• 동행인 유형'),
-    LegalTextBlock('• 이동 방식'),
-    LegalTextBlock('• 희망 지역'),
-    LegalTextBlock('• 기타 숙소 조건'),
-    LegalTextBlock('• 무드 이미지 선택 결과'),
-    LegalTextBlock('• 공통 무드 결과'),
-    LegalTextBlock('• 저장한 관광 콘텐츠 정보'),
-    LegalTextBlock(''),
-    LegalTextBlock('3. 자동으로 생성될 수 있는 정보', level: LegalTextLevel.subsection),
-    LegalTextBlock('• 서비스 이용 기록'),
-    LegalTextBlock('• 접속 일시'),
-    LegalTextBlock('• 오류 기록'),
-    LegalTextBlock(''),
-    LegalTextBlock(
-      'MOODI는 주민등록번호, 여권번호, 운전면허번호 등의 고유식별정보와 건강정보, '
-      '생체정보 등의 민감정보를 수집하지 않습니다.',
-    ),
-    LegalTextBlock(''),
-    LegalTextBlock('제3조 개인정보의 처리 및 보유 기간', level: LegalTextLevel.subsection),
-    LegalTextBlock(
-      'MOODI는 개인정보의 처리 목적이 달성될 때까지 개인정보를 보유·이용하며, '
-      '회원 탈퇴 또는 처리 목적 달성 시 지체 없이 파기합니다.',
-    ),
-    LegalTextBlock('1. 회원 계정 정보 및 프로필 이미지: 회원 탈퇴 시까지'),
-    LegalTextBlock(
-      '2. 약속방, 공동 여행 정보 및 공통 무드 결과: 해당 약속방 삭제 시까지. '
-      '다만 회원 탈퇴 시 탈퇴 회원을 직접 식별할 수 있는 정보와 개인별 무드 '
-      '선택 내역은 삭제 또는 분리 처리합니다.',
-    ),
-    LegalTextBlock('3. 저장한 관광 콘텐츠 정보: 이용자가 삭제하거나 회원 탈퇴할 때까지'),
-    LegalTextBlock('4. 오류 기록: 수집일로부터 3개월'),
-    LegalTextBlock(
-      '다만, 관계 법령에 따라 일정 기간 보관해야 하는 정보가 있는 경우에는 해당 법령에서 정한 기간 동안 별도로 보관합니다.',
-    ),
-    LegalTextBlock(''),
-    LegalTextBlock('제4조 약속방 참여자 간 정보 공유', level: LegalTextLevel.subsection),
-    LegalTextBlock('무드촌은 여러 이용자가 함께 여행을 계획할 수 있는 약속방 기능을 제공합니다.'),
-    LegalTextBlock('약속방에서 다음 정보는 같은 약속방의 참여자에게 공개될 수 있습니다.'),
-    LegalTextBlock('1. 회원 닉네임'),
-    LegalTextBlock('2. 회원 프로필 이미지'),
-    LegalTextBlock('3. 약속방 참여 여부'),
-    LegalTextBlock('4. 여행 정보의 입력 및 수정 내용'),
-    LegalTextBlock('5. 무드 선택 참여 여부'),
-    LegalTextBlock('6. 약속방의 공통 무드 결과'),
-    LegalTextBlock(
-      '약속방 참여자가 수정한 여행 정보는 같은 약속방의 다른 참여자에게 공유되며, 약속방의 최신 정보로 반영됩니다.',
-    ),
-    LegalTextBlock(
-      '개별 참여자가 선택한 이미지의 상세 내역은 다른 참여자에게 공개하지 않으며, 약속방의 공통 무드 도출을 위해서만 이용합니다.',
-    ),
-    LegalTextBlock(''),
-    LegalTextBlock('제5조 개인정보의 제3자 제공', level: LegalTextLevel.subsection),
-    LegalTextBlock('MOODI는 원칙적으로 이용자의 개인정보를 외부에 제공하지 않습니다.'),
-    LegalTextBlock('다만 다음의 경우에는 예외로 합니다.'),
-    LegalTextBlock('1. 이용자가 사전에 동의한 경우'),
-    LegalTextBlock('2. 법령에 특별한 규정이 있는 경우'),
-    LegalTextBlock('3. 수사기관 또는 관계 기관이 적법한 절차에 따라 요청한 경우'),
-    LegalTextBlock(
-      '외부 숙소 또는 예약 사이트로 이동하는 경우 해당 사이트에서 이루어지는 개인정보 처리는 해당 외부 서비스의 개인정보 처리방침에 따릅니다.',
-    ),
-    LegalTextBlock(''),
-    LegalTextBlock('제6조 개인정보 처리업무의 위탁', level: LegalTextLevel.subsection),
-    LegalTextBlock('MOODI는 원활한 서비스 제공을 위해 개인정보 처리업무의 일부를 위탁하고 있습니다.'),
-    LegalTextBlock('• 수탁업체: Amazon Web Services, Inc.'),
-    LegalTextBlock('• 위탁업무: 서비스 서버 운영, 데이터 저장 및 관리'),
-    LegalTextBlock('• 보유 및 이용 기간: 회원 탈퇴 또는 위탁계약 종료 시까지'),
-    LegalTextBlock('수탁업체 또는 위탁업무가 변경되는 경우 본 개인정보 처리방침을 통해 안내합니다.'),
-    LegalTextBlock(''),
-    LegalTextBlock('제7조 개인정보의 파기 절차 및 방법', level: LegalTextLevel.subsection),
-    LegalTextBlock(
-      'MOODI는 개인정보의 보유 기간이 지나거나 처리 목적이 달성된 경우 지체 없이 해당 개인정보를 파기합니다.',
-    ),
-    LegalTextBlock(''),
-    LegalTextBlock('1. 파기 절차', level: LegalTextLevel.subsection),
-    LegalTextBlock('파기 사유가 발생한 개인정보를 확인한 후 내부 절차에 따라 파기합니다.'),
-    LegalTextBlock(
-      '관계 법령에 따라 일정 기간 보관해야 하는 개인정보는 다른 개인정보와 분리하여 보관하고, 보관 기간이 종료된 후 파기합니다.',
-    ),
-    LegalTextBlock(''),
-    LegalTextBlock('2. 파기 방법', level: LegalTextLevel.subsection),
-    LegalTextBlock('• 전자적 파일 형태의 개인정보는 복구하거나 재생할 수 없는 방법으로 삭제합니다.'),
-    LegalTextBlock('• 종이 문서 형태의 개인정보가 있는 경우 분쇄하거나 소각합니다.'),
-    LegalTextBlock(''),
-    LegalTextBlock(
-      '제8조 이용자와 법정대리인의 권리 및 행사 방법',
-      level: LegalTextLevel.subsection,
-    ),
-    LegalTextBlock('이용자는 언제든지 자신의 개인정보와 관련하여 다음의 권리를 행사할 수 있습니다.'),
-    LegalTextBlock('1. 개인정보 열람 요구'),
-    LegalTextBlock('2. 개인정보 정정 또는 삭제 요구'),
-    LegalTextBlock('3. 개인정보 처리 정지 요구'),
-    LegalTextBlock('4. 개인정보 수집·이용 동의 철회'),
-    LegalTextBlock('5. 회원 탈퇴'),
-    LegalTextBlock('6. 카카오 계정과 무드촌 서비스의 연결 해제'),
-    LegalTextBlock('이용자는 앱 내 마이페이지 또는 개인정보 문의 이메일을 통해 권리를 행사할 수 있습니다.'),
-    LegalTextBlock(
-      'MOODI는 이용자의 요청을 확인한 후 관련 법령에 따라 지체 없이 처리합니다. '
-      '다만, 관계 법령에서 열람·삭제 또는 처리 정지를 제한하는 경우에는 '
-      '그 사유를 안내할 수 있습니다.',
-    ),
-    LegalTextBlock(''),
-    LegalTextBlock(
-      '제9조 개인정보 자동 수집 장치의 설치·운영 및 거부',
-      level: LegalTextLevel.subsection,
-    ),
-    LegalTextBlock(
-      'MOODI는 서비스 운영과 안정성 확보를 위해 서비스 이용 기록, 접속 기록, 오류 기록 등을 자동으로 수집할 수 있습니다.',
-    ),
-    LegalTextBlock('MOODI는 맞춤형 광고 제공을 위한 이용자 행태정보를 수집하거나 이용하지 않습니다.'),
-    LegalTextBlock(''),
-    LegalTextBlock('제10조 개인정보 문의처', level: LegalTextLevel.subsection),
-    LegalTextBlock(
-      'MOODI는 개인정보 처리와 관련한 문의, 불만 및 피해 구제를 처리하기 위해 다음과 같이 개인정보 문의처를 지정합니다.',
-    ),
-    LegalTextBlock('• 개인정보처리자: MOODI'),
-    LegalTextBlock('• 개인정보 문의 담당: MOODI 운영팀'),
-    LegalTextBlock('• 대표 운영자: [앱스토어등록자 실명]'),
-    LegalTextBlock('• 문의 이메일: [무드촌 공식 이메일]'),
-    LegalTextBlock(''),
-    LegalTextBlock('제11조 권익침해 구제 방법', level: LegalTextLevel.subsection),
-    LegalTextBlock(
-      '이용자는 개인정보 침해에 대한 상담 또는 피해 구제를 위해 개인정보침해 신고센터, 개인정보 분쟁조정위원회 등 개인정보 보호 관련 기관에 문의할 수 있습니다.',
-    ),
-    LegalTextBlock(''),
-    LegalTextBlock('제12조 개인정보 처리방침의 변경', level: LegalTextLevel.subsection),
-    LegalTextBlock(
-      '이 개인정보 처리방침의 내용이 변경되는 경우 시행일과 변경 내용을 서비스 내 공지사항 등을 통해 사전에 안내합니다.',
-    ),
-    LegalTextBlock(
-      '다만, 이용자의 권리에 중대한 영향을 미치는 변경이 있는 경우에는 이용자가 해당 내용을 명확하게 확인할 수 있도록 별도로 안내합니다.',
-    ),
-    LegalTextBlock(''),
-    LegalTextBlock('부칙', level: LegalTextLevel.subsection),
-    LegalTextBlock('본 개인정보 수집·이용 동의 및 개인정보 처리방침은 2026년 8월 29일부터 시행합니다.'),
-    LegalTextBlock('• 개인정보처리자: MOODI'),
-    LegalTextBlock('• 대표 운영자: [앱스토어등록자 실명]'),
-    LegalTextBlock('• 문의 이메일: [무드촌 공식 이메일]'),
+    LegalTextBlock('대표 운영자: 김보미'),
+    LegalTextBlock('문의 이메일: moodchon2026@gmail.com'),
   ];
 }
