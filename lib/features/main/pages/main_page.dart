@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../core/widgets/bottom_tab/bottom_tab_type.dart';
 import '../../../core/widgets/navigation/bottom_tab_bar.dart';
+import '../../create_trip/pages/create_trip_info_page.dart';
 import '../../explore/pages/explore_page.dart';
 import '../../home/data/home_api.dart';
 import '../../home/models/home_trip.dart';
@@ -66,6 +67,12 @@ class _MainPageState extends State<MainPage> {
     _handleTabChanged(BottomTabType.explore);
   }
 
+  void _handleCreateTripTap() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const CreateTripInfoPage()));
+  }
+
   void _handleHomeNotificationPermissionRequest() {
     // TODO: 푸시 알림 패키지 연동 후 OS 권한 요청을 연결
   }
@@ -93,6 +100,7 @@ class _MainPageState extends State<MainPage> {
 
                   return HomePage(
                     trips: snapshot.hasError ? const [] : snapshot.data,
+                    onCreateTrip: _handleCreateTripTap,
                     onExploreMoods: _handleExploreMoodsTap,
                     onNotification: _handleNotificationTap,
                     onRequestNotificationPermission:
