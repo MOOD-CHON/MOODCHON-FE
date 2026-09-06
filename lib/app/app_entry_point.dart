@@ -39,7 +39,7 @@ class AppEntryPoint extends StatelessWidget {
 
   Future<void> _handleKakaoLogin(BuildContext context) async {
     final result = await SocialAuthService.instance.loginWithKakao();
-    if (!context.mounted) return;
+    if (!context.mounted || result.canceled) return;
 
     if (result.success) {
       _openMain(context);
@@ -52,7 +52,7 @@ class AppEntryPoint extends StatelessWidget {
 
   Future<void> _handleAppleLogin(BuildContext context) async {
     final result = await SocialAuthService.instance.loginWithApple();
-    if (!context.mounted) return;
+    if (!context.mounted || result.canceled) return;
 
     if (result.success) {
       _openMain(context);
