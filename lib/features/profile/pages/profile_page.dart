@@ -117,7 +117,9 @@ class _ProfilePageState extends State<ProfilePage> {
       return;
     }
 
-    // TODO: 회원 탈퇴 처리 후 로그인 전 진입 화면 연결
+    await AuthApi.instance.withdraw();
+    if (!mounted) return;
+    navigateToLogin();
   }
 
   @override

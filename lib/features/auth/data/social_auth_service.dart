@@ -57,6 +57,7 @@ class SocialAuthService {
 
       await _loginToBackend('/api/auth/apple', {
         'identityToken': identityToken,
+        'authorizationCode': credential.authorizationCode,
       });
       return const AuthResult.success();
     } on SignInWithAppleAuthorizationException catch (error) {
