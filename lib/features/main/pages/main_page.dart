@@ -4,6 +4,8 @@ import '../../../app/theme/app_colors.dart';
 import '../../../core/widgets/bottom_tab/bottom_tab_type.dart';
 import '../../../core/widgets/navigation/bottom_tab_bar.dart';
 import '../../explore/pages/explore_page.dart';
+import '../../home/data/home_api.dart';
+import '../../home/models/home_trip.dart';
 import '../../home/pages/home_page.dart';
 import '../../notification/utils/open_notification_page.dart';
 import '../../profile/pages/profile_page.dart';
@@ -20,12 +22,14 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late BottomTabType _selectedTab;
+  late Future<List<HomeTrip>> _tripsFuture;
 
   @override
   void initState() {
     super.initState();
 
     _selectedTab = widget.initialTab;
+    _tripsFuture = HomeApi.instance.fetchTrips();
   }
 
   int get _selectedIndex {
@@ -77,11 +81,24 @@ class _MainPageState extends State<MainPage> {
           IndexedStack(
             index: _selectedIndex,
             children: [
-              HomePage(
-                onExploreMoods: _handleExploreMoodsTap,
-                onNotification: _handleNotificationTap,
-                onRequestNotificationPermission:
-                    _handleHomeNotificationPermissionRequest,
+              FutureBuilder<List<HomeTrip>>(
+                future: _tripsFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return const ColoredBox(
+                      color: AppColors.backgroundPrimary,
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+
+                  return HomePage(
+                    trips: snapshot.hasError ? const [] : snapshot.data,
+                    onExploreMoods: _handleExploreMoodsTap,
+                    onNotification: _handleNotificationTap,
+                    onRequestNotificationPermission:
+                        _handleHomeNotificationPermissionRequest,
+                  );
+                },
               ),
               const ExplorePage(),
               const SavedPage(),

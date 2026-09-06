@@ -2,6 +2,7 @@ enum HomeTripStatus { inProgress, completed }
 
 class HomeTrip {
   const HomeTrip({
+    required this.id,
     required this.name,
     required this.moodLabel,
     required this.dateRange,
@@ -10,6 +11,7 @@ class HomeTrip {
     required this.status,
   });
 
+  final int id;
   final String name;
   final String moodLabel;
   final String dateRange;
