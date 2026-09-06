@@ -4,7 +4,10 @@ import '../../../app/theme/app_colors.dart';
 import '../../../core/widgets/bottom_tab/bottom_tab_type.dart';
 import '../../../core/widgets/navigation/bottom_tab_bar.dart';
 import '../../explore/pages/explore_page.dart';
+import '../../home/data/home_api.dart';
+import '../../home/models/home_trip.dart';
 import '../../home/pages/home_page.dart';
+import '../../notification/utils/open_notification_page.dart';
 import '../../profile/pages/profile_page.dart';
 import '../../saved/pages/saved_page.dart';
 
@@ -19,12 +22,14 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late BottomTabType _selectedTab;
+  late Future<List<HomeTrip>> _tripsFuture;
 
   @override
   void initState() {
     super.initState();
 
     _selectedTab = widget.initialTab;
+    _tripsFuture = HomeApi.instance.fetchTrips();
   }
 
   int get _selectedIndex {
@@ -53,6 +58,18 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  void _handleNotificationTap() {
+    openNotificationPage(context);
+  }
+
+  void _handleExploreMoodsTap() {
+    _handleTabChanged(BottomTabType.explore);
+  }
+
+  void _handleHomeNotificationPermissionRequest() {
+    // TODO: 푸시 알림 패키지 연동 후 OS 권한 요청을 연결
+  }
+
   @override
   Widget build(BuildContext context) {
     final isKeyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0;
@@ -63,11 +80,29 @@ class _MainPageState extends State<MainPage> {
         children: [
           IndexedStack(
             index: _selectedIndex,
-            children: const [
-              HomePage(),
-              ExplorePage(),
-              SavedPage(),
-              ProfilePage(),
+            children: [
+              FutureBuilder<List<HomeTrip>>(
+                future: _tripsFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return const ColoredBox(
+                      color: AppColors.backgroundPrimary,
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+
+                  return HomePage(
+                    trips: snapshot.hasError ? const [] : snapshot.data,
+                    onExploreMoods: _handleExploreMoodsTap,
+                    onNotification: _handleNotificationTap,
+                    onRequestNotificationPermission:
+                        _handleHomeNotificationPermissionRequest,
+                  );
+                },
+              ),
+              const ExplorePage(),
+              const SavedPage(),
+              const ProfilePage(),
             ],
           ),
 
