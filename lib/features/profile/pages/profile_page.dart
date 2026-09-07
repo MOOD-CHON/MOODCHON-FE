@@ -6,7 +6,6 @@ import 'package:image_picker/image_picker.dart';
 import '../../../app/app.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_typography.dart';
-import '../../auth/data/auth_api.dart';
 import '../../../core/widgets/banner/app_banner.dart';
 import '../../../core/widgets/banner/banner_type.dart';
 import '../../../core/widgets/button/alert_toggle/alert_toggle_button.dart';
@@ -14,11 +13,14 @@ import '../../../core/widgets/button/profile/profile_button.dart';
 import '../../../core/widgets/modal/confirm/confirm_modal.dart';
 import '../../../core/widgets/modal/confirm/confirm_modal_type.dart';
 import '../../../core/widgets/navigation/top_bar.dart';
+import '../../auth/data/auth_api.dart';
+import '../../auth/pages/legal_document_page.dart';
+import '../../auth/utils/legal_link_launcher.dart';
+import '../../notification/utils/open_notification_page.dart';
 import '../widgets/profile_menu_card.dart';
 import '../widgets/profile_menu_row.dart';
 import 'nickname_edit_page.dart';
 import 'pro_plan_page.dart';
-import '../../notification/utils/open_notification_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -90,16 +92,22 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _onTermsTap() {
-    // TODO: 서비스 이용약관 페이지 연결
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const TermsOfServicePage()));
   }
 
-  void _onPrivacyTap() {
-    // TODO: 개인정보 처리방침 외부 URL 연결
+  Future<void> _onPrivacyTap() async {
+    await LegalLinkLauncher.openPrivacyPolicy();
   }
 
   Future<void> _onLogoutTap() async {
     await AuthApi.instance.logout();
-    if (!mounted) return;
+
+    if (!mounted) {
+      return;
+    }
+
     navigateToLogin();
   }
 
@@ -118,7 +126,11 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     await AuthApi.instance.withdraw();
-    if (!mounted) return;
+
+    if (!mounted) {
+      return;
+    }
+
     navigateToLogin();
   }
 
@@ -137,27 +149,21 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Column(
                   children: [
                     Center(child: _buildProfileImage()),
-
                     const SizedBox(height: 14),
-
                     Center(
                       child: ProfileButton(
                         text: '프로필 사진 수정하기',
                         onTap: _pickProfileImage,
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
                     AppBanner(
                       type: BannerType.button,
                       message: '무드촌을 더 편리하게 이용해보세요.',
                       buttonText: 'Pro 요금제 알아보기',
                       onButtonTap: _onProTap,
                     ),
-
                     const SizedBox(height: 20),
-
                     ProfileMenuCard(
                       height: 49,
                       child: ProfileMenuRow(
@@ -166,13 +172,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         onTap: _onNicknameTap,
                       ),
                     ),
-
                     const SizedBox(height: 14),
-
                     _buildAlertCard(),
-
                     const SizedBox(height: 14),
-
                     ProfileMenuCard(
                       height: 84,
                       child: Column(
@@ -191,9 +193,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 14),
-
                     ProfileMenuCard(
                       height: 84,
                       child: Column(
@@ -212,9 +212,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 14),
-
                     _buildTeamCard(),
                   ],
                 ),
@@ -260,9 +258,7 @@ class _ProfilePageState extends State<ProfilePage> {
               },
             ),
           ),
-
           const SizedBox(height: 16),
-
           Text(
             '무드 선택 요청이 오면 알림을 보내드려요.',
             style: AppTypography.tabSmall.copyWith(
