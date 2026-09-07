@@ -102,8 +102,7 @@ class LoginEntryPage extends StatelessWidget {
                   bottom: _scaled(height, 116, _designHeight),
                   child: _AgreementText(
                     onTermsTap: onTermsTap ?? () => _openTerms(context),
-                    onPrivacyTap:
-                        onPrivacyTap ?? LegalLinkLauncher.openPrivacyPolicy,
+                    onPrivacyTap: onPrivacyTap ?? () => _openPrivacy(context),
                   ),
                 ),
               ],
@@ -122,6 +121,10 @@ class LoginEntryPage extends StatelessWidget {
     Navigator.of(
       context,
     ).push(MaterialPageRoute<void>(builder: (_) => const TermsOfServicePage()));
+  }
+
+  static Future<void> _openPrivacy(BuildContext context) async {
+    await LegalLinkLauncher.openPrivacyPolicy();
   }
 }
 
