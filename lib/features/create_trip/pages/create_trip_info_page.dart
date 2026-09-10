@@ -7,9 +7,12 @@ import '../../../core/widgets/character/character.dart';
 import '../../../core/widgets/character/character_size.dart';
 import '../../../core/widgets/character/character_type.dart';
 import '../../../core/widgets/navigation/top_bar.dart';
+import '../models/create_trip_date_mode.dart';
 import '../models/create_trip_form_section.dart';
+import '../widgets/create_trip_date_picker.dart';
 import '../widgets/create_trip_form_field.dart';
 import '../widgets/create_trip_intro_header.dart';
+import '../widgets/create_trip_month_picker_sheet.dart';
 
 class CreateTripInfoPage extends StatefulWidget {
   const CreateTripInfoPage({super.key});
@@ -21,6 +24,11 @@ class CreateTripInfoPage extends StatefulWidget {
 class _CreateTripInfoPageState extends State<CreateTripInfoPage> {
   final TextEditingController _nameController = TextEditingController();
   CreateTripFormSection _expandedSection = CreateTripFormSection.name;
+  CreateTripDateMode _dateMode = CreateTripDateMode.date;
+  DateTime _visibleMonth = DateTime(2026, 9);
+  int? _selectedNights;
+  DateTime? _startDate;
+  DateTime? _endDate;
 
   @override
   void dispose() {
@@ -38,6 +46,73 @@ class _CreateTripInfoPageState extends State<CreateTripInfoPage> {
     // TODO: validate required fields and navigate to mood selection.
   }
 
+  void _changeDateMode(CreateTripDateMode mode) {
+    setState(() {
+      _dateMode = mode;
+      _endDate = null;
+      if (mode == CreateTripDateMode.date) {
+        _selectedNights = null;
+      }
+    });
+  }
+
+  void _selectDuration(int nights) {
+    setState(() {
+      _selectedNights = nights;
+    });
+  }
+
+  void _selectDate(DateTime date) {
+    setState(() {
+      if (_dateMode != CreateTripDateMode.date) {
+        return;
+      }
+
+      if (_startDate == null ||
+          _endDate != null ||
+          date.isBefore(_startDate!)) {
+        _startDate = date;
+        _endDate = null;
+        return;
+      }
+
+      if (DateUtils.isSameDay(date, _startDate)) {
+        _endDate = null;
+        return;
+      }
+
+      final rangeLength = date.difference(_startDate!).inDays;
+      _endDate = _startDate!.add(Duration(days: rangeLength.clamp(0, 6)));
+    });
+  }
+
+  void _goToPreviousMonth() {
+    setState(() {
+      _visibleMonth = DateTime(_visibleMonth.year, _visibleMonth.month - 1);
+    });
+  }
+
+  void _goToNextMonth() {
+    setState(() {
+      _visibleMonth = DateTime(_visibleMonth.year, _visibleMonth.month + 1);
+    });
+  }
+
+  Future<void> _showMonthPicker() async {
+    final selectedMonth = await CreateTripMonthPickerSheet.show(
+      context,
+      initialMonth: _visibleMonth,
+    );
+
+    if (selectedMonth == null || !mounted) {
+      return;
+    }
+
+    setState(() {
+      _visibleMonth = selectedMonth;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,11 +120,17 @@ class _CreateTripInfoPageState extends State<CreateTripInfoPage> {
       body: SafeArea(
         bottom: false,
         child: Stack(
+          fit: StackFit.expand,
           children: [
-            TopBar(
-              type: TopBarType.title,
-              title: '촌캉스 만들기',
-              onBack: () => Navigator.of(context).pop(),
+            Positioned(
+              left: 0,
+              top: 0,
+              right: 0,
+              child: TopBar(
+                type: TopBarType.title,
+                title: '촌캉스 만들기',
+                onBack: () => Navigator.of(context).pop(),
+              ),
             ),
             Positioned(
               right: 2,
@@ -79,7 +160,18 @@ class _CreateTripInfoPageState extends State<CreateTripInfoPage> {
                     _CreateTripInfoForm(
                       expandedSection: _expandedSection,
                       nameController: _nameController,
+                      dateMode: _dateMode,
+                      visibleMonth: _visibleMonth,
+                      selectedNights: _selectedNights,
+                      startDate: _startDate,
+                      endDate: _endDate,
                       onSectionTap: _expand,
+                      onDateModeChanged: _changeDateMode,
+                      onDurationSelected: _selectDuration,
+                      onDateSelected: _selectDate,
+                      onMonthPickerTap: _showMonthPicker,
+                      onPreviousMonth: _goToPreviousMonth,
+                      onNextMonth: _goToNextMonth,
                     ),
                     const SizedBox(height: 34),
                     GreenButton(
@@ -102,12 +194,34 @@ class _CreateTripInfoForm extends StatelessWidget {
   const _CreateTripInfoForm({
     required this.expandedSection,
     required this.nameController,
+    required this.dateMode,
+    required this.visibleMonth,
+    required this.selectedNights,
+    required this.startDate,
+    required this.endDate,
     required this.onSectionTap,
+    required this.onDateModeChanged,
+    required this.onDurationSelected,
+    required this.onDateSelected,
+    required this.onMonthPickerTap,
+    required this.onPreviousMonth,
+    required this.onNextMonth,
   });
 
   final CreateTripFormSection expandedSection;
   final TextEditingController nameController;
+  final CreateTripDateMode dateMode;
+  final DateTime visibleMonth;
+  final int? selectedNights;
+  final DateTime? startDate;
+  final DateTime? endDate;
   final ValueChanged<CreateTripFormSection> onSectionTap;
+  final ValueChanged<CreateTripDateMode> onDateModeChanged;
+  final ValueChanged<int> onDurationSelected;
+  final ValueChanged<DateTime> onDateSelected;
+  final VoidCallback onMonthPickerTap;
+  final VoidCallback onPreviousMonth;
+  final VoidCallback onNextMonth;
 
   @override
   Widget build(BuildContext context) {
@@ -118,9 +232,25 @@ class _CreateTripInfoForm extends StatelessWidget {
             section: section,
             expanded: expandedSection == section,
             onTap: () => onSectionTap(section),
-            child: section == CreateTripFormSection.name
-                ? CreateTripNameField(controller: nameController)
-                : null,
+            child: switch (section) {
+              CreateTripFormSection.name => CreateTripNameField(
+                controller: nameController,
+              ),
+              CreateTripFormSection.date => CreateTripDatePicker(
+                mode: dateMode,
+                visibleMonth: visibleMonth,
+                selectedNights: selectedNights,
+                startDate: startDate,
+                endDate: endDate,
+                onModeChanged: onDateModeChanged,
+                onDurationSelected: onDurationSelected,
+                onDateSelected: onDateSelected,
+                onMonthPickerTap: onMonthPickerTap,
+                onPreviousMonth: onPreviousMonth,
+                onNextMonth: onNextMonth,
+              ),
+              _ => null,
+            },
           ),
           if (section != CreateTripFormSection.values.last)
             const SizedBox(height: 16),
