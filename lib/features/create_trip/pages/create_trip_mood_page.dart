@@ -11,6 +11,7 @@ import '../../../core/widgets/select_image/select_image_grid.dart';
 import '../../../core/widgets/select_image/select_image_mode.dart';
 import '../../../core/widgets/text/warning_text.dart';
 import '../widgets/create_trip_intro_header.dart';
+import 'create_trip_invite_page.dart';
 
 class CreateTripMoodPage extends StatefulWidget {
   const CreateTripMoodPage({super.key});
@@ -69,7 +70,9 @@ class _CreateTripMoodPageState extends State<CreateTripMoodPage> {
       return;
     }
 
-    // TODO: create trip room and navigate to invite/share step.
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => const CreateTripInvitePage()),
+    );
   }
 
   @override
