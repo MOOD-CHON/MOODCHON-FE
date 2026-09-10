@@ -13,6 +13,7 @@ import '../widgets/create_trip_date_picker.dart';
 import '../widgets/create_trip_form_field.dart';
 import '../widgets/create_trip_intro_header.dart';
 import '../widgets/create_trip_month_picker_sheet.dart';
+import '../widgets/create_trip_option_chips.dart';
 
 class CreateTripInfoPage extends StatefulWidget {
   const CreateTripInfoPage({super.key});
@@ -29,6 +30,53 @@ class _CreateTripInfoPageState extends State<CreateTripInfoPage> {
   int? _selectedNights;
   DateTime? _startDate;
   DateTime? _endDate;
+  String? _selectedMemberCount;
+  String? _selectedCompanion;
+  String? _selectedTransport;
+  String? _selectedRegion;
+  final Set<String> _selectedAccommodationTags = {};
+
+  static const List<String> _memberOptions = [
+    '1명',
+    '2명',
+    '3명',
+    '4명',
+    '5명',
+    '6명',
+  ];
+  static const List<String> _companionOptions = [
+    '친구',
+    '가족',
+    '부모님',
+    '연인',
+    '아이',
+    '기타',
+  ];
+  static const List<String> _transportOptions = ['자차', '대중교통', '미정'];
+  static const List<String> _regionOptions = [
+    '강원특별자치도',
+    '경기도',
+    '경상남도',
+    '경상북도',
+    '광주광역시',
+    '대구광역시',
+    '대전광역시',
+    '부산광역시',
+    '서울특별시',
+    '세종특별자치시',
+    '울산광역시',
+    '인천광역시',
+    '전라남도',
+    '전북특별자치도',
+    '제주특별자치도',
+    '충청남도',
+    '충청북도',
+  ];
+  static const List<String> _accommodationOptions = [
+    '반려동물 동반',
+    '바비큐 가능',
+    '취사 가능',
+  ];
 
   @override
   void dispose() {
@@ -83,6 +131,36 @@ class _CreateTripInfoPageState extends State<CreateTripInfoPage> {
 
       final rangeLength = date.difference(_startDate!).inDays;
       _endDate = _startDate!.add(Duration(days: rangeLength.clamp(0, 6)));
+    });
+  }
+
+  void _selectSingleOption(CreateTripFormSection section, String option) {
+    setState(() {
+      switch (section) {
+        case CreateTripFormSection.members:
+          _selectedMemberCount = option;
+        case CreateTripFormSection.companions:
+          _selectedCompanion = option;
+        case CreateTripFormSection.transport:
+          _selectedTransport = option;
+        case CreateTripFormSection.region:
+          _selectedRegion = option;
+        case CreateTripFormSection.name:
+        case CreateTripFormSection.date:
+        case CreateTripFormSection.accommodation:
+          break;
+      }
+    });
+  }
+
+  void _toggleAccommodationTag(String option) {
+    setState(() {
+      if (_selectedAccommodationTags.contains(option)) {
+        _selectedAccommodationTags.remove(option);
+        return;
+      }
+
+      _selectedAccommodationTags.add(option);
     });
   }
 
@@ -165,6 +243,11 @@ class _CreateTripInfoPageState extends State<CreateTripInfoPage> {
                       selectedNights: _selectedNights,
                       startDate: _startDate,
                       endDate: _endDate,
+                      selectedMemberCount: _selectedMemberCount,
+                      selectedCompanion: _selectedCompanion,
+                      selectedTransport: _selectedTransport,
+                      selectedRegion: _selectedRegion,
+                      selectedAccommodationTags: _selectedAccommodationTags,
                       onSectionTap: _expand,
                       onDateModeChanged: _changeDateMode,
                       onDurationSelected: _selectDuration,
@@ -172,6 +255,8 @@ class _CreateTripInfoPageState extends State<CreateTripInfoPage> {
                       onMonthPickerTap: _showMonthPicker,
                       onPreviousMonth: _goToPreviousMonth,
                       onNextMonth: _goToNextMonth,
+                      onSingleOptionSelected: _selectSingleOption,
+                      onAccommodationTagSelected: _toggleAccommodationTag,
                     ),
                     const SizedBox(height: 34),
                     GreenButton(
@@ -199,6 +284,11 @@ class _CreateTripInfoForm extends StatelessWidget {
     required this.selectedNights,
     required this.startDate,
     required this.endDate,
+    required this.selectedMemberCount,
+    required this.selectedCompanion,
+    required this.selectedTransport,
+    required this.selectedRegion,
+    required this.selectedAccommodationTags,
     required this.onSectionTap,
     required this.onDateModeChanged,
     required this.onDurationSelected,
@@ -206,6 +296,8 @@ class _CreateTripInfoForm extends StatelessWidget {
     required this.onMonthPickerTap,
     required this.onPreviousMonth,
     required this.onNextMonth,
+    required this.onSingleOptionSelected,
+    required this.onAccommodationTagSelected,
   });
 
   final CreateTripFormSection expandedSection;
@@ -215,6 +307,11 @@ class _CreateTripInfoForm extends StatelessWidget {
   final int? selectedNights;
   final DateTime? startDate;
   final DateTime? endDate;
+  final String? selectedMemberCount;
+  final String? selectedCompanion;
+  final String? selectedTransport;
+  final String? selectedRegion;
+  final Set<String> selectedAccommodationTags;
   final ValueChanged<CreateTripFormSection> onSectionTap;
   final ValueChanged<CreateTripDateMode> onDateModeChanged;
   final ValueChanged<int> onDurationSelected;
@@ -222,6 +319,9 @@ class _CreateTripInfoForm extends StatelessWidget {
   final VoidCallback onMonthPickerTap;
   final VoidCallback onPreviousMonth;
   final VoidCallback onNextMonth;
+  final void Function(CreateTripFormSection section, String option)
+  onSingleOptionSelected;
+  final ValueChanged<String> onAccommodationTagSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -249,7 +349,31 @@ class _CreateTripInfoForm extends StatelessWidget {
                 onPreviousMonth: onPreviousMonth,
                 onNextMonth: onNextMonth,
               ),
-              _ => null,
+              CreateTripFormSection.members => CreateTripOptionChips(
+                options: _CreateTripInfoPageState._memberOptions,
+                isSelected: (option) => selectedMemberCount == option,
+                onSelected: (option) => onSingleOptionSelected(section, option),
+              ),
+              CreateTripFormSection.companions => CreateTripOptionChips(
+                options: _CreateTripInfoPageState._companionOptions,
+                isSelected: (option) => selectedCompanion == option,
+                onSelected: (option) => onSingleOptionSelected(section, option),
+              ),
+              CreateTripFormSection.transport => CreateTripOptionChips(
+                options: _CreateTripInfoPageState._transportOptions,
+                isSelected: (option) => selectedTransport == option,
+                onSelected: (option) => onSingleOptionSelected(section, option),
+              ),
+              CreateTripFormSection.region => CreateTripOptionChips(
+                options: _CreateTripInfoPageState._regionOptions,
+                isSelected: (option) => selectedRegion == option,
+                onSelected: (option) => onSingleOptionSelected(section, option),
+              ),
+              CreateTripFormSection.accommodation => CreateTripOptionChips(
+                options: _CreateTripInfoPageState._accommodationOptions,
+                isSelected: selectedAccommodationTags.contains,
+                onSelected: onAccommodationTagSelected,
+              ),
             },
           ),
           if (section != CreateTripFormSection.values.last)
