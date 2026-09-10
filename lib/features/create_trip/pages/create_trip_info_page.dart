@@ -28,6 +28,7 @@ class _CreateTripInfoPageState extends State<CreateTripInfoPage> {
   CreateTripFormSection _expandedSection = CreateTripFormSection.name;
   CreateTripDateMode _dateMode = CreateTripDateMode.date;
   DateTime _visibleMonth = DateTime(2026, 9);
+  bool _submitted = false;
   int? _selectedNights;
   DateTime? _startDate;
   DateTime? _endDate;
@@ -92,9 +93,53 @@ class _CreateTripInfoPageState extends State<CreateTripInfoPage> {
   }
 
   void _goToMoodSelection() {
+    final firstInvalidSection = _firstInvalidRequiredSection;
+
+    setState(() {
+      _submitted = true;
+      if (firstInvalidSection != null) {
+        _expandedSection = firstInvalidSection;
+      }
+    });
+
+    if (firstInvalidSection != null) {
+      return;
+    }
+
     Navigator.of(
       context,
     ).push(MaterialPageRoute<void>(builder: (_) => const CreateTripMoodPage()));
+  }
+
+  void _handleNameChanged(String value) {
+    if (!_submitted) {
+      return;
+    }
+
+    setState(() {});
+  }
+
+  CreateTripFormSection? get _firstInvalidRequiredSection {
+    if (_nameController.text.trim().isEmpty) {
+      return CreateTripFormSection.name;
+    }
+
+    if (!_hasValidDate) {
+      return CreateTripFormSection.date;
+    }
+
+    if (_selectedMemberCount == null) {
+      return CreateTripFormSection.members;
+    }
+
+    return null;
+  }
+
+  bool get _hasValidDate {
+    return switch (_dateMode) {
+      CreateTripDateMode.date => _startDate != null && _endDate != null,
+      CreateTripDateMode.range => _selectedNights != null,
+    };
   }
 
   void _changeDateMode(CreateTripDateMode mode) {
@@ -133,7 +178,11 @@ class _CreateTripInfoPageState extends State<CreateTripInfoPage> {
       }
 
       final rangeLength = date.difference(_startDate!).inDays;
-      _endDate = _startDate!.add(Duration(days: rangeLength.clamp(0, 6)));
+      if (rangeLength > 6) {
+        return;
+      }
+
+      _endDate = date;
     });
   }
 
@@ -213,18 +262,6 @@ class _CreateTripInfoPageState extends State<CreateTripInfoPage> {
                 onBack: () => Navigator.of(context).pop(),
               ),
             ),
-            Positioned(
-              right: 2,
-              top: 65,
-              child: IgnorePointer(
-                child: Character(
-                  type: CharacterType.notebook,
-                  size: CharacterSize.medium,
-                  width: 89,
-                  height: 89,
-                ),
-              ),
-            ),
             Positioned.fill(
               top: 72,
               child: SingleChildScrollView(
@@ -232,10 +269,30 @@ class _CreateTripInfoPageState extends State<CreateTripInfoPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const CreateTripIntroHeader(
-                      eyebrow: '여행 정보',
-                      title: '어떤 촌캉스를 떠나볼까요?',
-                      description: '입력한 정보는 구성원 모두에게 동일하게 반영돼요.',
+                    SizedBox(
+                      width: double.infinity,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          const CreateTripIntroHeader(
+                            eyebrow: '여행 정보',
+                            title: '어떤 촌캉스를 떠나볼까요?',
+                            description: '입력한 정보는 구성원 모두에게 동일하게 반영돼요.',
+                          ),
+                          Positioned(
+                            right: -14,
+                            top: -7,
+                            child: IgnorePointer(
+                              child: Character(
+                                type: CharacterType.notebook,
+                                size: CharacterSize.medium,
+                                width: 89,
+                                height: 89,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 28),
                     _CreateTripInfoForm(
@@ -251,7 +308,9 @@ class _CreateTripInfoPageState extends State<CreateTripInfoPage> {
                       selectedTransport: _selectedTransport,
                       selectedRegion: _selectedRegion,
                       selectedAccommodationTags: _selectedAccommodationTags,
+                      submitted: _submitted,
                       onSectionTap: _expand,
+                      onNameChanged: _handleNameChanged,
                       onDateModeChanged: _changeDateMode,
                       onDurationSelected: _selectDuration,
                       onDateSelected: _selectDate,
@@ -292,7 +351,9 @@ class _CreateTripInfoForm extends StatelessWidget {
     required this.selectedTransport,
     required this.selectedRegion,
     required this.selectedAccommodationTags,
+    required this.submitted,
     required this.onSectionTap,
+    required this.onNameChanged,
     required this.onDateModeChanged,
     required this.onDurationSelected,
     required this.onDateSelected,
@@ -315,7 +376,9 @@ class _CreateTripInfoForm extends StatelessWidget {
   final String? selectedTransport;
   final String? selectedRegion;
   final Set<String> selectedAccommodationTags;
+  final bool submitted;
   final ValueChanged<CreateTripFormSection> onSectionTap;
+  final ValueChanged<String> onNameChanged;
   final ValueChanged<CreateTripDateMode> onDateModeChanged;
   final ValueChanged<int> onDurationSelected;
   final ValueChanged<DateTime> onDateSelected;
@@ -326,6 +389,42 @@ class _CreateTripInfoForm extends StatelessWidget {
   onSingleOptionSelected;
   final ValueChanged<String> onAccommodationTagSelected;
 
+  bool get _hasNameError => submitted && nameController.text.trim().isEmpty;
+
+  bool get _hasDateError {
+    if (!submitted) {
+      return false;
+    }
+
+    return switch (dateMode) {
+      CreateTripDateMode.date => startDate == null || endDate == null,
+      CreateTripDateMode.range => selectedNights == null,
+    };
+  }
+
+  bool get _hasMembersError => submitted && selectedMemberCount == null;
+
+  String? _warningTextFor(CreateTripFormSection section) {
+    return switch (section) {
+      CreateTripFormSection.name when _hasNameError => '여행 이름을 입력해주세요.',
+      CreateTripFormSection.date when _hasDateError =>
+        dateMode == CreateTripDateMode.date
+            ? '여행 날짜를 선택해주세요.'
+            : '여행 기간을 선택해주세요.',
+      CreateTripFormSection.members when _hasMembersError => '인원수를 선택해주세요.',
+      _ => null,
+    };
+  }
+
+  bool _hasError(CreateTripFormSection section) {
+    return switch (section) {
+      CreateTripFormSection.name => _hasNameError,
+      CreateTripFormSection.date => _hasDateError,
+      CreateTripFormSection.members => _hasMembersError,
+      _ => false,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -335,9 +434,13 @@ class _CreateTripInfoForm extends StatelessWidget {
             section: section,
             expanded: expandedSection == section,
             onTap: () => onSectionTap(section),
+            hasError: _hasError(section),
+            warningText: _warningTextFor(section),
             child: switch (section) {
               CreateTripFormSection.name => CreateTripNameField(
                 controller: nameController,
+                hasError: _hasNameError,
+                onChanged: onNameChanged,
               ),
               CreateTripFormSection.date => CreateTripDatePicker(
                 mode: dateMode,

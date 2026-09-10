@@ -6,6 +6,7 @@ import '../../../app/theme/app_shadows.dart';
 import '../../../app/theme/app_typography.dart';
 import '../../../core/widgets/inputs/text_field/moodchon_text_field.dart';
 import '../../../core/widgets/inputs/text_field/text_field_size.dart';
+import '../../../core/widgets/text/warning_text.dart';
 import '../models/create_trip_form_section.dart';
 
 class CreateTripFormField extends StatelessWidget {
@@ -15,12 +16,16 @@ class CreateTripFormField extends StatelessWidget {
     required this.expanded,
     required this.onTap,
     this.child,
+    this.hasError = false,
+    this.warningText,
   });
 
   final CreateTripFormSection section;
   final bool expanded;
   final VoidCallback onTap;
   final Widget? child;
+  final bool hasError;
+  final String? warningText;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +44,9 @@ class CreateTripFormField extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.backgroundWhite,
             borderRadius: BorderRadius.circular(16),
+            border: hasError
+                ? Border.all(color: AppColors.statusError, width: 1.2)
+                : null,
             boxShadow: AppShadows.base,
           ),
           child: Column(
@@ -53,6 +61,10 @@ class CreateTripFormField extends StatelessWidget {
               if (expanded && child != null) ...[
                 const SizedBox(height: 13),
                 child!,
+              ],
+              if (expanded && warningText != null) ...[
+                const SizedBox(height: 13),
+                WarningText(text: warningText!),
               ],
             ],
           ),

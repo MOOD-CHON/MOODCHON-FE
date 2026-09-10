@@ -9,6 +9,7 @@ import '../../../core/widgets/character/character_type.dart';
 import '../../../core/widgets/navigation/top_bar.dart';
 import '../../../core/widgets/select_image/select_image_grid.dart';
 import '../../../core/widgets/select_image/select_image_mode.dart';
+import '../../../core/widgets/text/warning_text.dart';
 import '../widgets/create_trip_intro_header.dart';
 
 class CreateTripMoodPage extends StatefulWidget {
@@ -20,6 +21,7 @@ class CreateTripMoodPage extends StatefulWidget {
 
 class _CreateTripMoodPageState extends State<CreateTripMoodPage> {
   final Set<String> _selectedMoodIds = {};
+  bool _submitted = false;
 
   static const List<SelectImageGridItem> _moodItems = [
     SelectImageGridItem(id: 'mood-1'),
@@ -41,6 +43,7 @@ class _CreateTripMoodPageState extends State<CreateTripMoodPage> {
   ];
 
   bool get _canGoNext => _selectedMoodIds.length == 3;
+  bool get _hasMoodError => _submitted && !_canGoNext;
 
   void _handleMoodSelected(String id, bool selected) {
     setState(() {
@@ -58,6 +61,14 @@ class _CreateTripMoodPageState extends State<CreateTripMoodPage> {
   }
 
   void _goToInviteStep() {
+    setState(() {
+      _submitted = true;
+    });
+
+    if (!_canGoNext) {
+      return;
+    }
+
     // TODO: create trip room and navigate to invite/share step.
   }
 
@@ -114,13 +125,19 @@ class _CreateTripMoodPageState extends State<CreateTripMoodPage> {
                       selectedIds: _selectedMoodIds,
                       onSelected: _handleMoodSelected,
                     ),
+                    if (_hasMoodError) ...[
+                      const SizedBox(height: 13),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 6),
+                        child: WarningText(text: '무드 이미지를 3개 선택해주세요.'),
+                      ),
+                    ],
                     const SizedBox(height: 34),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 6),
                       child: GreenButton(
                         size: GreenButtonSize.long,
                         label: '다음',
-                        disabled: !_canGoNext,
                         onTap: _goToInviteStep,
                       ),
                     ),
