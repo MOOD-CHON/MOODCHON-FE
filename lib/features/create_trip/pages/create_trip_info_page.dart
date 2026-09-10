@@ -9,6 +9,7 @@ import '../../../core/widgets/character/character_type.dart';
 import '../../../core/widgets/navigation/top_bar.dart';
 import '../models/create_trip_date_mode.dart';
 import '../models/create_trip_form_section.dart';
+import 'create_trip_mood_page.dart';
 import '../widgets/create_trip_date_picker.dart';
 import '../widgets/create_trip_form_field.dart';
 import '../widgets/create_trip_intro_header.dart';
@@ -91,7 +92,9 @@ class _CreateTripInfoPageState extends State<CreateTripInfoPage> {
   }
 
   void _goToMoodSelection() {
-    // TODO: validate required fields and navigate to mood selection.
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const CreateTripMoodPage()));
   }
 
   void _changeDateMode(CreateTripDateMode mode) {
