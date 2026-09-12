@@ -13,14 +13,49 @@ import '../../../core/widgets/character/character_size.dart';
 import '../../../core/widgets/character/character_type.dart';
 import '../../../core/widgets/navigation/navigation_share_button.dart';
 import '../../../core/widgets/navigation/top_bar.dart';
+import '../../main/pages/main_page.dart';
+import '../data/create_trip_api.dart';
+import '../models/create_trip_draft.dart';
+import '../models/create_trip_result.dart';
 import '../widgets/create_trip_intro_header.dart';
 
-class CreateTripInvitePage extends StatelessWidget {
-  const CreateTripInvitePage({super.key});
+class CreateTripInvitePage extends StatefulWidget {
+  const CreateTripInvitePage({
+    super.key,
+    required this.draft,
+    required this.selectedMoodCardIds,
+  });
 
-  static const String _inviteCode = 'C3H4O5N6';
+  final CreateTripDraft draft;
+  final Set<int> selectedMoodCardIds;
 
-  Future<void> _shareInviteCode(BuildContext context) async {
+  @override
+  State<CreateTripInvitePage> createState() => _CreateTripInvitePageState();
+}
+
+class _CreateTripInvitePageState extends State<CreateTripInvitePage> {
+  late Future<CreateTripResult> _createTripFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _createTripFuture = _createTrip();
+  }
+
+  Future<CreateTripResult> _createTrip() {
+    return CreateTripApi.instance.createChonkang(
+      draft: widget.draft,
+      selectedMoodCardIds: widget.selectedMoodCardIds,
+    );
+  }
+
+  void _retryCreateTrip() {
+    setState(() {
+      _createTripFuture = _createTrip();
+    });
+  }
+
+  Future<void> _shareInviteCode(BuildContext context, String inviteCode) async {
     final box = context.findRenderObject() as RenderBox?;
     final origin = box == null
         ? null
@@ -29,7 +64,7 @@ class CreateTripInvitePage extends StatelessWidget {
     try {
       await SharePlus.instance.share(
         ShareParams(
-          text: '촌캉스에 초대할게요. 초대 코드: $_inviteCode',
+          text: '촌캉스에 초대할게요. 초대 코드: $inviteCode',
           subject: '촌캉스 초대 코드',
           sharePositionOrigin: origin,
         ),
@@ -39,12 +74,12 @@ class CreateTripInvitePage extends StatelessWidget {
         return;
       }
 
-      await _copyInviteCode(context);
+      await _copyInviteCode(context, inviteCode);
     }
   }
 
-  Future<void> _copyInviteCode(BuildContext context) async {
-    await Clipboard.setData(const ClipboardData(text: _inviteCode));
+  Future<void> _copyInviteCode(BuildContext context, String inviteCode) async {
+    await Clipboard.setData(ClipboardData(text: inviteCode));
 
     if (!context.mounted) {
       return;
@@ -54,7 +89,10 @@ class CreateTripInvitePage extends StatelessWidget {
   }
 
   void _goToTravelRoom() {
-    // TODO: navigate to travel room after create-trip API is connected.
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute<void>(builder: (_) => const MainPage()),
+      (route) => false,
+    );
   }
 
   @override
@@ -80,57 +118,26 @@ class CreateTripInvitePage extends StatelessWidget {
               top: 72,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          const CreateTripIntroHeader(
-                            eyebrow: '구성원 초대',
-                            title: '함께 떠날 구성원을 초대해볼까요?',
-                            description: '초대 코드를 공유해 구성원을 초대해주세요.',
-                          ),
-                          Positioned(
-                            right: -14,
-                            top: -7,
-                            child: IgnorePointer(
-                              child: Character(
-                                type: CharacterType.notebook,
-                                size: CharacterSize.medium,
-                                width: 89,
-                                height: 89,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 28),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const Expanded(child: _InviteCodeField()),
-                        const SizedBox(width: 7),
-                        Builder(
-                          builder: (context) => NavigationShareButton(
-                            onTap: () => _shareInviteCode(context),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 33),
-                      child: GreenButton(
-                        size: GreenButtonSize.long,
-                        label: '촌캉스 방으로 이동',
-                        onTap: _goToTravelRoom,
-                      ),
-                    ),
-                  ],
+                child: FutureBuilder<CreateTripResult>(
+                  future: _createTripFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (snapshot.hasError) {
+                      return _CreateTripErrorState(onRetry: _retryCreateTrip);
+                    }
+
+                    final result = snapshot.data!;
+
+                    return _InviteContent(
+                      inviteCode: result.inviteCode,
+                      onShare: (context) =>
+                          _shareInviteCode(context, result.inviteCode),
+                      onGoToTravelRoom: _goToTravelRoom,
+                    );
+                  },
                 ),
               ),
             ),
@@ -141,8 +148,97 @@ class CreateTripInvitePage extends StatelessWidget {
   }
 }
 
+class _InviteContent extends StatelessWidget {
+  const _InviteContent({
+    required this.inviteCode,
+    required this.onShare,
+    required this.onGoToTravelRoom,
+  });
+
+  final String inviteCode;
+  final void Function(BuildContext context) onShare;
+  final VoidCallback onGoToTravelRoom;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              const CreateTripIntroHeader(
+                eyebrow: '구성원 초대',
+                title: '함께 떠날 구성원을 초대해볼까요?',
+                description: '초대 코드를 공유해 구성원을 초대해주세요.',
+              ),
+              Positioned(
+                right: -14,
+                top: -7,
+                child: IgnorePointer(
+                  child: Character(
+                    type: CharacterType.notebook,
+                    size: CharacterSize.medium,
+                    width: 89,
+                    height: 89,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 28),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Expanded(child: _InviteCodeField(inviteCode: inviteCode)),
+            const SizedBox(width: 7),
+            Builder(
+              builder: (context) =>
+                  NavigationShareButton(onTap: () => onShare(context)),
+            ),
+          ],
+        ),
+        const Spacer(),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 33),
+          child: GreenButton(
+            size: GreenButtonSize.long,
+            label: '촌캉스 방으로 이동',
+            onTap: onGoToTravelRoom,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CreateTripErrorState extends StatelessWidget {
+  const _CreateTripErrorState({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text('촌캉스 생성에 실패했어요.'),
+          const SizedBox(height: 12),
+          TextButton(onPressed: onRetry, child: const Text('다시 시도')),
+        ],
+      ),
+    );
+  }
+}
+
 class _InviteCodeField extends StatelessWidget {
-  const _InviteCodeField();
+  const _InviteCodeField({required this.inviteCode});
+
+  final String inviteCode;
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +264,7 @@ class _InviteCodeField extends StatelessWidget {
           ),
           const SizedBox(width: 13),
           Text(
-            CreateTripInvitePage._inviteCode,
+            inviteCode,
             style: AppTypography.titleSmall.copyWith(
               color: AppColors.textPrimary,
               height: 1,

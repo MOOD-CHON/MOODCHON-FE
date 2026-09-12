@@ -10,54 +10,47 @@ import '../../../core/widgets/navigation/top_bar.dart';
 import '../../../core/widgets/select_image/select_image_grid.dart';
 import '../../../core/widgets/select_image/select_image_mode.dart';
 import '../../../core/widgets/text/warning_text.dart';
+import '../data/create_trip_api.dart';
+import '../models/create_trip_draft.dart';
+import '../models/create_trip_mood_card.dart';
 import '../widgets/create_trip_intro_header.dart';
 import 'create_trip_invite_page.dart';
 
 class CreateTripMoodPage extends StatefulWidget {
-  const CreateTripMoodPage({super.key});
+  const CreateTripMoodPage({super.key, required this.draft});
+
+  final CreateTripDraft draft;
 
   @override
   State<CreateTripMoodPage> createState() => _CreateTripMoodPageState();
 }
 
 class _CreateTripMoodPageState extends State<CreateTripMoodPage> {
-  final Set<String> _selectedMoodIds = {};
+  final Set<int> _selectedMoodCardIds = {};
   bool _submitted = false;
+  late Future<List<CreateTripMoodCard>> _moodCardsFuture;
 
-  static const List<SelectImageGridItem> _moodItems = [
-    SelectImageGridItem(id: 'mood-1'),
-    SelectImageGridItem(id: 'mood-2'),
-    SelectImageGridItem(id: 'mood-3'),
-    SelectImageGridItem(id: 'mood-4'),
-    SelectImageGridItem(id: 'mood-5'),
-    SelectImageGridItem(id: 'mood-6'),
-    SelectImageGridItem(id: 'mood-7'),
-    SelectImageGridItem(id: 'mood-8'),
-    SelectImageGridItem(id: 'mood-9'),
-    SelectImageGridItem(id: 'mood-10'),
-    SelectImageGridItem(id: 'mood-11'),
-    SelectImageGridItem(id: 'mood-12'),
-    SelectImageGridItem(id: 'mood-13'),
-    SelectImageGridItem(id: 'mood-14'),
-    SelectImageGridItem(id: 'mood-15'),
-    SelectImageGridItem(id: 'mood-16'),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _moodCardsFuture = CreateTripApi.instance.fetchRandomMoodCards();
+  }
 
-  bool get _canGoNext => _selectedMoodIds.length == 3;
+  bool get _canGoNext => _selectedMoodCardIds.length == 3;
   bool get _hasMoodError => _submitted && !_canGoNext;
 
   void _handleMoodSelected(String id, bool selected) {
     setState(() {
       if (!selected) {
-        _selectedMoodIds.remove(id);
+        _selectedMoodCardIds.remove(int.parse(id));
         return;
       }
 
-      if (_selectedMoodIds.length >= 3) {
+      if (_selectedMoodCardIds.length >= 3) {
         return;
       }
 
-      _selectedMoodIds.add(id);
+      _selectedMoodCardIds.add(int.parse(id));
     });
   }
 
@@ -71,8 +64,19 @@ class _CreateTripMoodPageState extends State<CreateTripMoodPage> {
     }
 
     Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => const CreateTripInvitePage()),
+      MaterialPageRoute<void>(
+        builder: (_) => CreateTripInvitePage(
+          draft: widget.draft,
+          selectedMoodCardIds: _selectedMoodCardIds,
+        ),
+      ),
     );
+  }
+
+  void _retryFetchMoodCards() {
+    setState(() {
+      _moodCardsFuture = CreateTripApi.instance.fetchRandomMoodCards();
+    });
   }
 
   @override
@@ -122,11 +126,42 @@ class _CreateTripMoodPageState extends State<CreateTripMoodPage> {
                       ),
                     ),
                     const SizedBox(height: 28),
-                    SelectImageGrid(
-                      items: _moodItems,
-                      mode: SelectImageMode.selectable,
-                      selectedIds: _selectedMoodIds,
-                      onSelected: _handleMoodSelected,
+                    FutureBuilder<List<CreateTripMoodCard>>(
+                      future: _moodCardsFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState !=
+                            ConnectionState.done) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 80),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+
+                        if (snapshot.hasError) {
+                          return _MoodCardsErrorState(
+                            onRetry: _retryFetchMoodCards,
+                          );
+                        }
+
+                        final moodCards = snapshot.data ?? [];
+
+                        return SelectImageGrid(
+                          items: moodCards
+                              .map(
+                                (card) => SelectImageGridItem(
+                                  id: card.id.toString(),
+                                  imageUrl: card.imageUrl,
+                                  tag: card.placeCategoryLabel,
+                                ),
+                              )
+                              .toList(),
+                          mode: SelectImageMode.selectable,
+                          selectedIds: _selectedMoodCardIds
+                              .map((id) => id.toString())
+                              .toSet(),
+                          onSelected: _handleMoodSelected,
+                        );
+                      },
                     ),
                     if (_hasMoodError) ...[
                       const SizedBox(height: 13),
@@ -150,6 +185,26 @@ class _CreateTripMoodPageState extends State<CreateTripMoodPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _MoodCardsErrorState extends StatelessWidget {
+  const _MoodCardsErrorState({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 6),
+      child: Column(
+        children: [
+          const Text('무드 카드를 불러오지 못했어요.'),
+          const SizedBox(height: 12),
+          TextButton(onPressed: onRetry, child: const Text('다시 시도')),
+        ],
       ),
     );
   }

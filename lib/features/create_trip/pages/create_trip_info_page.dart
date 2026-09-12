@@ -7,7 +7,9 @@ import '../../../core/widgets/character/character.dart';
 import '../../../core/widgets/character/character_size.dart';
 import '../../../core/widgets/character/character_type.dart';
 import '../../../core/widgets/navigation/top_bar.dart';
+import '../data/create_trip_mappings.dart';
 import '../models/create_trip_date_mode.dart';
+import '../models/create_trip_draft.dart';
 import '../models/create_trip_form_section.dart';
 import 'create_trip_mood_page.dart';
 import '../widgets/create_trip_date_picker.dart';
@@ -106,9 +108,40 @@ class _CreateTripInfoPageState extends State<CreateTripInfoPage> {
       return;
     }
 
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute<void>(builder: (_) => const CreateTripMoodPage()));
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => CreateTripMoodPage(draft: _buildDraft()),
+      ),
+    );
+  }
+
+  CreateTripDraft _buildDraft() {
+    final DateTime startDate;
+    final DateTime endDate;
+    if (_dateMode == CreateTripDateMode.date) {
+      startDate = _startDate!;
+      endDate = _endDate!;
+    } else {
+      final today = DateTime.now();
+      startDate = DateTime(today.year, today.month, today.day);
+      endDate = startDate.add(Duration(days: _selectedNights!));
+    }
+
+    return CreateTripDraft(
+      name: _nameController.text.trim(),
+      startDate: startDate,
+      endDate: endDate,
+      plannedMemberCount: int.parse(
+        _selectedMemberCount!.replaceAll('명', ''),
+      ),
+      companionType: createTripCompanionTypeByLabel[_selectedCompanion],
+      travelMethod: createTripTravelMethodByLabel[_selectedTransport],
+      desiredRegion: createTripRegionByLabel[_selectedRegion],
+      accommodationConditions: _selectedAccommodationTags
+          .map((tag) => createTripAccommodationConditionByLabel[tag])
+          .whereType<String>()
+          .toSet(),
+    );
   }
 
   void _handleNameChanged(String value) {
