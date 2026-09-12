@@ -21,6 +21,7 @@ import '../../place_detail/pages/event_detail_page.dart';
 import '../../place_detail/pages/restaurant_detail_page.dart';
 import '../../place_detail/pages/shopping_detail_page.dart';
 import '../../place_detail/pages/tourism_detail_page.dart';
+import '../data/travel_room_api.dart';
 import '../models/accommodation_recommendation.dart';
 import '../models/travel_room_main_data.dart';
 import '../models/travel_room_plan_category.dart';
@@ -35,8 +36,13 @@ import 'mood_result_detail_page.dart';
 import 'travel_accommodation_detail_page.dart';
 
 class TravelRoomMainPage extends StatelessWidget {
-  const TravelRoomMainPage({super.key, required this.data});
+  const TravelRoomMainPage({
+    super.key,
+    required this.chonkangId,
+    required this.data,
+  });
 
+  final int chonkangId;
   final TravelRoomMainData data;
 
   static const double _bottomTabMinimumBottom = 22;
@@ -67,14 +73,27 @@ class TravelRoomMainPage extends StatelessWidget {
     return _bottomTabBottom(context) + _bottomTabHeight + _toastGap;
   }
 
-  void _requestMoodSelection(BuildContext context) {
-    // TODO: 무드 선택 미완료 구성원에게 재요청 알림 API 연결
-
-    ToastOverlay.show(
-      context,
-      message: '무드 선택 알림을 다시 보냈어요.',
-      bottom: _toastBottom(context),
-    );
+  Future<void> _requestMoodSelection(BuildContext context) async {
+    try {
+      await TravelRoomApi.instance.remindMoodSelection(chonkangId);
+      if (!context.mounted) {
+        return;
+      }
+      ToastOverlay.show(
+        context,
+        message: '무드 선택 알림을 다시 보냈어요.',
+        bottom: _toastBottom(context),
+      );
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+      ToastOverlay.show(
+        context,
+        message: '알림을 보내지 못했어요. 다시 시도해주세요.',
+        bottom: _toastBottom(context),
+      );
+    }
   }
 
   void _openMoodResult(
@@ -123,6 +142,7 @@ class TravelRoomMainPage extends StatelessWidget {
         reverseTransitionDuration: const Duration(milliseconds: 220),
         pageBuilder: (_, __, ___) {
           return TravelRoomMainPage(
+            chonkangId: chonkangId,
             data: data.copyWith(
               stage: TravelRoomStage.accommodationRecommendation,
               clearConfirmedAccommodation: true,

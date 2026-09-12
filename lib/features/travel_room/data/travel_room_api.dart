@@ -10,4 +10,8 @@ class TravelRoomApi {
     final response = await ApiClient.instance.get('/api/chonkangs/$chonkangId/main');
     return TravelRoomMainData.fromJson(response.data['data'] as Map<String, dynamic>);
   }
+
+  Future<void> remindMoodSelection(int chonkangId) async {
+    await ApiClient.instance.post('/api/chonkangs/$chonkangId/mood-selection/remind');
+  }
 }

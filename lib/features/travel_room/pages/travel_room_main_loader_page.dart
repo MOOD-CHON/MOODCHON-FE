@@ -54,7 +54,7 @@ class _TravelRoomMainLoaderPageState extends State<TravelRoomMainLoaderPage> {
           );
         }
 
-        return TravelRoomMainPage(data: snapshot.data!);
+        return TravelRoomMainPage(chonkangId: widget.chonkangId, data: snapshot.data!);
       },
     );
   }
