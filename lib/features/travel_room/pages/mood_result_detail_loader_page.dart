@@ -76,6 +76,7 @@ class _MoodResultDetailLoaderPageState extends State<MoodResultDetailLoaderPage>
         }
 
         return MoodResultDetailPage(
+          chonkangId: widget.chonkangId,
           result: snapshot.data!,
           showAccommodationButton: widget.showAccommodationButton,
         );
