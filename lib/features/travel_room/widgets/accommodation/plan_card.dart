@@ -9,7 +9,6 @@ import '../../../../core/widgets/profile/vote_profile.dart';
 import '../../../../core/widgets/tag/map_tag.dart';
 import '../../../../core/widgets/tag/mood_tag.dart';
 import '../../models/accommodation_recommendation.dart';
-import '../../models/travel_room_plan_category.dart';
 import '../../models/travel_room_plan_item.dart';
 
 enum PlanCardType { lodging1, lodging2, edit2 }
@@ -423,7 +422,6 @@ class _ItineraryPlaceCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 341,
-        height: 70,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 11),
         decoration: BoxDecoration(
           color: AppColors.backgroundWhite,
@@ -431,6 +429,7 @@ class _ItineraryPlaceCard extends StatelessWidget {
           boxShadow: AppShadows.card,
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
@@ -462,22 +461,51 @@ class _ItineraryPlaceCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    item.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTypography.tabLarge.copyWith(
-                      color: AppColors.textPrimary,
-                    ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          item.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.tabLarge.copyWith(
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ),
+
+                      if (item.moodMatchRate != null) ...[
+                        const SizedBox(width: 6),
+                        Text(
+                          '무드 적합도 ${item.moodMatchRate}%',
+                          style: AppTypography.captionExtraSmall.copyWith(
+                            color: AppColors.main,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
+
+                  if (item.accommodationDistanceText != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      item.accommodationDistanceText!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.captionExtraSmall.copyWith(
+                        color: AppColors.grayPrimary,
+                      ),
+                    ),
+                  ],
 
                   const SizedBox(height: 6),
 
                   Row(
                     children: [
                       MapTag(
-                        label: item.category.label,
-                        color: item.category.mapTagColor,
+                        label: item.displayTagLabel,
+                        color: item.displayTagColor,
                         size: MapTagSize.small,
                       ),
 
