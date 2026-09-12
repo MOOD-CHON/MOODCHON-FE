@@ -6,8 +6,10 @@ import 'package:image_picker/image_picker.dart';
 import '../../../app/app.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_typography.dart';
+import '../../../core/network/api_exception.dart';
 import '../../../core/widgets/banner/app_banner.dart';
 import '../../../core/widgets/banner/banner_type.dart';
+import '../../../core/widgets/banner/toast_overlay.dart';
 import '../../../core/widgets/button/alert_toggle/alert_toggle_button.dart';
 import '../../../core/widgets/button/profile/profile_button.dart';
 import '../../../core/widgets/modal/confirm/confirm_modal.dart';
@@ -17,6 +19,7 @@ import '../../auth/data/auth_api.dart';
 import '../../auth/pages/legal_document_page.dart';
 import '../../auth/utils/legal_link_launcher.dart';
 import '../../notification/utils/open_notification_page.dart';
+import '../data/profile_api.dart';
 import '../widgets/profile_menu_card.dart';
 import '../widgets/profile_menu_row.dart';
 import 'nickname_edit_page.dart';
@@ -32,13 +35,45 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final ImagePicker _imagePicker = ImagePicker();
 
-  XFile? _profileImage;
+  XFile? _pickedProfileImage;
 
-  // TODO: 사용자 정보 API 연결 후 실제 닉네임으로 교체
-  String _nickname = '홍길동';
-
-  // TODO: 홈 화면에서 설정한 알림 동의 상태와 공통 상태로 연결
+  bool _isLoading = true;
+  String _nickname = '';
+  String? _profileImageUrl;
   bool _isAlertEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _fetchProfile();
+  }
+
+  Future<void> _fetchProfile() async {
+    try {
+      final profile = await ProfileApi.getMyProfile();
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _nickname = profile.nickname;
+        _profileImageUrl = profile.profileImageUrl;
+        _isAlertEnabled = profile.notificationEnabled;
+      });
+    } on ApiException catch (error) {
+      if (mounted) {
+        ToastOverlay.show(context, message: error.message, bottom: 32);
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   void _onNotificationTap() {
     openNotificationPage(context);
@@ -55,10 +90,14 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     setState(() {
-      _profileImage = image;
+      _pickedProfileImage = image;
     });
 
-    // TODO: 프로필 이미지 수정 API 연결
+    // 현재 API 스펙(PATCH /api/users/me/profile-image)은 이미 업로드된
+    // 이미지 URL 문자열만 받고, 이미지 파일을 업로드하는 엔드포인트가
+    // 아직 없어서 로컬 미리보기까지만 반영됩니다.
+    // 업로드 엔드포인트가 추가되면 여기서 업로드 후 반환된 URL로
+    // ProfileApi.updateProfileImage를 호출해주세요.
   }
 
   void _onProTap() {
@@ -87,8 +126,6 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       _nickname = nickname;
     });
-
-    // TODO: 닉네임 수정 API 연결
   }
 
   void _onTermsTap() {
@@ -99,6 +136,28 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _onPrivacyTap() async {
     await LegalLinkLauncher.openPrivacyPolicy();
+  }
+
+  Future<void> _handleAlertChanged(bool value) async {
+    final previous = _isAlertEnabled;
+
+    setState(() {
+      _isAlertEnabled = value;
+    });
+
+    try {
+      await ProfileApi.updateNotificationPreference(value);
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _isAlertEnabled = previous;
+      });
+
+      ToastOverlay.show(context, message: error.message, bottom: 32);
+    }
   }
 
   Future<void> _onLogoutTap() async {
@@ -144,82 +203,90 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             TopBar(type: TopBarType.logo, onNotification: _onNotificationTap),
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 24, 16, 110),
-                child: Column(
-                  children: [
-                    Center(child: _buildProfileImage()),
-                    const SizedBox(height: 14),
-                    Center(
-                      child: ProfileButton(
-                        text: '프로필 사진 수정하기',
-                        onTap: _pickProfileImage,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    AppBanner(
-                      type: BannerType.button,
-                      message: '무드촌을 더 편리하게 이용해보세요.',
-                      buttonText: 'Pro 요금제 알아보기',
-                      onButtonTap: _onProTap,
-                    ),
-                    const SizedBox(height: 20),
-                    ProfileMenuCard(
-                      height: 49,
-                      child: ProfileMenuRow(
-                        label: '닉네임 수정하기',
-                        showArrow: true,
-                        onTap: _onNicknameTap,
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    _buildAlertCard(),
-                    const SizedBox(height: 14),
-                    ProfileMenuCard(
-                      height: 84,
-                      child: Column(
-                        children: [
-                          ProfileMenuRow(
-                            label: '서비스 이용약관',
-                            showArrow: true,
-                            onTap: _onTermsTap,
-                          ),
-                          const SizedBox(height: 16),
-                          ProfileMenuRow(
-                            label: '개인정보 처리방침',
-                            showArrow: true,
-                            onTap: _onPrivacyTap,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    ProfileMenuCard(
-                      height: 84,
-                      child: Column(
-                        children: [
-                          ProfileMenuRow(
-                            label: '로그아웃',
-                            showArrow: true,
-                            onTap: _onLogoutTap,
-                          ),
-                          const SizedBox(height: 16),
-                          ProfileMenuRow(
-                            label: '회원탈퇴',
-                            showArrow: true,
-                            onTap: _onWithdrawTap,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    _buildTeamCard(),
-                  ],
-                ),
-              ),
+              child: _isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(color: AppColors.main),
+                    )
+                  : _buildContent(),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildContent() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 110),
+      child: Column(
+        children: [
+          Center(child: _buildProfileImage()),
+          const SizedBox(height: 14),
+          Center(
+            child: ProfileButton(
+              text: '프로필 사진 수정하기',
+              onTap: _pickProfileImage,
+            ),
+          ),
+          const SizedBox(height: 20),
+          AppBanner(
+            type: BannerType.button,
+            message: '무드촌을 더 편리하게 이용해보세요.',
+            buttonText: 'Pro 요금제 알아보기',
+            onButtonTap: _onProTap,
+          ),
+          const SizedBox(height: 20),
+          ProfileMenuCard(
+            height: 49,
+            child: ProfileMenuRow(
+              label: '닉네임 수정하기',
+              showArrow: true,
+              onTap: _onNicknameTap,
+            ),
+          ),
+          const SizedBox(height: 14),
+          _buildAlertCard(),
+          const SizedBox(height: 14),
+          ProfileMenuCard(
+            height: 84,
+            child: Column(
+              children: [
+                ProfileMenuRow(
+                  label: '서비스 이용약관',
+                  showArrow: true,
+                  onTap: _onTermsTap,
+                ),
+                const SizedBox(height: 16),
+                ProfileMenuRow(
+                  label: '개인정보 처리방침',
+                  showArrow: true,
+                  onTap: _onPrivacyTap,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          ProfileMenuCard(
+            height: 84,
+            child: Column(
+              children: [
+                ProfileMenuRow(
+                  label: '로그아웃',
+                  showArrow: true,
+                  onTap: _onLogoutTap,
+                ),
+                const SizedBox(height: 16),
+                ProfileMenuRow(
+                  label: '회원탈퇴',
+                  showArrow: true,
+                  onTap: _onWithdrawTap,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          _buildTeamCard(),
+        ],
       ),
     );
   }
@@ -229,13 +296,34 @@ class _ProfilePageState extends State<ProfilePage> {
       child: SizedBox(
         width: 95,
         height: 95,
-        child: _profileImage == null
-            ? Image.asset(
-                'assets/images/empty_state/empty_profile.png',
-                fit: BoxFit.cover,
-              )
-            : Image.file(File(_profileImage!.path), fit: BoxFit.cover),
+        child: _buildProfileImageContent(),
       ),
+    );
+  }
+
+  Widget _buildProfileImageContent() {
+    if (_pickedProfileImage != null) {
+      return Image.file(File(_pickedProfileImage!.path), fit: BoxFit.cover);
+    }
+
+    final imageUrl = _profileImageUrl;
+
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      return Image.network(
+        imageUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Image.asset(
+            'assets/images/empty_state/empty_profile.png',
+            fit: BoxFit.cover,
+          );
+        },
+      );
+    }
+
+    return Image.asset(
+      'assets/images/empty_state/empty_profile.png',
+      fit: BoxFit.cover,
     );
   }
 
@@ -249,13 +337,7 @@ class _ProfilePageState extends State<ProfilePage> {
             label: '알림 받기',
             trailing: AlertToggleButton(
               value: _isAlertEnabled,
-              onChanged: (value) {
-                setState(() {
-                  _isAlertEnabled = value;
-                });
-
-                // TODO: 홈 화면 알림 설정 상태와 공통 상태 연결
-              },
+              onChanged: _handleAlertChanged,
             ),
           ),
           const SizedBox(height: 16),
