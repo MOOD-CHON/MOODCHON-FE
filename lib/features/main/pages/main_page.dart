@@ -11,6 +11,7 @@ import '../../home/pages/home_page.dart';
 import '../../notification/utils/open_notification_page.dart';
 import '../../profile/pages/profile_page.dart';
 import '../../saved/pages/saved_page.dart';
+import '../../travel_room/pages/travel_room_main_loader_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key, this.initialTab = BottomTabType.home});
@@ -73,6 +74,14 @@ class _MainPageState extends State<MainPage> {
     ).push(MaterialPageRoute<void>(builder: (_) => const CreateTripInfoPage()));
   }
 
+  void _handleTripTap(HomeTrip trip) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => TravelRoomMainLoaderPage(chonkangId: trip.id),
+      ),
+    );
+  }
+
   void _handleHomeNotificationPermissionRequest() {
     // TODO: 푸시 알림 패키지 연동 후 OS 권한 요청을 연결
   }
@@ -105,6 +114,8 @@ class _MainPageState extends State<MainPage> {
                     onNotification: _handleNotificationTap,
                     onRequestNotificationPermission:
                         _handleHomeNotificationPermissionRequest,
+                    onTripTap: _handleTripTap,
+                    onContinueTrip: _handleTripTap,
                   );
                 },
               ),
