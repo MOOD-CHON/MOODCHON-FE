@@ -52,16 +52,30 @@ class MoodChonApp extends StatelessWidget {
           isDesktopWeb: true,
           child: ColoredBox(
             color: const Color(0xFFF3F3F3),
-            child: Center(
-              child: SizedBox(
-                width: _designWidth,
-                height: _designHeight,
-                child: MediaQuery(
-                  data: MediaQuery.of(context)
-                      .copyWith(size: const Size(_designWidth, _designHeight)),
-                  child: ClipRect(child: content),
-                ),
-              ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final verticalPadding = constraints.maxHeight > _designHeight
+                    ? (constraints.maxHeight - _designHeight) / 2
+                    : 0.0;
+
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: verticalPadding),
+                    child: Center(
+                      child: SizedBox(
+                        width: _designWidth,
+                        height: _designHeight,
+                        child: MediaQuery(
+                          data: MediaQuery.of(context).copyWith(
+                            size: const Size(_designWidth, _designHeight),
+                          ),
+                          child: ClipRect(child: content),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         );
