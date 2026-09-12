@@ -17,6 +17,7 @@ class MoodChonApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: '무드촌 - 취향이 머무는 촌캉스',
       navigatorKey: rootNavigatorKey,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
