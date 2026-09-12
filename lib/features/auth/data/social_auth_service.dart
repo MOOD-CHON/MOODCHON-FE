@@ -3,6 +3,8 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../core/network/api_client.dart';
+import '../../../core/network/api_exception.dart';
+import '../../../core/network/api_result.dart';
 import '../../../core/network/token_storage.dart';
 
 class AuthResult {
@@ -40,8 +42,10 @@ class SocialAuthService {
         return const AuthResult.canceled();
       }
       return AuthResult.failure(error.toString());
-    } catch (e) {
-      return AuthResult.failure(e.toString());
+    } on ApiException catch (error) {
+      return AuthResult.failure(error.message);
+    } catch (_) {
+      return const AuthResult.failure('카카오 로그인에 실패했어요.');
     }
   }
 
@@ -65,8 +69,10 @@ class SocialAuthService {
         return const AuthResult.canceled();
       }
       return AuthResult.failure(error.toString());
-    } catch (e) {
-      return AuthResult.failure(e.toString());
+    } on ApiException catch (error) {
+      return AuthResult.failure(error.message);
+    } catch (_) {
+      return const AuthResult.failure('Apple 로그인에 실패했어요.');
     }
   }
 
@@ -88,12 +94,14 @@ class SocialAuthService {
     String path,
     Map<String, dynamic> body,
   ) async {
-    final response = await ApiClient.instance.post(path, data: body);
-    final data = response.data['data'] as Map<String, dynamic>;
+    final tokens = await ApiResult.unwrap(
+      () => ApiClient.instance.post(path, data: body),
+      (data) => data as Map<String, dynamic>,
+    );
 
     await TokenStorage.instance.saveTokens(
-      accessToken: data['accessToken'] as String,
-      refreshToken: data['refreshToken'] as String,
+      accessToken: tokens['accessToken'] as String,
+      refreshToken: tokens['refreshToken'] as String,
     );
   }
 }

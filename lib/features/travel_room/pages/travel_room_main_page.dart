@@ -10,8 +10,11 @@ import '../../../core/widgets/banner/info_banner.dart';
 import '../../../core/widgets/banner/toast_overlay.dart';
 import '../../../core/widgets/bottom_tab/bottom_tab_type.dart';
 import '../../../core/widgets/button/floating/explore_floating_button.dart';
+import '../../../core/widgets/modal/confirm/confirm_modal.dart';
+import '../../../core/widgets/modal/confirm/confirm_modal_type.dart';
 import '../../../core/widgets/navigation/bottom_tab_bar.dart';
 import '../../../core/widgets/navigation/top_bar.dart';
+import '../../../core/network/api_exception.dart';
 import '../../main/pages/main_page.dart';
 import '../../place_detail/data/event_detail_mock_data.dart';
 import '../../place_detail/data/restaurant_detail_mock_data.dart';
@@ -21,6 +24,7 @@ import '../../place_detail/pages/event_detail_page.dart';
 import '../../place_detail/pages/restaurant_detail_page.dart';
 import '../../place_detail/pages/shopping_detail_page.dart';
 import '../../place_detail/pages/tourism_detail_page.dart';
+import '../data/travel_room_settings_api.dart';
 import '../models/accommodation_recommendation.dart';
 import '../models/travel_room_main_data.dart';
 import '../models/travel_room_plan_category.dart';
@@ -30,9 +34,14 @@ import '../widgets/accommodation/lodging_carousel.dart';
 import '../widgets/accommodation/plan_card.dart';
 import '../widgets/main/mood_selection_status_card.dart';
 import '../widgets/main/travel_itinerary_section.dart';
+import 'edit_trip_info_page.dart';
+import 'itinerary_page.dart';
+import 'member_info_page.dart';
 import 'mood_accommodation_page.dart';
 import 'mood_result_detail_page.dart';
+import 'recommended_itinerary_page.dart';
 import 'travel_accommodation_detail_page.dart';
+import 'travel_room_invite_page.dart';
 
 class TravelRoomMainPage extends StatelessWidget {
   const TravelRoomMainPage({super.key, required this.data});
@@ -75,6 +84,86 @@ class TravelRoomMainPage extends StatelessWidget {
       message: '무드 선택 알림을 다시 보냈어요.',
       bottom: _toastBottom(context),
     );
+  }
+
+  void _openEditInfo(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => EditTripInfoPage(chonkangId: data.chonkangId),
+      ),
+    );
+  }
+
+  void _openMemberInfo(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => MemberInfoPage(
+          chonkangId: data.chonkangId,
+          roomName: data.roomName,
+          travelDateText: data.travelDateText,
+        ),
+      ),
+    );
+  }
+
+  void _openRecommendedItinerary(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => RecommendedItineraryPage(chonkangId: data.chonkangId),
+      ),
+    );
+  }
+
+  void _openItinerary(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ItineraryPage(chonkangId: data.chonkangId),
+      ),
+    );
+  }
+
+  void _openInvite(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => TravelRoomInvitePage(
+          chonkangId: data.chonkangId,
+          roomName: data.roomName,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _handleLeave(BuildContext context) async {
+    final confirmed = await ConfirmModal.show(
+      context,
+      type: ConfirmModalType.sbTwo,
+      title: '정말 이 촌캉스에서 나갈까요?',
+      description: '나가면 이 촌캉스의 무드, 숙소, 타임라인을\n더 이상 확인하거나 수정할 수 없어요.',
+      confirmText: '나가기',
+    );
+
+    if (confirmed != true || !context.mounted) {
+      return;
+    }
+
+    try {
+      await TravelRoomSettingsApi.leave(data.chonkangId);
+
+      if (!context.mounted) {
+        return;
+      }
+
+      Navigator.of(
+        context,
+      ).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const MainPage()),
+        (route) => false,
+      );
+    } on ApiException catch (error) {
+      if (context.mounted) {
+        ToastOverlay.show(context, message: error.message, bottom: 32);
+      }
+    }
   }
 
   void _openMoodResult(
@@ -211,6 +300,10 @@ class TravelRoomMainPage extends StatelessWidget {
                   onBack: () {
                     Navigator.of(context).pop();
                   },
+                  onEditInfo: () => _openEditInfo(context),
+                  onMemberInfo: () => _openMemberInfo(context),
+                  onInvite: () => _openInvite(context),
+                  onLeave: () => _handleLeave(context),
                 ),
                 Expanded(child: _buildStageContent(context)),
               ],
@@ -386,7 +479,7 @@ class TravelRoomMainPage extends StatelessWidget {
               message: '추천 일정이 도착했어요. 확인해볼까요?',
               buttonText: '추천 일정 담기',
               onButtonTap: () {
-                // TODO: 8.1 구현 완료 후 연결
+                _openRecommendedItinerary(context);
               },
             ),
           ),
@@ -446,7 +539,7 @@ class TravelRoomMainPage extends StatelessWidget {
           TravelItinerarySection(
             dayPlans: data.dayPlans,
             onDetailTap: () {
-              // TODO: 전체 일정 상세 화면 구현 후 연결
+              _openItinerary(context);
             },
             onPlaceTap: (item) {
               _openPlanItem(context, item);

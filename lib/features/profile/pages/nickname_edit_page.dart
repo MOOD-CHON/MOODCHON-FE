@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_typography.dart';
+import '../../../core/network/api_exception.dart';
+import '../../../core/widgets/banner/toast_overlay.dart';
 import '../../../core/widgets/button/green/green_button.dart';
 import '../../../core/widgets/button/green/green_button_size.dart';
 import '../../../core/widgets/inputs/text_field/moodchon_text_field.dart';
 import '../../../core/widgets/inputs/text_field/text_field_size.dart';
 import '../../../core/widgets/navigation/top_bar.dart';
 import '../../../core/widgets/text/warning_text.dart';
+import '../data/profile_api.dart';
 
 class NicknameEditPage extends StatefulWidget {
   const NicknameEditPage({super.key, required this.initialNickname});
@@ -22,6 +25,7 @@ class _NicknameEditPageState extends State<NicknameEditPage> {
   late final TextEditingController _controller;
 
   bool _hasError = false;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -44,7 +48,7 @@ class _NicknameEditPageState extends State<NicknameEditPage> {
     }
   }
 
-  void _handleSave() {
+  Future<void> _handleSave() async {
     final nickname = _controller.text.trim();
 
     if (nickname.isEmpty) {
@@ -54,7 +58,27 @@ class _NicknameEditPageState extends State<NicknameEditPage> {
       return;
     }
 
-    Navigator.of(context).pop<String>(nickname);
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    try {
+      await ProfileApi.updateNickname(nickname);
+
+      if (!mounted) {
+        return;
+      }
+
+      Navigator.of(context).pop<String>(nickname);
+    } on ApiException catch (error) {
+      ToastOverlay.show(context, message: error.message, bottom: 32);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
   }
 
   @override
@@ -115,7 +139,7 @@ class _NicknameEditPageState extends State<NicknameEditPage> {
                       child: GreenButton(
                         size: GreenButtonSize.long,
                         label: '저장하기',
-                        onTap: _handleSave,
+                        onTap: _isSubmitting ? () {} : _handleSave,
                       ),
                     ),
                   ],

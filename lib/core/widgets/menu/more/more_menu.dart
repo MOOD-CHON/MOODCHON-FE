@@ -70,17 +70,16 @@ class _MoreMenuItem extends StatelessWidget {
         height: 14,
         child: Row(
           children: [
-            if (roomName != null && suffix != null) ...[
+            if (roomName != null && suffix != null)
               Expanded(
                 child: Text(
-                  roomName!,
+                  '$roomName $suffix',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: textStyle,
                 ),
-              ),
-              Text(' $suffix', maxLines: 1, style: textStyle),
-            ] else
+              )
+            else
               Expanded(
                 child: Text(
                   text ?? '',
