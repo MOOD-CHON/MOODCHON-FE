@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../app/app_layout_scope.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_typography.dart';
 import '../menu/more/more_menu.dart';
@@ -54,6 +55,9 @@ class TopBar extends StatefulWidget {
 }
 
 class _TopBarState extends State<TopBar> {
+  static const double _topBarHeight = 56;
+  static const double _desktopWebTopPadding = 8;
+
   final GlobalKey _moreButtonKey = GlobalKey();
 
   OverlayEntry? _moreMenuOverlay;
@@ -144,6 +148,17 @@ class _TopBarState extends State<TopBar> {
 
   @override
   Widget build(BuildContext context) {
+    final isDesktopWeb = AppLayoutScope.of(context).isDesktopWeb;
+
+    final topPadding = isDesktopWeb ? _desktopWebTopPadding : 0.0;
+
+    return Padding(
+      padding: EdgeInsets.only(top: topPadding),
+      child: _buildTopBar(),
+    );
+  }
+
+  Widget _buildTopBar() {
     if (widget.type == TopBarType.search) {
       return _buildSearchTopBar();
     }
@@ -154,7 +169,7 @@ class _TopBarState extends State<TopBar> {
 
     return SizedBox(
       width: double.infinity,
-      height: 56,
+      height: _topBarHeight,
       child: Stack(children: [_buildLeft(), _buildCenter(), _buildRight()]),
     );
   }
@@ -162,7 +177,7 @@ class _TopBarState extends State<TopBar> {
   Widget _buildSearchTopBar() {
     return SizedBox(
       width: double.infinity,
-      height: 56,
+      height: _topBarHeight,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 6, 16, 5),
         child: Row(
@@ -185,7 +200,7 @@ class _TopBarState extends State<TopBar> {
   Widget _buildBackSearchTopBar() {
     return SizedBox(
       width: double.infinity,
-      height: 56,
+      height: _topBarHeight,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 6, 16, 5),
         child: Row(

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -127,7 +128,9 @@ class _MoodChonTextFieldState extends State<MoodChonTextField> {
         decoration: InputDecoration(
           isCollapsed: true,
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+          contentPadding: kIsWeb
+              ? const EdgeInsets.fromLTRB(15, 0, 15, 4)
+              : const EdgeInsets.symmetric(horizontal: 15),
           hintText: _isFocused || _hasText ? null : widget.placeholder,
           hintStyle: AppTypography.bodyExtraLarge.copyWith(
             color: AppColors.black.withValues(alpha: 0.4),
