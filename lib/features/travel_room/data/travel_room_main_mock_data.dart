@@ -9,6 +9,7 @@ import '../models/travel_room_stage.dart';
 import '../utils/travel_date_formatter.dart';
 
 final travelRoomMainMockData = TravelRoomMainData(
+  chonkangId: 1,
   roomName: '보미의 촌캉스',
   travelDateType: TravelDateType.date,
   travelDateText: TravelDateFormatter.format(

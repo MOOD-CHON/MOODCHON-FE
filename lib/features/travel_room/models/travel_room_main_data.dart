@@ -6,6 +6,7 @@ import 'travel_room_stage.dart';
 
 class TravelRoomMainData {
   const TravelRoomMainData({
+    required this.chonkangId,
     required this.roomName,
     required this.travelDateType,
     required this.travelDateText,
@@ -17,6 +18,8 @@ class TravelRoomMainData {
     this.confirmedAccommodation,
     this.dayPlans = const [],
   }) : assert(travelDateText != '');
+
+  final int chonkangId;
 
   final String roomName;
 
@@ -41,6 +44,7 @@ class TravelRoomMainData {
   }
 
   TravelRoomMainData copyWith({
+    int? chonkangId,
     String? roomName,
     TravelDateType? travelDateType,
     String? travelDateText,
@@ -54,6 +58,7 @@ class TravelRoomMainData {
     List<TravelRoomDayPlan>? dayPlans,
   }) {
     return TravelRoomMainData(
+      chonkangId: chonkangId ?? this.chonkangId,
       roomName: roomName ?? this.roomName,
       travelDateType: travelDateType ?? this.travelDateType,
       travelDateText: travelDateText ?? this.travelDateText,
