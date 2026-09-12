@@ -31,8 +31,8 @@ import '../widgets/accommodation/lodging_carousel.dart';
 import '../widgets/accommodation/plan_card.dart';
 import '../widgets/main/mood_selection_status_card.dart';
 import '../widgets/main/travel_itinerary_section.dart';
-import 'mood_accommodation_page.dart';
-import 'mood_result_detail_page.dart';
+import 'mood_accommodation_loader_page.dart';
+import 'mood_result_detail_loader_page.dart';
 import 'travel_accommodation_detail_page.dart';
 
 class TravelRoomMainPage extends StatelessWidget {
@@ -102,7 +102,8 @@ class TravelRoomMainPage extends StatelessWidget {
   }) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => MoodResultDetailPage(
+        builder: (_) => MoodResultDetailLoaderPage(
+          chonkangId: chonkangId,
           showAccommodationButton: showAccommodationButton,
         ),
       ),
@@ -110,8 +111,11 @@ class TravelRoomMainPage extends StatelessWidget {
   }
 
   void _openAccommodationList(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => const MoodAccommodationPage()));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => MoodAccommodationLoaderPage(chonkangId: chonkangId),
+      ),
+    );
   }
 
   void _openAccommodationDetail(

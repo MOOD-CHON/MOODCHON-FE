@@ -33,37 +33,9 @@ class MoodImageCollage extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  children: [
-                    _MoodImage(
-                      imageUrl: _imageAt(0),
-                      width: _imageWidth,
-                      height: _shortHeight,
-                    ),
-                    const SizedBox(height: _gap),
-                    _MoodImage(
-                      imageUrl: _imageAt(2),
-                      width: _imageWidth,
-                      height: _longHeight,
-                    ),
-                  ],
-                ),
+                Column(children: _leftColumnImages()),
                 const SizedBox(width: _gap),
-                Column(
-                  children: [
-                    _MoodImage(
-                      imageUrl: _imageAt(1),
-                      width: _imageWidth,
-                      height: _longHeight,
-                    ),
-                    const SizedBox(height: _gap),
-                    _MoodImage(
-                      imageUrl: _imageAt(3),
-                      width: _imageWidth,
-                      height: _shortHeight,
-                    ),
-                  ],
-                ),
+                Column(children: _rightColumnImages()),
               ],
             ),
           ),
@@ -125,6 +97,47 @@ class MoodImageCollage extends StatelessWidget {
     }
 
     return imageUrl;
+  }
+
+  // 사진이 4장보다 적으면(1인 촌캉스 등) 빈 칸을 회색 박스로 채우지 않고 칸 자체를 없앤다.
+  List<Widget> _leftColumnImages() {
+    return _columnImages(
+      first: _imageAt(0),
+      firstHeight: _shortHeight,
+      second: _imageAt(2),
+      secondHeight: _longHeight,
+    );
+  }
+
+  List<Widget> _rightColumnImages() {
+    return _columnImages(
+      first: _imageAt(1),
+      firstHeight: _longHeight,
+      second: _imageAt(3),
+      secondHeight: _shortHeight,
+    );
+  }
+
+  List<Widget> _columnImages({
+    required String? first,
+    required double firstHeight,
+    required String? second,
+    required double secondHeight,
+  }) {
+    final children = <Widget>[];
+
+    if (first != null) {
+      children.add(_MoodImage(imageUrl: first, width: _imageWidth, height: firstHeight));
+    }
+
+    if (second != null) {
+      if (children.isNotEmpty) {
+        children.add(const SizedBox(height: _gap));
+      }
+      children.add(_MoodImage(imageUrl: second, width: _imageWidth, height: secondHeight));
+    }
+
+    return children;
   }
 
   double _toRadians(double degree) {
