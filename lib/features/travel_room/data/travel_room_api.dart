@@ -12,7 +12,10 @@ class TravelRoomApi {
 
   Future<TravelRoomMainData> fetchMain(int chonkangId) async {
     final response = await ApiClient.instance.get('/api/chonkangs/$chonkangId/main');
-    return TravelRoomMainData.fromJson(response.data['data'] as Map<String, dynamic>);
+    return TravelRoomMainData.fromJson(
+      response.data['data'] as Map<String, dynamic>,
+      chonkangId: chonkangId,
+    );
   }
 
   Future<void> remindMoodSelection(int chonkangId) async {

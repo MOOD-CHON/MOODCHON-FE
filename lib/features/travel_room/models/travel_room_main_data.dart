@@ -47,7 +47,7 @@ class TravelRoomMainData {
   // GET /api/chonkangs/{chonkangId}/main 응답 매핑. 촌캉스 날짜는 항상 확정된 날짜라
   // travelDateType은 항상 date. status=ACCOMMODATION_CONFIRMED일 때 itinerary가 있으면
   // (추천 일정을 담아서 확정한 경우) 6.3.2, 없으면 6.3.1로 본다.
-  factory TravelRoomMainData.fromJson(Map<String, dynamic> json) {
+  factory TravelRoomMainData.fromJson(Map<String, dynamic> json, {required int chonkangId}) {
     final status = json['status'] as String;
     final moodProgress = json['moodProgress'] as Map<String, dynamic>?;
     final moodResult = json['moodResult'] as Map<String, dynamic>?;
@@ -56,6 +56,7 @@ class TravelRoomMainData {
     final itinerary = json['itinerary'] as Map<String, dynamic>?;
 
     return TravelRoomMainData(
+      chonkangId: chonkangId,
       roomName: json['name'] as String,
       travelDateType: TravelDateType.date,
       travelDateText: TravelDateFormatter.format(

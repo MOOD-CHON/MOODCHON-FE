@@ -139,7 +139,9 @@ class _ChonkangMoodSelectPageState extends State<ChonkangMoodSelectPage> {
       }
 
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => TravelRoomMainPage(data: data)),
+        MaterialPageRoute(
+          builder: (_) => TravelRoomMainPage(chonkangId: chonkangId, data: data),
+        ),
         (route) => false,
       );
     } on ApiException catch (_) {
