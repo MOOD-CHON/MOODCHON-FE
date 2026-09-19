@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../core/widgets/bottom_tab/bottom_tab_type.dart';
 import '../../../core/widgets/navigation/bottom_tab_bar.dart';
+import '../../chonkang_join/pages/chonkang_invite_code_page.dart';
 import '../../create_trip/pages/create_trip_info_page.dart';
 import '../../explore/pages/explore_page.dart';
 import '../../home/data/home_api.dart';
@@ -74,6 +75,12 @@ class _MainPageState extends State<MainPage> {
     ).push(MaterialPageRoute<void>(builder: (_) => const CreateTripInfoPage()));
   }
 
+  void _handleJoinTripTap() {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const ChonkangInviteCodePage()),
+    );
+  }
+
   void _handleTripTap(HomeTrip trip) {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -110,6 +117,7 @@ class _MainPageState extends State<MainPage> {
                   return HomePage(
                     trips: snapshot.hasError ? const [] : snapshot.data,
                     onCreateTrip: _handleCreateTripTap,
+                    onJoinTrip: _handleJoinTripTap,
                     onExploreMoods: _handleExploreMoodsTap,
                     onNotification: _handleNotificationTap,
                     onRequestNotificationPermission:

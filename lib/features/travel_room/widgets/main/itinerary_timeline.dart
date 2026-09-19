@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_typography.dart';
 import '../../../../core/widgets/map/map_pin.dart';
-import '../../models/travel_room_plan_category.dart';
 import '../../models/travel_room_plan_item.dart';
 import '../accommodation/plan_card.dart';
 
@@ -65,7 +64,7 @@ class _TimelineItem extends StatelessWidget {
                   alignment: Alignment.topCenter,
                   child: MapPin(
                     number: item.order,
-                    color: item.category.mapPinColor,
+                    color: item.displayPinColor,
                   ),
                 ),
 
