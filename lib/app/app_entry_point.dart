@@ -15,7 +15,7 @@ class AppEntryPoint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-      future: TokenStorage.instance.hasAccessToken(),
+      future: _resolveSignedIn(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Scaffold(backgroundColor: AppColors.black);
@@ -29,12 +29,18 @@ class AppEntryPoint extends StatelessWidget {
           builder: (context) {
             return LoginEntryPage(
               onKakaoLogin: () => _handleKakaoLogin(context),
-              onAppleLogin: () => _handleAppleLogin(context),
             );
           },
         );
       },
     );
+  }
+
+  // 웹은 카카오 로그인 후 ?code= 를 달고 이 화면으로 되돌아온다.
+  // 그 코드를 먼저 처리한 뒤 로그인 여부를 판단한다. 앱에서는 첫 줄이 바로 false를 반환한다.
+  Future<bool> _resolveSignedIn() async {
+    await SocialAuthService.instance.completeWebLoginIfNeeded();
+    return TokenStorage.instance.hasAccessToken();
   }
 
   Future<void> _handleKakaoLogin(BuildContext context) async {
@@ -46,19 +52,6 @@ class AppEntryPoint extends StatelessWidget {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result.errorMessage ?? '카카오 로그인에 실패했어요.')),
-      );
-    }
-  }
-
-  Future<void> _handleAppleLogin(BuildContext context) async {
-    final result = await SocialAuthService.instance.loginWithApple();
-    if (!context.mounted || result.canceled) return;
-
-    if (result.success) {
-      _openMain(context);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result.errorMessage ?? 'Apple 로그인에 실패했어요.')),
       );
     }
   }

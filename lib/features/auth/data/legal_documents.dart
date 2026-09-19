@@ -23,7 +23,7 @@ abstract final class LegalDocuments {
       '계획하거나 관광 콘텐츠를 탐색·저장할 수 있도록 무드촌이 제공하는 기능을 의미합니다.',
     ),
     LegalTextBlock(
-      '2. “회원”이란 본 약관에 동의하고 카카오 로그인, Apple 로그인 등 서비스가 '
+      '2. “회원”이란 본 약관에 동의하고 카카오 로그인 등 서비스가 '
       '제공하는 방법을 통해 가입하여 서비스를 이용하는 자를 의미합니다.',
     ),
     LegalTextBlock(
@@ -61,10 +61,10 @@ abstract final class LegalDocuments {
     ),
     LegalTextBlock(''),
     LegalTextBlock('제3조 약관의 게시 및 변경'),
-    LegalTextBlock('1. 운영자는 회원이 본 약관의 내용을 쉽게 확인할 수 있도록 서비스 내 이용약관 페이지에 게시합니다.'),
+    LegalTextBlock('1. 운영자는 회원이 본 약관의 내용을 쉽게 확인할 수 있도록 서비스 웹사이트 내 이용약관 페이지에 게시합니다.'),
     LegalTextBlock('2. 운영자는 관련 법령을 위반하지 않는 범위에서 필요한 경우 본 약관을 변경할 수 있습니다.'),
     LegalTextBlock(
-      '3. 약관을 변경하는 경우 변경 내용과 시행일을 서비스 내 이용약관 페이지 또는 '
+      '3. 약관을 변경하는 경우 변경 내용과 시행일을 서비스 웹사이트 내 이용약관 페이지 또는 '
       '기타 적절한 방법을 통해 사전에 안내합니다.',
     ),
     LegalTextBlock(
@@ -77,7 +77,7 @@ abstract final class LegalDocuments {
       '서비스에서 제공하는 회원가입 절차를 완료한 때 성립합니다.',
     ),
     LegalTextBlock(
-      '2. 회원가입은 카카오 로그인, Apple 로그인 등 운영자가 제공하는 소셜 로그인 방식을 통해 이루어질 수 있습니다.',
+      '2. 회원가입은 카카오 로그인 등 운영자가 제공하는 소셜 로그인 방식을 통해 이루어질 수 있습니다.',
     ),
     LegalTextBlock(
       '3. 운영자는 다음 각 호에 해당하는 경우 회원가입을 거절하거나 사후에 서비스 이용을 제한할 수 있습니다.',
@@ -196,7 +196,7 @@ abstract final class LegalDocuments {
     ),
     LegalTextBlock('3. 알림은 회원이 서비스 내에서 설정한 알림 수신 여부에 따라 제공될 수 있습니다.'),
     LegalTextBlock(
-      '4. 회원의 기기 설정, 네트워크 환경 또는 서비스 상태 등에 따라 알림의 전달이 지연되거나 제공되지 않을 수 있습니다.',
+      '4. 회원의 브라우저 또는 기기 설정, 네트워크 환경 또는 서비스 상태 등에 따라 알림의 전달이 지연되거나 제공되지 않을 수 있습니다.',
     ),
     LegalTextBlock(''),
     LegalTextBlock('제10조 회원의 의무'),
@@ -321,7 +321,7 @@ abstract final class LegalDocuments {
     ),
     LegalTextBlock(''),
     LegalTextBlock('부칙'),
-    LegalTextBlock('본 약관은 2026년 9월 7일부터 시행합니다.'),
+    LegalTextBlock('본 약관은 2026년 9월 20일부터 시행합니다.'),
     LegalTextBlock(''),
     LegalTextBlock('운영자: MOODI'),
     LegalTextBlock('대표 운영자: 김보미'),

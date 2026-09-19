@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../network/remote_image.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_typography.dart';
@@ -147,7 +148,8 @@ class _ProfileCircle extends StatelessWidget {
         height: size,
         child: imageUrl != null && imageUrl.isNotEmpty
             ? Image.network(
-                imageUrl,
+                secureImageUrl(imageUrl),
+                webHtmlElementStrategy: kRemoteImageStrategy,
                 width: size,
                 height: size,
                 fit: BoxFit.cover,

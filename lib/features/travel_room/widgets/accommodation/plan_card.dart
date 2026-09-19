@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/network/remote_image.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_shadows.dart';
@@ -102,7 +103,8 @@ class _LodgingPlanCard extends StatelessWidget {
       child: data.imageUrl == null || data.imageUrl!.trim().isEmpty
           ? Container(color: AppColors.linePrimary)
           : Image.network(
-              data.imageUrl!,
+              secureImageUrl(data.imageUrl!),
+              webHtmlElementStrategy: kRemoteImageStrategy,
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) {
                 return Container(color: AppColors.linePrimary);
@@ -276,7 +278,8 @@ class _ConfirmedLodgingPlanCard extends StatelessWidget {
       child: data.imageUrl == null || data.imageUrl!.trim().isEmpty
           ? Container(color: AppColors.linePrimary)
           : Image.network(
-              data.imageUrl!,
+              secureImageUrl(data.imageUrl!),
+              webHtmlElementStrategy: kRemoteImageStrategy,
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) {
                 return Container(color: AppColors.linePrimary);
@@ -441,7 +444,8 @@ class _ItineraryPlaceCard extends StatelessWidget {
                       color: AppColors.linePrimary,
                     )
                   : Image.network(
-                      item.imageUrl!,
+                      secureImageUrl(item.imageUrl!),
+                      webHtmlElementStrategy: kRemoteImageStrategy,
                       width: 68,
                       height: 48,
                       fit: BoxFit.cover,

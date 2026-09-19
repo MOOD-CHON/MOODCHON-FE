@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import '../../../../core/network/remote_image.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -166,7 +167,8 @@ class _MoodImage extends StatelessWidget {
         child: imageUrl == null
             ? Container(color: AppColors.linePrimary)
             : Image.network(
-                imageUrl!,
+                secureImageUrl(imageUrl!),
+                webHtmlElementStrategy: kRemoteImageStrategy,
                 width: width,
                 height: height,
                 fit: BoxFit.cover,

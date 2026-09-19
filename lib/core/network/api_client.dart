@@ -34,7 +34,11 @@ class ApiClient {
           final isUnauthorized = error.response?.statusCode == 401;
           final alreadyRetried = error.requestOptions.extra['retried'] == true;
 
-          if (!isUnauthorized || alreadyRetried) {
+          // 로그인/재발급 자체가 401을 주는 건 "토큰 만료"가 아니라 "인증 실패"다.
+          // 여기서 재발급을 시도하면 실패 → 세션 만료 → 로그인 재시도로 루프가 생긴다.
+          final isAuthRequest = error.requestOptions.path.startsWith('/api/auth/');
+
+          if (!isUnauthorized || alreadyRetried || isAuthRequest) {
             handler.next(error);
             return;
           }

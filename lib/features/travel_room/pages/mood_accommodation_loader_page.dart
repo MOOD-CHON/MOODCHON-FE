@@ -93,7 +93,10 @@ class _MoodAccommodationLoaderPageState extends State<MoodAccommodationLoaderPag
           );
         }
 
-        return MoodAccommodationPage(data: snapshot.data!);
+        return MoodAccommodationPage(
+          data: snapshot.data!,
+          chonkangId: widget.chonkangId,
+        );
       },
     );
   }

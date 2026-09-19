@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../core/network/remote_image.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_typography.dart';
@@ -19,7 +20,10 @@ import '../../place_detail/widgets/accommodation_condition_section.dart';
 import '../../place_detail/widgets/accommodation_room_section.dart';
 import '../../place_detail/widgets/detail_info_section.dart';
 import '../data/travel_accommodation_detail_mock_data.dart';
+import '../data/travel_room_api.dart';
 import '../models/travel_accommodation_detail_data.dart';
+import '../models/vote_member.dart';
+import 'travel_room_main_loader_page.dart';
 import '../widgets/accommodation/accommodation_match_section.dart';
 import '../widgets/accommodation/accommodation_recommendation_stats.dart';
 import '../widgets/accommodation/accommodation_vote_bottom_sheet.dart';
@@ -50,7 +54,10 @@ class _TravelAccommodationDetailPageState
   static const double _buttonHeight = 49;
   static const double _toastGap = 12;
 
-  bool _hasVoted = false;
+  late bool _hasVoted = widget.data.votedByMe;
+
+  // 투표 직후 구성원 프로필이 바로 반영되도록 서버에서 다시 받아 갱신한다.
+  late List<VoteMember> _voters = widget.data.voters;
 
   TravelAccommodationDetailData get data => widget.data;
 
@@ -121,29 +128,63 @@ class _TravelAccommodationDetailPageState
   }
 
   void _showVoters() {
-    if (data.voters.length < 4) {
+    if (_voters.length < 4) {
       return;
     }
 
-    AccommodationVoteBottomSheet.show(context, members: data.voters);
+    AccommodationVoteBottomSheet.show(context, members: _voters);
   }
 
-  void _vote() {
+  Future<void> _vote() async {
     if (_hasVoted) {
       return;
     }
 
+    final chonkangId = data.chonkangId;
+    final placeId = data.placeId;
+
+    // 눌렀을 때 바로 반영하고, 실패하면 되돌린다.
     setState(() {
       _hasVoted = true;
     });
+
+    if (chonkangId != null && placeId != null) {
+      try {
+        await TravelRoomApi.instance.voteAccommodation(chonkangId, placeId);
+        final voters = await TravelRoomApi.instance.fetchAccommodationVoters(
+          chonkangId,
+          placeId,
+        );
+        if (mounted) {
+          setState(() {
+            _voters = voters;
+          });
+        }
+      } catch (_) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          _hasVoted = false;
+        });
+        ToastOverlay.show(
+          context,
+          message: '투표에 실패했어요. 잠시 후 다시 시도해주세요',
+          bottom: _toastBottomOffset(context),
+        );
+        return;
+      }
+    }
+
+    if (!mounted) {
+      return;
+    }
 
     ToastOverlay.show(
       context,
       message: '이 숙소에 투표했어요',
       bottom: _toastBottomOffset(context),
     );
-
-    // TODO: 숙소 투표 API 연결
   }
 
   Future<void> _confirmAccommodation() async {
@@ -161,8 +202,43 @@ class _TravelAccommodationDetailPageState
       return;
     }
 
-    // TODO: 숙소 확정 API 연결
-    // TODO: 8.1 화면 구현 후 이동 연결
+    final chonkangId = data.chonkangId;
+    final placeId = data.placeId;
+
+    if (chonkangId != null && placeId != null) {
+      try {
+        await TravelRoomApi.instance.confirmAccommodation(chonkangId, placeId);
+      } catch (_) {
+        if (!mounted) {
+          return;
+        }
+        ToastOverlay.show(
+          context,
+          message: '숙소 확정에 실패했어요. 잠시 후 다시 시도해주세요',
+          bottom: _toastBottomOffset(context),
+        );
+        return;
+      }
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    if (chonkangId == null) {
+      Navigator.of(context).pop(true);
+      return;
+    }
+
+    // 확정하면 방 상태가 ACCOMMODATION_CONFIRMED로 바뀐다. 로더를 새로 띄워
+    // 여행방을 다시 불러오게 하고, 그 위에 쌓여 있던 추천/상세 화면은 걷어낸다.
+    // TODO: 8.1 화면이 생기면 그쪽으로 이동하도록 교체
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute<void>(
+        builder: (_) => TravelRoomMainLoaderPage(chonkangId: chonkangId),
+      ),
+      (route) => route.isFirst,
+    );
   }
 
   Future<void> _cancelConfirmedAccommodation() async {
@@ -180,9 +256,28 @@ class _TravelAccommodationDetailPageState
       return;
     }
 
-    // TODO: 숙소 확정 취소 API 연결
-    // TODO: 추천 일정 / 확정 일정 초기화
-    // TODO: 6.2 구현 후 숙소 추천 단계로 이동
+    final chonkangId = data.chonkangId;
+
+    if (chonkangId != null) {
+      try {
+        // 서버가 확정 해제와 함께 추천/확정 일정도 초기화한다.
+        await TravelRoomApi.instance.cancelConfirmedAccommodation(chonkangId);
+      } catch (_) {
+        if (!mounted) {
+          return;
+        }
+        ToastOverlay.show(
+          context,
+          message: '확정 취소에 실패했어요. 잠시 후 다시 시도해주세요',
+          bottom: _toastBottomOffset(context),
+        );
+        return;
+      }
+    }
+
+    if (!mounted) {
+      return;
+    }
 
     final callback = widget.onConfirmedAccommodationCanceled;
 
@@ -194,7 +289,19 @@ class _TravelAccommodationDetailPageState
       return;
     }
 
-    Navigator.of(context).pop(true);
+    if (chonkangId == null) {
+      Navigator.of(context).pop(true);
+      return;
+    }
+
+    // 확정을 풀면 방 상태가 무드 결정 단계로 돌아간다. 여행방을 다시 불러온다.
+    // TODO: 6.2 구현 후 숙소 추천 단계로 바로 이동하도록 교체
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute<void>(
+        builder: (_) => TravelRoomMainLoaderPage(chonkangId: chonkangId),
+      ),
+      (route) => route.isFirst,
+    );
   }
 
   @override
@@ -251,7 +358,7 @@ class _TravelAccommodationDetailPageState
                             AccommodationRecommendationStats(
                               matchRate: data.matchRate,
                               recommendationRank: data.recommendationRank,
-                              voters: data.voters,
+                              voters: _voters,
                               onVoteProfileTap: _showVoters,
                             ),
 
@@ -572,12 +679,30 @@ class _AccommodationMainImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasImage = imagePath != null && imagePath!.trim().isNotEmpty;
 
+    if (!hasImage) {
+      return const SizedBox(
+        width: double.infinity,
+        height: 387,
+        child: ColoredBox(color: AppColors.linePrimary),
+      );
+    }
+
+    final path = imagePath!.trim();
+    // TourAPI 숙소 사진은 원격 URL이고, 목 데이터는 에셋 경로를 쓴다.
+    final isNetworkImage = path.startsWith('http');
+
     return SizedBox(
       width: double.infinity,
       height: 387,
-      child: hasImage
-          ? Image.asset(imagePath!, fit: BoxFit.cover)
-          : const ColoredBox(color: AppColors.linePrimary),
+      child: isNetworkImage
+          ? Image.network(
+              secureImageUrl(path),
+              webHtmlElementStrategy: kRemoteImageStrategy,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) =>
+                  const ColoredBox(color: AppColors.linePrimary),
+            )
+          : Image.asset(path, fit: BoxFit.cover),
     );
   }
 }

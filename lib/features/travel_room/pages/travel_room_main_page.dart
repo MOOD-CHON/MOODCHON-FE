@@ -23,6 +23,7 @@ import '../../place_detail/pages/shopping_detail_page.dart';
 import '../../place_detail/pages/tourism_detail_page.dart';
 import '../data/travel_room_api.dart';
 import '../models/accommodation_recommendation.dart';
+import '../models/travel_accommodation_detail_data.dart';
 import '../models/travel_room_main_data.dart';
 import '../models/travel_room_plan_category.dart';
 import '../models/travel_room_plan_item.dart';
@@ -123,15 +124,63 @@ class TravelRoomMainPage extends StatelessWidget {
     AccommodationRecommendation accommodation,
   ) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const TravelAccommodationDetailPage()),
+      MaterialPageRoute(
+        builder: (_) => TravelAccommodationDetailPage(
+          data: TravelAccommodationDetailData(
+            accommodation: accommodation.toDetailData(),
+            matchRate: accommodation.matchRate,
+            recommendationRank:
+                accommodation.rank >= 1 && accommodation.rank <= 5
+                ? accommodation.rank
+                : null,
+            voters: accommodation.voters,
+            matchReasons: accommodation.matchReasons,
+            regretReasons: accommodation.regretReasons,
+            chonkangId: chonkangId,
+            placeId: int.tryParse(accommodation.id),
+            votedByMe: accommodation.votedByMe,
+          ),
+        ),
+      ),
     );
   }
 
   Future<void> _openConfirmedAccommodation(BuildContext context) async {
+    final AccommodationRecommendation confirmed;
+    try {
+      confirmed = await TravelRoomApi.instance.fetchConfirmedAccommodation(
+        chonkangId,
+      );
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('확정된 숙소를 불러오지 못했어요.')),
+      );
+      return;
+    }
+
+    if (!context.mounted) {
+      return;
+    }
+
     final canceled = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
-        builder: (_) => const TravelAccommodationDetailPage(
+        builder: (_) => TravelAccommodationDetailPage(
           mode: TravelAccommodationDetailMode.confirmed,
+          data: TravelAccommodationDetailData(
+            accommodation: confirmed.toDetailData(),
+            matchRate: confirmed.matchRate,
+            // 확정 화면에서는 추천 순위 배지를 쓰지 않는다.
+            recommendationRank: null,
+            voters: confirmed.voters,
+            matchReasons: confirmed.matchReasons,
+            regretReasons: confirmed.regretReasons,
+            chonkangId: chonkangId,
+            placeId: int.tryParse(confirmed.id),
+            votedByMe: confirmed.votedByMe,
+          ),
         ),
       ),
     );
@@ -205,10 +254,9 @@ class TravelRoomMainPage extends StatelessWidget {
         break;
 
       case TravelRoomPlanCategory.accommodation:
-        page = const TravelAccommodationDetailPage(
-          mode: TravelAccommodationDetailMode.confirmed,
-        );
-        break;
+        // 확정된 숙소는 서버에서 불러와야 해서 별도 비동기 경로를 탄다.
+        _openConfirmedAccommodation(context);
+        return;
 
       case TravelRoomPlanCategory.activity:
         return;
@@ -356,6 +404,15 @@ class TravelRoomMainPage extends StatelessWidget {
     );
   }
 
+  // 확정 숙소 카드의 한 줄 소개. AI가 만든 좋은 점의 첫 문장을 쓴다.
+  // 추천을 거치지 않고 직접 찾은 숙소를 확정한 경우엔 비어 있어 소개를 생략한다.
+  String? _accommodationSummary(AccommodationRecommendation accommodation) {
+    final reasons = accommodation.matchReasons
+        .map((reason) => reason.trim())
+        .where((reason) => reason.isNotEmpty);
+    return reasons.isEmpty ? null : reasons.first;
+  }
+
   Widget _build631(BuildContext context) {
     final accommodation = data.confirmedAccommodation;
 
@@ -395,7 +452,7 @@ class TravelRoomMainPage extends StatelessWidget {
               child: PlanCard(
                 type: PlanCardType.lodging2,
                 data: accommodation,
-                summary: 'AI가 개요를 분석해 만든 한 줄 소개가 길면 이렇게 표시돼요.',
+                summary: _accommodationSummary(accommodation),
                 onDetailTap: () {
                   _openConfirmedAccommodation(context);
                 },
@@ -458,7 +515,7 @@ class TravelRoomMainPage extends StatelessWidget {
               child: PlanCard(
                 type: PlanCardType.lodging2,
                 data: accommodation,
-                summary: 'AI가 개요를 분석해 만든 한 줄 소개가 길면 이렇게 표시돼요.',
+                summary: _accommodationSummary(accommodation),
                 onDetailTap: () {
                   _openConfirmedAccommodation(context);
                 },
