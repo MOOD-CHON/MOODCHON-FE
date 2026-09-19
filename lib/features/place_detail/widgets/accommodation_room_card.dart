@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/network/remote_image.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_shadows.dart';
@@ -162,7 +163,16 @@ class _RoomImage extends StatelessWidget {
         width: 173,
         height: 118,
         child: hasImage
-            ? Image.asset(imagePath!, fit: BoxFit.cover)
+            ? (imagePath!.trim().startsWith('http')
+                  // TourAPI 객실 사진은 원격 URL, 목 데이터는 에셋 경로를 쓴다.
+                  ? Image.network(
+                      secureImageUrl(imagePath!.trim()),
+                      webHtmlElementStrategy: kRemoteImageStrategy,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) =>
+                          const ColoredBox(color: AppColors.linePrimary),
+                    )
+                  : Image.asset(imagePath!, fit: BoxFit.cover))
             : const ColoredBox(color: AppColors.linePrimary),
       ),
     );

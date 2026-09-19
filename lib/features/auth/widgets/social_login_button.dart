@@ -6,16 +6,9 @@ import '../../../app/theme/app_interactions.dart';
 import '../../../app/theme/app_shadows.dart';
 import '../../../app/theme/app_typography.dart';
 
-enum SocialLoginProvider { kakao, apple }
-
 class SocialLoginButton extends StatefulWidget {
-  const SocialLoginButton({
-    super.key,
-    required this.provider,
-    required this.onTap,
-  });
+  const SocialLoginButton({super.key, required this.onTap});
 
-  final SocialLoginProvider provider;
   final VoidCallback onTap;
 
   @override
@@ -25,14 +18,11 @@ class SocialLoginButton extends StatefulWidget {
 class _SocialLoginButtonState extends State<SocialLoginButton> {
   bool _isPressed = false;
 
-  bool get _isKakao => widget.provider == SocialLoginProvider.kakao;
+  static const String _label = '카카오톡으로 계속하기';
 
-  String get _label => _isKakao ? '카카오톡으로 계속하기' : 'Apple로 계속하기';
+  Color get _backgroundColor => AppColors.kakao;
 
-  Color get _backgroundColor => _isKakao ? AppColors.kakao : AppColors.black;
-
-  Color get _foregroundColor =>
-      _isKakao ? AppColors.black : AppColors.backgroundWhite;
+  Color get _foregroundColor => AppColors.black;
 
   void _setPressed(bool value) {
     if (_isPressed == value) {
@@ -76,7 +66,7 @@ class _SocialLoginButtonState extends State<SocialLoginButton> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _SocialLoginIcon(provider: widget.provider),
+                      const _SocialLoginIcon(),
                       const SizedBox(width: 10),
                       ExcludeSemantics(
                         child: Text(
@@ -114,23 +104,15 @@ class _SocialLoginButtonState extends State<SocialLoginButton> {
 }
 
 class _SocialLoginIcon extends StatelessWidget {
-  const _SocialLoginIcon({required this.provider});
-
-  final SocialLoginProvider provider;
+  const _SocialLoginIcon();
 
   @override
   Widget build(BuildContext context) {
-    switch (provider) {
-      case SocialLoginProvider.kakao:
-        return SvgPicture.asset(
-          'assets/icons/social/kakao_bubble.svg',
-          width: 20,
-          height: 18.34,
-          excludeFromSemantics: true,
-        );
-
-      case SocialLoginProvider.apple:
-        return const Icon(Icons.apple, color: AppColors.backgroundWhite);
-    }
+    return SvgPicture.asset(
+      'assets/icons/social/kakao_bubble.svg',
+      width: 20,
+      height: 18.34,
+      excludeFromSemantics: true,
+    );
   }
 }

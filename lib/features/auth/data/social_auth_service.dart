@@ -1,6 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_exception.dart';
@@ -30,7 +30,15 @@ class SocialAuthService {
 
   static final SocialAuthService instance = SocialAuthService._();
 
+  /// 웹 로그인은 카카오가 이 주소로 인가 코드를 돌려준다.
+  /// 카카오 디벨로퍼스에 등록된 Redirect URI와 정확히 같아야 한다.
+  static String get webRedirectUri => Uri.base.origin;
+
   Future<AuthResult> loginWithKakao() async {
+    if (kIsWeb) {
+      return _startWebKakaoLogin();
+    }
+
     try {
       final kakaoToken = await _obtainKakaoToken();
       await _loginToBackend('/api/auth/kakao', {
@@ -49,20 +57,46 @@ class SocialAuthService {
     }
   }
 
-  Future<AuthResult> loginWithApple() async {
+  /// 웹은 팝업이 아니라 페이지 전체가 카카오 로그인 화면으로 이동한다.
+  /// 이 호출 이후 코드는 실행되지 않고, 돌아온 뒤 [completeWebLoginIfNeeded]가 이어받는다.
+  Future<AuthResult> _startWebKakaoLogin() async {
     try {
-      final credential = await SignInWithApple.getAppleIDCredential(
-        scopes: [AppleIDAuthorizationScopes.email],
-      );
-      final identityToken = credential.identityToken;
-      if (identityToken == null) {
-        return const AuthResult.failure('애플 로그인에 실패했어요.');
-      }
+      await AuthCodeClient.instance.authorize(redirectUri: webRedirectUri);
+      return const AuthResult.canceled();
+    } catch (e) {
+      return AuthResult.failure(e.toString());
+    }
+  }
 
-      await _loginToBackend('/api/auth/apple', {
-        'identityToken': identityToken,
-        'authorizationCode': credential.authorizationCode,
+  /// 카카오 로그인 후 되돌아왔을 때 주소창의 ?code= 를 백엔드로 넘겨 로그인을 마친다.
+  /// 웹에서는 SDK가 브라우저의 토큰 발급을 막아둬서, 코드→토큰 교환은 서버가 한다.
+  /// 인가 코드는 일회용이라 한 번 쓰면 재사용할 수 없다.
+  /// 화면이 다시 그려질 때마다 같은 코드로 재시도하면 무한 루프가 된다.
+  bool _webLoginAttempted = false;
+
+  Future<bool> completeWebLoginIfNeeded() async {
+    if (!kIsWeb || _webLoginAttempted) {
+      return false;
+    }
+
+    final code = Uri.base.queryParameters['code'];
+    if (code == null || code.isEmpty) {
+      return false;
+    }
+
+    _webLoginAttempted = true;
+
+    try {
+      await _loginToBackend('/api/auth/kakao/web', {
+        'code': code,
+        'redirectUri': webRedirectUri,
       });
+      return true;
+    } catch (e) {
+      // 여기서 실패하면 화면은 그냥 로그인 창으로 돌아가 버려서 원인을 알 수 없다.
+      // 최소한 콘솔에는 남긴다.
+      debugPrint('[웹 카카오 로그인] 인가 코드 교환 실패: $e');
+      return false;
       return const AuthResult.success();
     } on SignInWithAppleAuthorizationException catch (error) {
       if (error.code == AuthorizationErrorCode.canceled) {

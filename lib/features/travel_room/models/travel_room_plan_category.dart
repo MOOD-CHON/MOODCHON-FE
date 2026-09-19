@@ -69,3 +69,25 @@ extension TravelRoomPlanCategoryX on TravelRoomPlanCategory {
     }
   }
 }
+
+// 백엔드 PlaceCategory(9종)를 화면의 6종 카테고리로 좁혀 매핑한다.
+// 문화시설/레포츠처럼 대응 항목이 없는 카테고리는 관광지로 합친다.
+TravelRoomPlanCategory travelRoomPlanCategoryFromPlaceCategory(String placeCategory) {
+  switch (placeCategory) {
+    case 'RESTAURANT':
+      return TravelRoomPlanCategory.restaurant;
+    case 'SHOPPING':
+      return TravelRoomPlanCategory.shopping;
+    case 'ACCOMMODATION':
+      return TravelRoomPlanCategory.accommodation;
+    case 'EVENT':
+    case 'PERFORMANCE':
+    case 'FESTIVAL':
+      return TravelRoomPlanCategory.event;
+    case 'TOURIST_SPOT':
+    case 'CULTURAL_FACILITY':
+    case 'LEISURE_SPORTS':
+    default:
+      return TravelRoomPlanCategory.tourism;
+  }
+}

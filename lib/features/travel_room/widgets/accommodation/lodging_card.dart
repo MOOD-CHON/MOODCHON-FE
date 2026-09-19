@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/network/remote_image.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_shadows.dart';
@@ -90,7 +91,8 @@ class LodgingCard extends StatelessWidget {
             child: data.imageUrl == null || data.imageUrl!.trim().isEmpty
                 ? Container(color: AppColors.linePrimary)
                 : Image.network(
-                    data.imageUrl!,
+                    secureImageUrl(data.imageUrl!),
+                    webHtmlElementStrategy: kRemoteImageStrategy,
                     fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) {
                       return Container(color: AppColors.linePrimary);

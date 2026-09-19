@@ -9,6 +9,9 @@ class TravelAccommodationDetailData {
     required this.regretReasons,
     this.recommendationRank,
     this.voters = const [],
+    this.chonkangId,
+    this.placeId,
+    this.votedByMe = false,
   });
 
   final AccommodationDetailData accommodation;
@@ -24,4 +27,11 @@ class TravelAccommodationDetailData {
 
   final List<String> matchReasons;
   final List<String> regretReasons;
+
+  /// 투표·확정 API 호출에 필요한 식별자. 목 데이터로 띄울 때는 null이라
+  /// 버튼을 눌러도 서버 호출 없이 화면 상태만 바뀐다.
+  final int? chonkangId;
+  final int? placeId;
+
+  final bool votedByMe;
 }

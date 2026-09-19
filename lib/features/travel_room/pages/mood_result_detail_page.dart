@@ -14,15 +14,17 @@ import '../../../core/widgets/navigation/top_bar.dart';
 import '../data/mood_result_mock_data.dart';
 import '../models/mood_result.dart';
 import '../widgets/mood_result/mood_result_card.dart';
-import 'mood_accommodation_page.dart';
+import 'mood_accommodation_loader_page.dart';
 
 class MoodResultDetailPage extends StatefulWidget {
   const MoodResultDetailPage({
     super.key,
+    required this.chonkangId,
     this.result = moodResultMockData,
     this.showAccommodationButton = true,
   });
 
+  final int chonkangId;
   final MoodResult result;
   final bool showAccommodationButton;
 
@@ -193,8 +195,11 @@ class _MoodResultDetailPageState extends State<MoodResultDetailPage> {
   }
 
   void _onAccommodationTap() {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => const MoodAccommodationPage()));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => MoodAccommodationLoaderPage(chonkangId: widget.chonkangId),
+      ),
+    );
   }
 
   @override

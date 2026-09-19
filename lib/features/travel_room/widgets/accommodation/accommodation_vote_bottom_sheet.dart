@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/network/remote_image.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_typography.dart';
@@ -148,7 +149,8 @@ class _ProfileImage extends StatelessWidget {
         height: _size,
         child: hasImage
             ? Image.network(
-                imageUrl!,
+                secureImageUrl(imageUrl!),
+                webHtmlElementStrategy: kRemoteImageStrategy,
                 width: _size,
                 height: _size,
                 fit: BoxFit.cover,

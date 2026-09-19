@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/network/remote_image.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_typography.dart';
@@ -81,7 +82,8 @@ class MoodFolderCard extends StatelessWidget {
     }
 
     return Image.network(
-      imageUrl,
+      secureImageUrl(imageUrl),
+      webHtmlElementStrategy: kRemoteImageStrategy,
       fit: BoxFit.cover,
       errorBuilder: (_, __, ___) {
         return _buildEmptyImage();

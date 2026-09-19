@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../network/remote_image.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../tag/image_tag.dart';
@@ -71,7 +72,8 @@ class SelectImage extends StatelessWidget {
     }
 
     return Image.network(
-      imageUrl!,
+      secureImageUrl(imageUrl!),
+      webHtmlElementStrategy: kRemoteImageStrategy,
       width: double.infinity,
       height: double.infinity,
       fit: BoxFit.cover,

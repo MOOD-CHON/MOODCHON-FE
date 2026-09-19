@@ -16,13 +16,11 @@ class LoginEntryPage extends StatelessWidget {
   const LoginEntryPage({
     super.key,
     this.onKakaoLogin,
-    this.onAppleLogin,
     this.onTermsTap,
     this.onPrivacyTap,
   });
 
   final VoidCallback? onKakaoLogin;
-  final VoidCallback? onAppleLogin;
   final VoidCallback? onTermsTap;
   final VoidCallback? onPrivacyTap;
 
@@ -80,17 +78,9 @@ class LoginEntryPage extends StatelessWidget {
                                   height: 98,
                                 ),
                               ),
-                              SocialLoginButton(
-                                provider: SocialLoginProvider.kakao,
-                                onTap: onKakaoLogin ?? () {},
-                              ),
+                              SocialLoginButton(onTap: onKakaoLogin ?? () {}),
                             ],
                           ),
-                        ),
-                        const SizedBox(height: _loginButtonGap),
-                        SocialLoginButton(
-                          provider: SocialLoginProvider.apple,
-                          onTap: onAppleLogin ?? () {},
                         ),
                       ],
                     ),

@@ -24,8 +24,10 @@ import '../../place_detail/pages/event_detail_page.dart';
 import '../../place_detail/pages/restaurant_detail_page.dart';
 import '../../place_detail/pages/shopping_detail_page.dart';
 import '../../place_detail/pages/tourism_detail_page.dart';
+import '../data/travel_room_api.dart';
 import '../data/travel_room_settings_api.dart';
 import '../models/accommodation_recommendation.dart';
+import '../models/travel_accommodation_detail_data.dart';
 import '../models/travel_room_main_data.dart';
 import '../models/travel_room_plan_category.dart';
 import '../models/travel_room_plan_item.dart';
@@ -37,15 +39,20 @@ import '../widgets/main/travel_itinerary_section.dart';
 import 'edit_trip_info_page.dart';
 import 'itinerary_page.dart';
 import 'member_info_page.dart';
-import 'mood_accommodation_page.dart';
-import 'mood_result_detail_page.dart';
+import 'mood_accommodation_loader_page.dart';
+import 'mood_result_detail_loader_page.dart';
 import 'recommended_itinerary_page.dart';
 import 'travel_accommodation_detail_page.dart';
 import 'travel_room_invite_page.dart';
 
 class TravelRoomMainPage extends StatelessWidget {
-  const TravelRoomMainPage({super.key, required this.data});
+  const TravelRoomMainPage({
+    super.key,
+    required this.chonkangId,
+    required this.data,
+  });
 
+  final int chonkangId;
   final TravelRoomMainData data;
 
   static const double _bottomTabMinimumBottom = 22;
@@ -76,14 +83,27 @@ class TravelRoomMainPage extends StatelessWidget {
     return _bottomTabBottom(context) + _bottomTabHeight + _toastGap;
   }
 
-  void _requestMoodSelection(BuildContext context) {
-    // TODO: 무드 선택 미완료 구성원에게 재요청 알림 API 연결
-
-    ToastOverlay.show(
-      context,
-      message: '무드 선택 알림을 다시 보냈어요.',
-      bottom: _toastBottom(context),
-    );
+  Future<void> _requestMoodSelection(BuildContext context) async {
+    try {
+      await TravelRoomApi.instance.remindMoodSelection(chonkangId);
+      if (!context.mounted) {
+        return;
+      }
+      ToastOverlay.show(
+        context,
+        message: '무드 선택 알림을 다시 보냈어요.',
+        bottom: _toastBottom(context),
+      );
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+      ToastOverlay.show(
+        context,
+        message: '알림을 보내지 못했어요. 다시 시도해주세요.',
+        bottom: _toastBottom(context),
+      );
+    }
   }
 
   void _openEditInfo(BuildContext context) {
@@ -172,7 +192,8 @@ class TravelRoomMainPage extends StatelessWidget {
   }) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => MoodResultDetailPage(
+        builder: (_) => MoodResultDetailLoaderPage(
+          chonkangId: chonkangId,
           showAccommodationButton: showAccommodationButton,
         ),
       ),
@@ -180,8 +201,11 @@ class TravelRoomMainPage extends StatelessWidget {
   }
 
   void _openAccommodationList(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => const MoodAccommodationPage()));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => MoodAccommodationLoaderPage(chonkangId: chonkangId),
+      ),
+    );
   }
 
   void _openAccommodationDetail(
@@ -189,15 +213,63 @@ class TravelRoomMainPage extends StatelessWidget {
     AccommodationRecommendation accommodation,
   ) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const TravelAccommodationDetailPage()),
+      MaterialPageRoute(
+        builder: (_) => TravelAccommodationDetailPage(
+          data: TravelAccommodationDetailData(
+            accommodation: accommodation.toDetailData(),
+            matchRate: accommodation.matchRate,
+            recommendationRank:
+                accommodation.rank >= 1 && accommodation.rank <= 5
+                ? accommodation.rank
+                : null,
+            voters: accommodation.voters,
+            matchReasons: accommodation.matchReasons,
+            regretReasons: accommodation.regretReasons,
+            chonkangId: chonkangId,
+            placeId: int.tryParse(accommodation.id),
+            votedByMe: accommodation.votedByMe,
+          ),
+        ),
+      ),
     );
   }
 
   Future<void> _openConfirmedAccommodation(BuildContext context) async {
+    final AccommodationRecommendation confirmed;
+    try {
+      confirmed = await TravelRoomApi.instance.fetchConfirmedAccommodation(
+        chonkangId,
+      );
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('확정된 숙소를 불러오지 못했어요.')),
+      );
+      return;
+    }
+
+    if (!context.mounted) {
+      return;
+    }
+
     final canceled = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
-        builder: (_) => const TravelAccommodationDetailPage(
+        builder: (_) => TravelAccommodationDetailPage(
           mode: TravelAccommodationDetailMode.confirmed,
+          data: TravelAccommodationDetailData(
+            accommodation: confirmed.toDetailData(),
+            matchRate: confirmed.matchRate,
+            // 확정 화면에서는 추천 순위 배지를 쓰지 않는다.
+            recommendationRank: null,
+            voters: confirmed.voters,
+            matchReasons: confirmed.matchReasons,
+            regretReasons: confirmed.regretReasons,
+            chonkangId: chonkangId,
+            placeId: int.tryParse(confirmed.id),
+            votedByMe: confirmed.votedByMe,
+          ),
         ),
       ),
     );
@@ -212,6 +284,7 @@ class TravelRoomMainPage extends StatelessWidget {
         reverseTransitionDuration: const Duration(milliseconds: 220),
         pageBuilder: (_, __, ___) {
           return TravelRoomMainPage(
+            chonkangId: chonkangId,
             data: data.copyWith(
               stage: TravelRoomStage.accommodationRecommendation,
               clearConfirmedAccommodation: true,
@@ -270,10 +343,9 @@ class TravelRoomMainPage extends StatelessWidget {
         break;
 
       case TravelRoomPlanCategory.accommodation:
-        page = const TravelAccommodationDetailPage(
-          mode: TravelAccommodationDetailMode.confirmed,
-        );
-        break;
+        // 확정된 숙소는 서버에서 불러와야 해서 별도 비동기 경로를 탄다.
+        _openConfirmedAccommodation(context);
+        return;
 
       case TravelRoomPlanCategory.activity:
         return;
@@ -425,6 +497,15 @@ class TravelRoomMainPage extends StatelessWidget {
     );
   }
 
+  // 확정 숙소 카드의 한 줄 소개. AI가 만든 좋은 점의 첫 문장을 쓴다.
+  // 추천을 거치지 않고 직접 찾은 숙소를 확정한 경우엔 비어 있어 소개를 생략한다.
+  String? _accommodationSummary(AccommodationRecommendation accommodation) {
+    final reasons = accommodation.matchReasons
+        .map((reason) => reason.trim())
+        .where((reason) => reason.isNotEmpty);
+    return reasons.isEmpty ? null : reasons.first;
+  }
+
   Widget _build631(BuildContext context) {
     final accommodation = data.confirmedAccommodation;
 
@@ -464,7 +545,7 @@ class TravelRoomMainPage extends StatelessWidget {
               child: PlanCard(
                 type: PlanCardType.lodging2,
                 data: accommodation,
-                summary: 'AI가 개요를 분석해 만든 한 줄 소개가 길면 이렇게 표시돼요.',
+                summary: _accommodationSummary(accommodation),
                 onDetailTap: () {
                   _openConfirmedAccommodation(context);
                 },
@@ -527,7 +608,7 @@ class TravelRoomMainPage extends StatelessWidget {
               child: PlanCard(
                 type: PlanCardType.lodging2,
                 data: accommodation,
-                summary: 'AI가 개요를 분석해 만든 한 줄 소개가 길면 이렇게 표시돼요.',
+                summary: _accommodationSummary(accommodation),
                 onDetailTap: () {
                   _openConfirmedAccommodation(context);
                 },
