@@ -134,7 +134,10 @@ class _MoodReselectPageState extends State<MoodReselectPage> {
       }
 
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => TravelRoomMainPage(data: data)),
+        MaterialPageRoute(
+          builder: (_) =>
+              TravelRoomMainPage(chonkangId: widget.chonkangId, data: data),
+        ),
         (route) => false,
       );
     } on ApiException catch (_) {

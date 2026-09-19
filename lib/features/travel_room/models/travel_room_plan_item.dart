@@ -48,6 +48,8 @@ class TravelRoomPlanItem {
       summary: json['aiSummary'] as String?,
       moodMatchRate: json['moodFitScore'] as int?,
     );
+  }
+
   String get displayTagLabel => tagLabel ?? category.label;
 
   MapTagColor get displayTagColor => tagColor ?? category.mapTagColor;

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_exception.dart';
@@ -97,6 +98,23 @@ class SocialAuthService {
       // 최소한 콘솔에는 남긴다.
       debugPrint('[웹 카카오 로그인] 인가 코드 교환 실패: $e');
       return false;
+    }
+  }
+
+  Future<AuthResult> loginWithApple() async {
+    try {
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [AppleIDAuthorizationScopes.email],
+      );
+      final identityToken = credential.identityToken;
+      if (identityToken == null) {
+        return const AuthResult.failure('애플 로그인에 실패했어요.');
+      }
+
+      await _loginToBackend('/api/auth/apple', {
+        'identityToken': identityToken,
+        'authorizationCode': credential.authorizationCode,
+      });
       return const AuthResult.success();
     } on SignInWithAppleAuthorizationException catch (error) {
       if (error.code == AuthorizationErrorCode.canceled) {
